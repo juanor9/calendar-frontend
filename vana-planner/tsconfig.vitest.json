@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.app.json",
+
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
+
+    "types": ["vitest", "vitest/globals", "jsdom"],
+
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "lib": ["DOM", "ESNext"]
+  },
+
+  "include": [
+    "env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "src/**/*.spec.ts"
+  ],
+
+  "exclude": ["node_modules", "dist"]
+}

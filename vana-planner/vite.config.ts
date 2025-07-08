@@ -15,5 +15,9 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src')
     },
+    // AÑADE ESTA LÍNEA:
+    // Indica a Vite qué extensiones de archivo debe intentar resolver automáticamente.
+    // .ts y .vue son cruciales para tu proyecto.
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   },
 })
