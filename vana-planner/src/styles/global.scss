@@ -1,6 +1,23 @@
-@forward 'globals/variables';
-@forward 'globals/mixins';
-@forward 'globals/reset';
+@use 'globals/reset' as *;
+@use 'globals/variables' as *;
+@use 'globals/mixins' as *;
+@use 'globals/color' as *;
+@use 'globals/typography' as *;
+@use 'globals/a11y' as *;
 
-*{
-  box-sizing: border-box;}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: $font-size-base;
+  font-family: $font-family-base;
+  font-weight: $font-weight-regular;
+  font-stretch: $font-stretch-base;
+  line-height: 1.5;
+  color: $black;
+  background-color: $white;
+}
+
+* {
+  box-sizing: border-box;
+}

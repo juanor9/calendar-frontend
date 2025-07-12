@@ -20,7 +20,7 @@
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": ["es2020", "DOM", "DOM.Iterable"],
+    "lib": ["es2020", "dom", "dom.iterable"],
     "types": ["vite/client", "node"] // Asegura que estos tipos de Vite y Node estén cargados
   }
 }
