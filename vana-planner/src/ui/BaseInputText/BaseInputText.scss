@@ -1,0 +1,14 @@
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+
+  &__label  { font-size: .875rem; color: $gray-700; }
+  &__field  {
+    padding: .5rem;
+    border: 1px solid $gray-300;
+    border-radius: .25rem;
+
+    &:disabled { background: $gray-100; cursor: not-allowed; }
+  }
+}

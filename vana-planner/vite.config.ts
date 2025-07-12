@@ -1,23 +1,34 @@
+// vite.config.ts
 import { fileURLToPath, URL } from 'node:url'
+import { defineConfig }       from 'vite'
+import vue                    from '@vitejs/plugin-vue'
+import vueDevTools            from 'vite-plugin-vue-devtools'
+import VueInspector           from 'vite-plugin-vue-inspector'
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
-import path from 'path'
+const isStorybook = !!process.env.STORYBOOK
+const isVitest    = !!process.env.VITEST
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
-  ],
+    !isStorybook && !isVitest && vueDevTools(),
+    !isStorybook && !isVitest && VueInspector()
+  ].filter(Boolean),
+
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     },
-    // AÑADE ESTA LÍNEA:
-    // Indica a Vite qué extensiones de archivo debe intentar resolver automáticamente.
-    // .ts y .vue son cruciales para tu proyecto.
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+    extensions: ['.mjs','.ts', '.js', '.jsx', '.tsx', '.json', '.vue']
   },
+
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/styles/global.scss" as *;\n`
+      }
+    }
+  }
+
+  // ← Aquí NO va ningún `test: { … }`
 })
