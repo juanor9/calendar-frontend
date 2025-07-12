@@ -10,13 +10,13 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'Home',
-        component: () => import('@/modules/home/pages/HomePage/HomePage.vue'),
+        component: () => import('@/pages/HomePage/HomePage.vue'),
         meta: { layout: 'default' }
       },
       {
         path: 'about',
         name: 'About',
-        component: () => import('@/modules/home/pages/AboutPage/AboutPage.vue'),
+        component: () => import('@/pages/AboutPage/AboutPage.vue'),
         meta: { layout: 'default' }
       }
     ]

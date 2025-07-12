@@ -1,3 +1,6 @@
-@use 'globals/variables';
-@use 'globals/mixins';
-@use 'globals/reset';
+@forward 'globals/variables';
+@forward 'globals/mixins';
+@forward 'globals/reset';
+
+*{
+  box-sizing: border-box;}
