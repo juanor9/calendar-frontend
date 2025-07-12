@@ -1,5 +1,7 @@
 <template>
-  <aside class="sidebar-menu">Sidebar</aside>
+  <aside class="sidebar-menu">
+    <h2>Sidebar</h2>
+  </aside>
 </template>
 
 <script setup lang="ts"></script>
