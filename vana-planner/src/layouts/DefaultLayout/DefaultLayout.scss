@@ -3,6 +3,12 @@
   flex-direction: column;
   height: 100vh;
 
+  &__container {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+  }
+
   &__main {
     flex: 1;
     padding: 1rem;
