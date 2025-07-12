@@ -1,0 +1,13 @@
+.button {
+  padding: .5rem 1rem;
+  border: none;
+  border-radius: .25rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &--primary   { background: $color-primary;   color: #fff; }
+  &--secondary { background: $color-secondary; color: #fff; }
+  &--danger    { background: $color-danger;    color: #fff; }
+
+  &--disabled  { opacity: .6; cursor: not-allowed; }
+}

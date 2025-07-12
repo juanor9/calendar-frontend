@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "skipLibCheck": true, // ignora errores en node_modules
+    "moduleResolution": "bundler", // igual que en Vite
+    "jsx": "preserve", // para JSX/MDX
+    "types": [
+      "vite/client",
+      "node",
+      "vitest/globals" // para test(), describe(), expect()
+    ],
+    "rootDir": "src",
+    "outDir": "build/ts-out",
+    "declaration": true,
+    "emitDeclarationOnly": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
