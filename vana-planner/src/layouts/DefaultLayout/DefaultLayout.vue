@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import HeaderBar from "@/ui/HeaderBar/HeaderBar.vue";
-import SidebarMenu from "@/ui/SidebarMenu/SidebarMenu.vue";
+  import HeaderBar from '@/ui/HeaderBar/HeaderBar.vue'
+  import SidebarMenu from '@/ui/SidebarMenu/SidebarMenu.vue'
 </script>
 
 <style scoped src="./DefaultLayout.scss" />

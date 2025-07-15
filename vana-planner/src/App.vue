@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { useHead } from '@vueuse/head'
+  import { RouterLink, RouterView } from 'vue-router'
+  import { useHead } from '@vueuse/head'
 
-useHead({
-  title: 'Vana',
-  meta: [{ name: 'description', content: 'Vana' }],
-})
+  useHead({
+    title: 'Vana',
+    meta: [{ name: 'description', content: 'Vana' }],
+  })
 </script>
 
 <template>
@@ -13,6 +13,4 @@ useHead({
   <RouterView />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

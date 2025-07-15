@@ -7,28 +7,28 @@ const meta: Meta<typeof BaseButton> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'danger']
+      options: ['primary', 'secondary', 'danger'],
     },
     disabled: { control: 'boolean' },
-    label:    { control: 'text' }
-  }
+    label: { control: 'text' },
+  },
 }
 export default meta
 
 type Story = StoryObj<typeof BaseButton>
 
 export const Primary: Story = {
-  args: { label: 'Primary', variant: 'primary' }
+  args: { label: 'Primary', variant: 'primary' },
 }
 
 export const Secondary: Story = {
-  args: { label: 'Secondary', variant: 'secondary' }
+  args: { label: 'Secondary', variant: 'secondary' },
 }
 
 export const Danger: Story = {
-  args: { label: 'Delete', variant: 'danger' }
+  args: { label: 'Delete', variant: 'danger' },
 }
 
 export const Disabled: Story = {
-  args: { label: 'Disabled', disabled: true }
+  args: { label: 'Disabled', disabled: true },
 }

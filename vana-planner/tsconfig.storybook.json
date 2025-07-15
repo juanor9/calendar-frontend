@@ -7,12 +7,9 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.vue",            // ← incluye tus SFC
+    "src/**/*.vue", // ← incluye tus SFC
     ".storybook/**/*.ts",
     ".storybook/**/*.js"
   ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

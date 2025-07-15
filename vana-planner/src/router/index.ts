@@ -11,21 +11,21 @@ const routes: RouteRecordRaw[] = [
         path: '',
         name: 'Home',
         component: () => import('@/pages/HomePage/HomePage.vue'),
-        meta: { layout: 'default' }
+        meta: { layout: 'default' },
       },
       {
         path: 'about',
         name: 'About',
         component: () => import('@/pages/AboutPage/AboutPage.vue'),
-        meta: { layout: 'default' }
-      }
-    ]
-  }
+        meta: { layout: 'default' },
+      },
+    ],
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
+  routes,
 })
 
 export default router

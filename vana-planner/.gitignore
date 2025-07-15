@@ -38,3 +38,7 @@ storybook-static
 # Build files
 /build/ts-out
 package-lock.json
+
+#Linters
+.eslintcache
+.stylelintcache
