@@ -7,16 +7,13 @@ const BLOCKLIST = [
   'vite-plugin-vue-devtools',
   'vite-plugin-vue-inspector',
   'storybook:vue-docgen-plugin',
-  'storybook:vue-template-compilation'
+  'storybook:vue-template-compilation',
 ]
 
 const config: StorybookConfig = {
   stories: ['../src/**/**/*.stories.@(js|jsx|ts|tsx)'],
 
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-a11y'
-  ],
+  addons: ['@storybook/addon-links', '@storybook/addon-a11y'],
 
   framework: {
     name: '@storybook/vue3-vite',
@@ -24,9 +21,9 @@ const config: StorybookConfig = {
       /* Motor docgen moderno y estable */
       docgen: {
         plugin: 'vue-component-meta',
-        tsconfig: 'tsconfig.app.json'
-      }
-    }
+        tsconfig: 'tsconfig.app.json',
+      },
+    },
   },
 
   core: { builder: '@storybook/builder-vite' },
@@ -45,7 +42,7 @@ const config: StorybookConfig = {
     plugins = plugins.filter((p: Plugin | [Plugin]) => {
       const name = Array.isArray(p) ? p[0].name : (p as Plugin).name
       if (name === 'vite:vue') {
-        if (seenVue) return false  // descarta duplicado
+        if (seenVue) return false // descarta duplicado
         seenVue = true
       }
       return true
@@ -53,7 +50,7 @@ const config: StorybookConfig = {
 
     merged.plugins = plugins
     return merged
-  }
+  },
 }
 
 export default config

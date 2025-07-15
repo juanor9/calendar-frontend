@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { BaseButton, BaseInputText } from '@/ui'
-const nombre = ref('')
+  import { ref } from 'vue'
+  import { BaseButton, BaseInputText } from '@/ui'
+  const nombre = ref('')
 </script>
 
 <template>

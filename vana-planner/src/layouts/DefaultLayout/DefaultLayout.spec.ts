@@ -5,8 +5,8 @@ describe('DefaultLayout.vue', () => {
   it('renders layout with header and sidebar', () => {
     const wrapper = mount(DefaultLayout, {
       global: {
-        stubs: ['router-view']
-      }
+        stubs: ['router-view'],
+      },
     })
 
     expect(wrapper.find('.header-bar').exists()).toBe(true)

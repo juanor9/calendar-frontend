@@ -9,8 +9,8 @@ export default defineConfig({
   /* 👇 añade el alias @ exactamente igual que en Vite */
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
   },
 
   test: {
@@ -20,6 +20,6 @@ export default defineConfig({
     browser: { enabled: false },
     maxWorkers: 1,
     setupFiles: ['vitest.shims.d.ts'],
-    coverage: { enabled: false }
-  }
+    coverage: { enabled: false },
+  },
 })

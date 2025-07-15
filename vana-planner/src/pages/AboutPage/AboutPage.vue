@@ -5,8 +5,8 @@
 </template>
 
 <style scoped>
-.about-page__title {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
+  .about-page__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
 </style>
