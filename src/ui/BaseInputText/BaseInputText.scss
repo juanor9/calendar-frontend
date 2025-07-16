@@ -1,0 +1,21 @@
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  &__label {
+    font-size: 0.875rem;
+    color: grey;
+  }
+
+  &__field {
+    padding: 0.5rem;
+    border: 1px solid grey;
+    border-radius: 0.25rem;
+
+    &:disabled {
+      background: grey;
+      cursor: not-allowed;
+    }
+  }
+}

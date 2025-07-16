@@ -1,0 +1,15 @@
+// tsconfig.storybook.json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // hereda paths, baseUrl, etc.
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue", // ← incluye tus SFC
+    ".storybook/**/*.ts",
+    ".storybook/**/*.js"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
