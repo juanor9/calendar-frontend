@@ -1,4 +1,5 @@
 /* Box sizing rules */
+
 *,
 *::before,
 *::after {
@@ -6,6 +7,7 @@
 }
 
 /* Remove default margin and padding */
+
 body,
 h1,
 h2,
@@ -44,25 +46,29 @@ select {
 }
 
 /* Set core body defaults */
+
 body {
   min-height: 100vh;
   scroll-behavior: smooth;
-  text-rendering: optimizeSpeed;
+  text-rendering: optimizespeed;
   line-height: 1.5;
 }
 
 /* Remove list styles on ul, ol elements with a class attribute */
+
 ul[class],
 ol[class] {
   list-style: none;
 }
 
 /* A elements that don't have a class get a default color to make them more readable */
+
 a:not([class]) {
   text-decoration-skip-ink: auto;
 }
 
 /* Make images easier to work with */
+
 img,
 picture,
 video,
@@ -73,6 +79,7 @@ svg {
 }
 
 /* Inherit fonts for form controls and buttons */
+
 input,
 button,
 textarea,
