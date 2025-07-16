@@ -42,3 +42,4 @@ package-lock.json
 #Linters
 .eslintcache
 .stylelintcache
+/package-lock.json

@@ -14,8 +14,10 @@
     "storybook": "cross-env STORYBOOK=1 storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "eslint src --ext .ts,.vue",
+    "lint:style": "stylelint \"src/**/*.{scss,vue}\"",
+    "lint:all": "npm-run-all2 lint lint:style",
     "format": "prettier --write .",
-    "stylelint": "stylelint \"src/**/*.{scss,vue}\""
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@vueuse/head": "^2.0.0",

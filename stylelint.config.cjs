@@ -4,8 +4,8 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.vue'],
-      customSyntax: 'postcss-html'
-    }
+      customSyntax: 'postcss-html',
+    },
   ],
   rules: {
     'selector-class-pattern': '^[a-z0-9]+(?:__[a-z0-9]+)?(?:--[a-z0-9]+)?$',
@@ -16,6 +16,6 @@ module.exports = {
     'rule-empty-line-before': 'always-multi-line',
     'color-function-notation': 'legacy',
     'alpha-value-notation': 'percentage',
-    'color-function-alias-notation': 'none'
-  }
+    'color-function-alias-notation': 'none',
+  },
 }
