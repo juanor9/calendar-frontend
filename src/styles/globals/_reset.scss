@@ -88,9 +88,7 @@ select {
 }
 
 /* Remove all animations, transitions and scroll-behavior for people that prefer not to see them */
-
 @media (prefers-reduced-motion: reduce) {
-  
   *,
   *::before,
   *::after {
