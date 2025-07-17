@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from 'vue-router'
+  import { RouterView } from 'vue-router'
   import { useHead } from '@vueuse/head'
 
   useHead({
@@ -12,5 +12,3 @@
   <h1 class="sr-only">Vana</h1>
   <RouterView />
 </template>
-
-<style scoped></style>
