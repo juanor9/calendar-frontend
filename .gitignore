@@ -42,5 +42,3 @@ package-lock.json
 #Linters
 .eslintcache
 .stylelintcache
-/package-lock.json"// trigger"  git add .gitignore git commit -m "chore: trigger workflow for testing" git push origin develop
-"// trigger" 
