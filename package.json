@@ -67,5 +67,8 @@
     "vitest": "^3.2.4",
     "vue-eslint-parser": "^10.2.0",
     "vue-tsc": "^2.2.10"
-  }
+  },
+  "overrides": {
+  "@rollup/rollup": "4.16.3"
+}
 }
