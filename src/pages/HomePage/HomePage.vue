@@ -2,6 +2,8 @@
   import { ref } from 'vue'
   import { BaseButton, BaseInputText } from '@/ui'
   const nombre = ref('')
+
+  console.log('test')
 </script>
 
 <template>

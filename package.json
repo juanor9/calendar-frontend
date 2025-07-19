@@ -17,7 +17,8 @@
     "lint:style": "stylelint \"src/**/*.{scss,vue}\"",
     "lint:all": "npm-run-all2 lint lint:style",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "echo skipped (manual husky)"
   },
   "dependencies": {
     "@vueuse/head": "^2.0.0",
@@ -52,7 +53,9 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-vue": "^9.33.0",
+    "husky": "^9.1.7",
     "jsdom": "^26.1.0",
+    "lint-staged": "^16.1.2",
     "npm-run-all2": "^8.0.4",
     "playwright": "^1.53.2",
     "postcss-html": "^1.8.0",
@@ -69,6 +72,17 @@
     "vue-tsc": "^2.2.10"
   },
   "overrides": {
-  "@rollup/rollup": "4.16.3"
-}
+    "@rollup/rollup": "4.16.3"
+  },
+  "lint-staged": {
+    "*.{ts,vue}": [
+      "eslint --fix"
+    ],
+    "*.{scss,vue}": [
+      "stylelint --fix"
+    ],
+    "*.{ts,vue,scss,md,json}": [
+      "prettier --write"
+    ]
+  }
 }
