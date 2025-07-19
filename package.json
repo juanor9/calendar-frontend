@@ -18,7 +18,7 @@
     "lint:all": "npm-run-all2 lint lint:style",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "echo skipped (manual husky)"
+    "prepare": "node -e \"console.log('manual husky setup — skipping prepare')\""
   },
   "dependencies": {
     "@vueuse/head": "^2.0.0",
