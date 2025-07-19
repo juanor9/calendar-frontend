@@ -4,6 +4,8 @@
   const nombre = ref('')
 
   console.log('test')
+
+  const test = 'ok'
 </script>
 
 <template>
