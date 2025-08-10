@@ -132,7 +132,12 @@ Main container for the multi-step onboarding process
     </div>
 
     <!-- Error Modal -->
-    <BaseModal v-if="error" :show="!!error" class="error-modal" @close="clearError">
+    <BaseModal
+      :model-value="!!error"
+      class="error-modal"
+      @update:model-value="error && !$event && clearError()"
+      @close="clearError"
+    >
       <template #title>
         <div class="error-title">
           <ExclamationTriangleIcon class="w-6 h-6 text-red-500" />

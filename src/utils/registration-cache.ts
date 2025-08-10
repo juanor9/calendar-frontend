@@ -99,8 +99,8 @@ export class RegistrationCache {
       const state: RegistrationState = {
         status: parsed.status,
         step: parsed.step,
-        startedAt: parsed.startedAt ? new Date(parsed.startedAt) : null,
-        completedAt: parsed.completedAt ? new Date(parsed.completedAt) : null,
+        startedAt: parsed.startedAt ? new Date(parsed.startedAt) : undefined,
+        completedAt: parsed.completedAt ? new Date(parsed.completedAt) : undefined,
         error: parsed.error,
         retryCount: parsed.retryCount,
         sessionId: parsed.sessionId,
@@ -231,9 +231,11 @@ export class RegistrationCache {
       if (!(field in state)) return false
     }
 
+    const stateObj = state as Record<string, unknown>
+
     // Validate status values
     const validStatuses = ['idle', 'redirecting', 'processing', 'verifying', 'completed', 'error']
-    if (!validStatuses.includes(state.status)) return false
+    if (!validStatuses.includes(stateObj.status)) return false
 
     // Validate step values
     const validSteps = [
@@ -245,13 +247,13 @@ export class RegistrationCache {
       'onboarding',
       'completed',
     ]
-    if (!validSteps.includes(state.step)) return false
+    if (!validSteps.includes(stateObj.step)) return false
 
     // Validate timestamp
-    if (typeof state.timestamp !== 'number' || state.timestamp <= 0) return false
+    if (typeof stateObj.timestamp !== 'number' || stateObj.timestamp <= 0) return false
 
     // Validate retry count
-    if (typeof state.retryCount !== 'number' || state.retryCount < 0) return false
+    if (typeof stateObj.retryCount !== 'number' || stateObj.retryCount < 0) return false
 
     return true
   }

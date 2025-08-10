@@ -4,6 +4,135 @@
  */
 
 // ============================================================================
+// Auth Types
+// ============================================================================
+
+export interface User {
+  id: string
+  email: string
+  name?: string
+  picture?: string
+  email_verified: boolean
+  user_metadata?: Record<string, unknown>
+  app_metadata?: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface LoginOptions {
+  audience?: string
+  scope?: string
+  connection?: string
+  prompt?: string
+  login_hint?: string
+  ui_locales?: string
+  redirect_uri?: string
+  response_type?: string
+  response_mode?: string
+}
+
+export interface Role {
+  id: string
+  name: string
+  description: string
+  permissions: Permission[]
+}
+
+export interface Permission {
+  id: string
+  name: string
+  description: string
+  resource: string
+  action: string
+}
+
+export type RegistrationStatus =
+  | 'idle'
+  | 'redirecting'
+  | 'processing'
+  | 'verifying'
+  | 'completed'
+  | 'error'
+
+export interface UserResponse {
+  success: boolean
+  user?: User
+  error?: string
+}
+
+export interface CallbackRequest {
+  code: string
+  state: string
+  error?: string
+  error_description?: string
+}
+
+// ============================================================================
+// Onboarding Extended Types
+// ============================================================================
+
+export interface OnboardingError {
+  code: string
+  message: string
+  type: 'network' | 'validation' | 'auth' | 'unknown'
+  retryable: boolean
+  field?: string
+}
+
+export interface WorkPreferences {
+  workStyle: WorkStyle
+  workHours: WorkHours
+  focusTime: FocusTimePreferences
+  meetingPreferences: MeetingPreferences
+}
+
+export interface CalendarIntegration {
+  provider: CalendarProvider
+  accountEmail: string
+  calendars: Calendar[]
+  syncSettings: CalendarSyncSettings
+}
+
+export type CalendarProvider = 'google' | 'microsoft' | 'apple' | 'caldav'
+
+export type WorkStyle = 'focused' | 'collaborative' | 'flexible' | 'structured'
+
+export interface WorkHours {
+  start: string // HH:mm format
+  end: string // HH:mm format
+  days: number[] // 0-6 where 0 is Sunday
+  timezone: string
+  flexibleBreaks: boolean
+}
+
+export interface MeetingPreferences {
+  defaultDuration: number // minutes
+  bufferTime: number // minutes
+  autoDeclineConflicts: boolean
+  requireDescription: boolean
+  allowBackToBack: boolean
+  maxDailyMeetings?: number
+  preferredTimeSlots: string[] // HH:mm format
+}
+
+export interface FocusTimePreferences {
+  minimumBlockSize: number // minutes
+  preferredHours: string[] // HH:mm format
+  allowInterruptions: boolean
+  breakFrequency: number // minutes
+  deepWorkBlocks: boolean
+}
+
+export type AIOptimizationLevel = 'conservative' | 'balanced' | 'aggressive'
+
+export interface CalendarSyncSettings {
+  syncDirection: 'pull' | 'push' | 'both'
+  conflictResolution: 'local' | 'remote' | 'newest' | 'manual'
+  syncInterval: number // minutes
+  excludePrivate: boolean
+}
+
+// ============================================================================
 // Registration Types
 // ============================================================================
 

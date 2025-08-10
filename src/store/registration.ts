@@ -70,11 +70,11 @@ export const useRegistrationStore = defineStore('registration', () => {
     (): RegistrationState => ({
       status: flow.value.status,
       step: flow.value.step,
-      startedAt: flow.value.startedAt,
-      completedAt: flow.value.completedAt,
-      error: flow.value.error,
+      startedAt: flow.value.startedAt || undefined,
+      completedAt: flow.value.completedAt || undefined,
+      error: flow.value.error || undefined,
       retryCount: flow.value.retryCount,
-      sessionId: flow.value.sessionId,
+      sessionId: flow.value.sessionId || undefined,
     })
   )
 
@@ -423,11 +423,11 @@ export const useRegistrationStore = defineStore('registration', () => {
           : '', // Or reset if no session
         source: 'cache_recovery',
         auth0Id: null,
-        startedAt: cachedState.startedAt,
-        completedAt: cachedState.completedAt,
-        error: cachedState.error,
+        startedAt: cachedState.startedAt || null,
+        completedAt: cachedState.completedAt || null,
+        error: cachedState.error || null,
         retryCount: cachedState.retryCount,
-        sessionId: cachedState.sessionId,
+        sessionId: cachedState.sessionId || null,
       }
     }
   }

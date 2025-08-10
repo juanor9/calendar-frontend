@@ -83,8 +83,8 @@ class PerformanceMonitor {
     // Largest Contentful Paint
     onLCP(this.handleMetric.bind(this))
 
-    // First Input Delay
-    onFID(this.handleMetric.bind(this))
+    // Interaction to Next Paint (replaces FID)
+    onINP(this.handleMetric.bind(this))
 
     // Cumulative Layout Shift
     onCLS(this.handleMetric.bind(this))
@@ -500,18 +500,20 @@ class PerformanceMonitor {
 
     // Web Vitals summary
     this.metrics.forEach((metric, name) => {
-      summary.webVitals[name] = {
+      ;(summary.webVitals as Record<string, { value: number; rating: string; unit: string }>)[
+        name
+      ] = {
         value: metric.value,
         rating: metric.rating,
         unit: this.getUnit(name),
       }
-
-      summary.sloStatus[name] = metric.rating !== 'poor' ? 'PASS' : 'FAIL'
+      ;(summary.sloStatus as Record<string, string>)[name] =
+        metric.rating !== 'poor' ? 'PASS' : 'FAIL'
     })
 
     // Custom metrics summary
     this.customMetrics.forEach((metric, name) => {
-      summary.customMetrics[name] = {
+      ;(summary.customMetrics as Record<string, { value: number; unit: string }>)[name] = {
         value: metric.value,
         unit: metric.unit,
       }

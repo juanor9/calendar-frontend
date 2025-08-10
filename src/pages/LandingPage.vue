@@ -196,7 +196,7 @@ Main entry point for user registration with interactive demo
   import { useAuth } from '@/composables/useAuth'
   import {
     CalendarIcon,
-    RocketIcon,
+    RocketLaunchIcon as RocketIcon,
     PlayIcon,
     ShieldCheckIcon,
     ClockIcon,
@@ -535,7 +535,7 @@ Main entry point for user registration with interactive demo
       margin-bottom: 1rem;
 
       &.pulse-highlight {
-        animation: pulseHighlight 2s ease-in-out;
+        animation: pulse-highlight 2s ease-in-out;
       }
     }
 
@@ -545,7 +545,7 @@ Main entry point for user registration with interactive demo
     }
   }
 
-  @keyframes pulseHighlight {
+  @keyframes pulse-highlight {
 
     0%,
     100% {

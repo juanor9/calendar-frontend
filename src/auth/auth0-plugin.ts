@@ -35,8 +35,9 @@ VITE_AUTH0_AUDIENCE=https://your-api.com
       app.use(auth0Plugin)
 
       // Get the Auth0 client instance and provide it
-      app.config.globalProperties.$auth0 = (auth0Plugin as { client: unknown }).client
-      app.provide(Auth0ClientKey, (auth0Plugin as { client: unknown }).client)
+      const auth0Client = (auth0Plugin as { client?: unknown })?.client || auth0Plugin
+      app.config.globalProperties.$auth0 = auth0Client
+      app.provide(Auth0ClientKey, auth0Client)
 
       // Add error handling for Auth0 initialization
       if (import.meta.env.DEV) {

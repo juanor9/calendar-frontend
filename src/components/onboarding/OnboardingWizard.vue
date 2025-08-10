@@ -169,9 +169,10 @@
 
     <!-- Skip Confirmation Modal -->
     <BaseModal
-      v-if="showSkipDialog"
+      :model-value="showSkipDialog"
       title="Skip onboarding?"
       class="skip-modal"
+      @update:model-value="showSkipDialog = $event"
       @close="showSkipDialog = false"
     >
       <p class="skip-modal__text">

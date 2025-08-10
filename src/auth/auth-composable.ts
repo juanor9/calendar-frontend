@@ -90,10 +90,14 @@ export const useAuth = () => {
       }
 
       const token = await auth0Client.getAccessTokenSilently(
-        Object.keys(options).length > 0 ? options : undefined
+        Object.keys(options || {}).length > 0 ? options : undefined
       )
-      authStore.setToken(typeof token === 'string' ? token : token.access_token)
-      return token
+      const accessToken =
+        typeof token === 'string'
+          ? token
+          : (token as { access_token?: string })?.access_token || token
+      authStore.setToken(accessToken)
+      return accessToken
     } catch (err) {
       console.error('Error getting access token:', err)
       // If token refresh fails, might need to re-authenticate
@@ -117,7 +121,11 @@ export const useAuth = () => {
         // Get and store access token
         try {
           const token = await getAccessToken()
-          authStore.setToken(typeof token === 'string' ? token : token.access_token)
+          authStore.setToken(
+            typeof token === 'string'
+              ? token
+              : (token as { access_token?: string })?.access_token || token
+          )
         } catch (tokenError) {
           console.warn('Could not get access token:', tokenError)
         }

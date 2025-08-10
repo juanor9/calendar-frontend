@@ -97,6 +97,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'welcome',
         name: 'OnboardingWelcome',
+        component: () => import('@/pages/OnboardingPages/steps/WelcomeStep.vue'),
         meta: {
           step: 'welcome',
           title: 'Welcome to Vana',
@@ -105,6 +106,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'preferences',
         name: 'OnboardingPreferences',
+        component: () => import('@/pages/OnboardingPages/steps/WorkStyleStep.vue'),
         meta: {
           step: 'preferences',
           title: 'Work Style Preferences - Vana',
@@ -113,6 +115,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'calendar',
         name: 'OnboardingCalendar',
+        component: () => import('@/pages/OnboardingPages/steps/CalendarIntegrationStep.vue'),
         meta: {
           step: 'calendar_sync',
           title: 'Connect Your Calendar - Vana',
@@ -121,6 +124,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'ai-setup',
         name: 'OnboardingAiSetup',
+        component: () => import('@/pages/OnboardingPages/steps/AISetupStep.vue'),
         meta: {
           step: 'ai_setup',
           title: 'AI Assistant Setup - Vana',
@@ -129,6 +133,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'tutorial',
         name: 'OnboardingTutorial',
+        component: () => import('@/pages/OnboardingPages/steps/TutorialStep.vue'),
         meta: {
           step: 'tutorial',
           title: 'Quick Tour - Vana',
