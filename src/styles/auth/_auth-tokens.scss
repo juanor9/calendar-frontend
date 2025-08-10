@@ -1,0 +1,377 @@
+// ==============================
+// VANA AUTH DESIGN TOKENS
+// Design system específico para componentes de autenticación
+// Basado en el branding oficial de Vana - SISTEMA COMPLETO v2.0
+// ==============================
+
+@use 'sass:color';
+@use 'sass:map';
+
+// COLORES AUTH ESPECÍFICOS - VANA REGISTRATION FLOW
+// Extendiendo el sistema base con colores específicos para autenticación
+// Brand color actualizado: Indigo #6366f1 para flujo de registro
+// Optimizado para conversión y trust-building
+
+// Registration Brand Colors - Vana Identity (Enhanced)
+$vana-registration-primary: #6366f1; // Indigo principal
+$vana-registration-primary-light: #8b8cf5; // Indigo claro
+$vana-registration-primary-dark: #4f46e5; // Indigo oscuro
+$vana-registration-primary-50: #eef2ff; // Indigo ultra light
+$vana-registration-primary-100: #e0e7ff; // Indigo muy claro
+$vana-registration-primary-200: #c7d2fe; // Indigo claro
+$vana-registration-primary-500: #6366f1; // Base
+$vana-registration-primary-600: #4f46e5; // Oscuro
+$vana-registration-primary-700: #4338ca; // Muy oscuro
+$vana-registration-primary-900: #312e81; // Ultra oscuro
+
+// Success Colors - Trust Building
+$vana-registration-accent: #10b981; // Verde éxito
+$vana-registration-accent-light: #34d399; // Verde claro
+$vana-registration-accent-50: #f0fdf4;
+$vana-registration-accent-100: #dcfce7;
+$vana-registration-accent-500: #10b981;
+
+// Warning & Info Colors
+$vana-registration-warning: #f59e0b; // Ámbar advertencia
+$vana-registration-progress: #06b6d4; // Cian progreso
+$vana-registration-info: #3b82f6; // Azul información
+
+// Neutral Palette for Registration
+$vana-gray-50: #f9fafb;
+$vana-gray-100: #f3f4f6;
+$vana-gray-200: #e5e7eb;
+$vana-gray-300: #d1d5db;
+$vana-gray-400: #9ca3af;
+$vana-gray-500: #6b7280;
+$vana-gray-600: #4b5563;
+$vana-gray-700: #374151;
+$vana-gray-800: #1f2937;
+$vana-gray-900: #111827;
+
+// Auth Primary - Estado de autenticación exitosa
+$auth-success: #22c55e;
+$auth-success-light: #4ade80;
+$auth-success-lighter: #bbf7d0;
+$auth-success-background: #f0fdf4;
+
+// Auth Warning - Tokens expirando, re-login requerido
+$auth-warning: #f59e0b;
+$auth-warning-light: #fbbf24;
+$auth-warning-lighter: #fef3c7;
+$auth-warning-background: #fffbeb;
+
+// Auth Error - Fallos de autenticación
+$auth-error: #ef4444;
+$auth-error-light: #f87171;
+$auth-error-lighter: #fecaca;
+$auth-error-background: #fef2f2;
+
+// Auth Loading - Estados de carga
+$auth-loading: $brand-primary;
+$auth-loading-light: color.adjust($brand-primary, $lightness: 15%);
+$auth-loading-background: rgba($brand-primary, 5%);
+
+// Auth Neutral - Estados deshabilitados/inactivos
+$auth-neutral: #6b7280;
+$auth-neutral-light: #9ca3af;
+$auth-neutral-lighter: #d1d5db;
+$auth-neutral-background: #f9fafb;
+
+// COMPONENTES AUTH - COLORES ESPECÍFICOS
+
+// Registration Button States - Vana Brand
+$auth-register-primary: $vana-registration-primary;
+$auth-register-primary-hover: color.adjust($vana-registration-primary, $lightness: -8%);
+$auth-register-primary-active: color.adjust($vana-registration-primary, $lightness: -12%);
+$auth-register-primary-focus: rgba($vana-registration-primary, 20%);
+
+// Login Button States (maintaining backward compatibility)
+$auth-login-primary: $brand-primary;
+$auth-login-primary-hover: color.adjust($brand-primary, $lightness: -8%);
+$auth-login-primary-active: color.adjust($brand-primary, $lightness: -12%);
+$auth-login-primary-focus: rgba($brand-primary, 20%);
+$auth-login-secondary: $accent-happy;
+$auth-login-secondary-hover: color.adjust($accent-happy, $lightness: -8%);
+$auth-login-secondary-active: color.adjust($accent-happy, $lightness: -12%);
+
+// User Profile & Avatar
+$auth-avatar-bg: $brand-primary;
+$auth-avatar-bg-fallback: #94a3b8;
+$auth-avatar-border: $white;
+$auth-avatar-status-online: $auth-success;
+$auth-avatar-status-away: $auth-warning;
+$auth-avatar-status-busy: $auth-error;
+$auth-avatar-status-offline: $auth-neutral;
+
+// Dropdown Menu
+$auth-dropdown-bg: $white;
+$auth-dropdown-border: rgba($text-primary, 12%);
+$auth-dropdown-shadow:
+  0 10px 25px rgba($text-primary, 8%),
+  0 4px 10px rgba($text-primary, 4%);
+$auth-dropdown-item-hover: rgba($brand-primary, 5%);
+$auth-dropdown-divider: rgba($text-primary, 8%);
+
+// Registration Pages Background - Vana Gradient (Enhanced)
+$registration-page-bg-start: $vana-gray-50; // #f9fafb
+$registration-page-bg-end: $vana-registration-primary-50; // #eef2ff
+$registration-page-card-bg: $white;
+$registration-page-card-shadow: 0 25px 50px rgba($vana-registration-primary, 8%);
+$registration-page-card-border: 1px solid rgba($vana-registration-primary, 10%);
+
+// Landing Page Specific Backgrounds
+$landing-hero-bg: linear-gradient(135deg, $vana-gray-50 0%, $vana-registration-primary-50 100%);
+$landing-section-bg: $white;
+$landing-cta-bg: $vana-registration-primary;
+$landing-testimonial-bg: $vana-gray-50;
+
+// Demo Widget Colors
+$demo-calendar-bg: $white;
+$demo-calendar-border: $vana-gray-200;
+$demo-event-bg: $vana-registration-primary-100;
+$demo-event-border: $vana-registration-primary-200;
+$demo-focus-block: $vana-registration-accent-100;
+$demo-meeting-block: $vana-registration-warning;
+
+// Auth Pages Background (maintaining compatibility)
+$auth-page-bg-start: color.adjust($brand-primary, $lightness: 35%);
+$auth-page-bg-end: color.adjust($brand-primary, $lightness: 30%);
+$auth-page-card-bg: $white;
+$auth-page-card-shadow: 0 25px 50px rgba($text-primary, 10%);
+
+// ESPACIADO AUTH ESPECÍFICO
+$auth-spacing-xs: 4px; // Spacing interno pequeño
+$auth-spacing-sm: 8px; // Spacing botones pequeños
+$auth-spacing-md: 12px; // Spacing estándar auth
+$auth-spacing-lg: 16px; // Spacing entre elementos
+$auth-spacing-xl: 24px; // Spacing secciones
+$auth-spacing-2xl: 32px; // Spacing páginas auth
+
+// DIMENSIONES AUTH COMPONENTS
+
+// Avatar Sizes
+$auth-avatar-xs: 24px;
+$auth-avatar-sm: 32px;
+$auth-avatar-md: 40px; // Tamaño estándar
+$auth-avatar-lg: 48px;
+$auth-avatar-xl: 64px;
+
+// Button Heights (coherente con BaseButton)
+$auth-button-height-sm: 32px;
+$auth-button-height-md: 40px; // Estándar
+$auth-button-height-lg: 48px;
+
+// Status Indicator
+$auth-status-size-sm: 8px;
+$auth-status-size-md: 10px;
+$auth-status-size-lg: 12px;
+
+// Dropdown Dimensions
+$auth-dropdown-min-width: 240px;
+$auth-dropdown-max-width: 320px;
+$auth-dropdown-item-height: 44px; // Touch-friendly
+
+// BORDER RADIUS AUTH
+$auth-radius-sm: 6px; // Elementos pequeños
+$auth-radius-md: 8px; // Botones, inputs
+$auth-radius-lg: 12px; // Tarjetas, modales
+$auth-radius-xl: 16px; // Auth pages container
+$auth-radius-avatar: 50%; // Avatares circulares
+$auth-radius-status: 50%; // Status indicators
+
+// TRANSICIONES AUTH
+$auth-transition-fast: 0.15s ease-out;
+$auth-transition-base: 0.2s ease-in-out;
+$auth-transition-slow: 0.3s ease-in-out;
+
+// Transiciones específicas
+$auth-transition-button: all $auth-transition-fast;
+$auth-transition-dropdown:
+  opacity $auth-transition-base,
+  transform $auth-transition-base;
+$auth-transition-avatar: transform $auth-transition-fast;
+$auth-transition-status: background-color $auth-transition-base;
+
+// SOMBRAS AUTH
+$auth-shadow-button: 0 1px 3px rgba($text-primary, 8%);
+$auth-shadow-button-hover: 0 4px 12px rgba($brand-primary, 15%);
+$auth-shadow-button-focus: 0 0 0 3px rgba($brand-primary, 12%);
+$auth-shadow-dropdown:
+  0 10px 25px rgba($text-primary, 8%),
+  0 4px 10px rgba($text-primary, 4%);
+$auth-shadow-modal: 0 25px 50px rgba($text-primary, 12%);
+$auth-shadow-card: 0 4px 16px rgba($text-primary, 4%);
+
+// Z-INDEX AUTH
+$auth-z-dropdown: 1000;
+$auth-z-modal: 1050;
+$auth-z-overlay: 1040;
+
+// TIPOGRAFÍA AUTH
+$auth-font-weight-normal: 400;
+$auth-font-weight-medium: 500;
+$auth-font-weight-semibold: 600;
+$auth-font-weight-bold: 700;
+
+// Auth component text sizes
+$auth-text-xs: 12px; // Status text, helpers
+$auth-text-sm: 14px; // Button text, dropdown items
+$auth-text-md: 16px; // Standard text
+$auth-text-lg: 18px; // User names, headers
+$auth-text-xl: 24px; // Page titles
+
+// DARK MODE TOKENS
+$auth-dark-bg: $surface-neutral-dark;
+$auth-dark-card-bg: #1e293b;
+$auth-dark-text: $text-primary-dark;
+$auth-dark-border: rgba($text-primary-dark, 12%);
+$auth-dark-dropdown-bg: #0f172a;
+$auth-dark-hover: rgba($text-primary-dark, 5%);
+
+// MAPAS PARA FÁCIL ACCESO
+$auth-colors: (
+  'primary': $auth-login-primary,
+  'primary-hover': $auth-login-primary-hover,
+  'primary-active': $auth-login-primary-active,
+  'success': $auth-success,
+  'warning': $auth-warning,
+  'error': $auth-error,
+  'loading': $auth-loading,
+  'neutral': $auth-neutral,
+);
+$auth-avatar-sizes: (
+  'xs': $auth-avatar-xs,
+  'sm': $auth-avatar-sm,
+  'md': $auth-avatar-md,
+  'lg': $auth-avatar-lg,
+  'xl': $auth-avatar-xl,
+);
+$auth-spacings: (
+  'xs': $auth-spacing-xs,
+  'sm': $auth-spacing-sm,
+  'md': $auth-spacing-md,
+  'lg': $auth-spacing-lg,
+  'xl': $auth-spacing-xl,
+  '2xl': $auth-spacing-2xl,
+);
+
+// MIXINS AUTH UTILITARIOS
+@mixin auth-button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $auth-spacing-sm;
+  border: none;
+  border-radius: $auth-radius-md;
+  font-family: $font-family-ui;
+  font-weight: $auth-font-weight-medium;
+  font-size: $auth-text-sm;
+  line-height: 1.25;
+  transition: $auth-transition-button;
+  cursor: pointer;
+  user-select: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: $auth-shadow-button-focus;
+  }
+
+  &:disabled {
+    opacity: 60%;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+@mixin auth-dropdown-base {
+  background: $auth-dropdown-bg;
+  border: 1px solid $auth-dropdown-border;
+  border-radius: $auth-radius-lg;
+  box-shadow: $auth-shadow-dropdown;
+  overflow: hidden;
+
+  @media (prefers-color-scheme: dark) {
+    background: $auth-dark-dropdown-bg;
+    border-color: $auth-dark-border;
+  }
+}
+
+@mixin auth-avatar($size: 'md') {
+  $avatar-size: map.get($auth-avatar-sizes, $size);
+
+  width: $avatar-size;
+  height: $avatar-size;
+  border-radius: $auth-radius-avatar;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+// REGISTRATION FLOW SPECIFIC TOKENS
+
+// Registration Progress Indicators
+$registration-progress-bg: rgba($vana-registration-progress, 10%);
+$registration-progress-fill: $vana-registration-progress;
+$registration-step-active: $vana-registration-primary;
+$registration-step-complete: $vana-registration-accent;
+$registration-step-pending: #e2e8f0;
+
+// Registration Form States
+$registration-input-focus: rgba($vana-registration-primary, 15%);
+$registration-success-bg: rgba($vana-registration-accent, 5%);
+$registration-warning-bg: rgba($vana-registration-warning, 5%);
+
+// Email Verification States
+$verification-pending: $vana-registration-warning;
+$verification-complete: $vana-registration-accent;
+$verification-expired: $auth-error;
+
+// VARIABLES CSS PERSONALIZADAS PARA COMPATIBILIDAD
+
+:root {
+  // Registration colors - Vana Brand
+  --vana-registration-primary: #{$vana-registration-primary};
+  --vana-registration-primary-hover: #{$auth-register-primary-hover};
+  --vana-registration-accent: #{$vana-registration-accent};
+  --vana-registration-progress: #{$vana-registration-progress};
+
+  // Auth colors (backward compatibility)
+  --auth-color-primary: #{$auth-login-primary};
+  --auth-color-primary-hover: #{$auth-login-primary-hover};
+  --auth-color-success: #{$auth-success};
+  --auth-color-warning: #{$auth-warning};
+  --auth-color-error: #{$auth-error};
+
+  // Auth spacing
+  --auth-spacing-sm: #{$auth-spacing-sm};
+  --auth-spacing-md: #{$auth-spacing-md};
+  --auth-spacing-lg: #{$auth-spacing-lg};
+
+  // Auth dimensions
+  --auth-avatar-md: #{$auth-avatar-md};
+  --auth-button-height: #{$auth-button-height-md};
+
+  // Auth radius
+  --auth-radius-md: #{$auth-radius-md};
+  --auth-radius-lg: #{$auth-radius-lg};
+
+  // Auth shadows
+  --auth-shadow-button: #{$auth-shadow-button};
+  --auth-shadow-dropdown: #{$auth-shadow-dropdown};
+}
+
+// Dark mode CSS custom properties
+@media (prefers-color-scheme: dark) {
+
+  :root {
+    // Registration dark mode
+    --vana-registration-primary: #{$vana-registration-primary}; // Same in dark
+    --vana-registration-bg: #{$auth-dark-bg};
+    --vana-registration-card-bg: #{$auth-dark-card-bg};
+
+    // Auth dark mode (backward compatibility)
+    --auth-color-bg: #{$auth-dark-bg};
+    --auth-color-card-bg: #{$auth-dark-card-bg};
+    --auth-color-text: #{$auth-dark-text};
+    --auth-color-border: #{$auth-dark-border};
+  }
+}

@@ -1,7 +1,180 @@
-$font-family-base: 'Manrope', sans-serif;
+// ==============================
+// VANA DESIGN SYSTEM - TYPOGRAPHY
+// Jerarquía tipográfica para legibilidad y profesionalismo
+// Enfoque: Manrope extendida para UI, Petrona para marca
+// ==============================
+
+// FUENTES BASE (Manual de Marca)
+$font-family-primary:
+  'Manrope',
+  -apple-system,
+  blinkmacsystemfont,
+  'Segoe UI',
+  system-ui,
+  sans-serif;
+$font-family-editorial: 'Petrona', georgia, 'Times New Roman', serif;
+$font-family-ui:
+  'Inter',
+  -apple-system,
+  blinkmacsystemfont,
+  'Segoe UI',
+  system-ui,
+  sans-serif;
+$font-family-monospace: 'SF Mono', monaco, 'Cascadia Code', 'Roboto Mono', consolas, 'Courier New',
+  monospace;
+
+// CONFIGURACIÓN BASE
+$font-stretch-base: 105%; // Manrope extendida según manual
 $font-size-base: 16px;
-$font-size-sm: 14px;
-$font-size-lg: 20px;
+$line-height-base: 1.5;
+$line-height-tight: 1.2;
+$line-height-loose: 1.7;
+
+// PESOS TIPOGRÁFICOS
+$font-weight-light: 300;
 $font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
 $font-weight-bold: 700;
-$font-stretch-base: 105%;
+
+// ESCALA TIPOGRÁFICA (Manual de Marca Vana)
+
+// Titulares XL - Para landing pages y hero sections
+$font-size-xl: 48px; // Desktop
+$font-size-xl-mobile: 36px; // Mobile
+
+// Títulos principales
+$font-size-h1: 36px; // Desktop
+$font-size-h1-mobile: 28px; // Mobile
+
+// Títulos secundarios
+$font-size-h2: 28px; // Desktop
+$font-size-h2-mobile: 24px; // Mobile
+
+// Subtítulos
+$font-size-h3: 24px; // Desktop
+$font-size-h3-mobile: 20px; // Mobile
+$font-size-h4: 20px;
+$font-size-h5: 18px;
+$font-size-h6: 16px;
+
+// Texto de contenido
+$font-size-body-lg: 18px;
+$font-size-body: 16px; // Base
+$font-size-body-sm: 15px;
+
+// Texto de UI
+$font-size-ui-lg: 16px;
+$font-size-ui: 14px;
+$font-size-ui-sm: 13px;
+
+// Texto auxiliar
+$font-size-caption: 14px;
+$font-size-small: 12px;
+$font-size-xs: 11px;
+
+// MAPAS PARA FÁCIL ACCESO
+$font-sizes: (
+  'xl': $font-size-xl,
+  'h1': $font-size-h1,
+  'h2': $font-size-h2,
+  'h3': $font-size-h3,
+  'h4': $font-size-h4,
+  'h5': $font-size-h5,
+  'h6': $font-size-h6,
+  'body-lg': $font-size-body-lg,
+  'body': $font-size-body,
+  'body-sm': $font-size-body-sm,
+  'ui-lg': $font-size-ui-lg,
+  'ui': $font-size-ui,
+  'ui-sm': $font-size-ui-sm,
+  'caption': $font-size-caption,
+  'small': $font-size-small,
+  'xs': $font-size-xs,
+);
+$line-heights: (
+  'tight': $line-height-tight,
+  'base': $line-height-base,
+  'loose': $line-height-loose,
+);
+
+// ESTILOS TIPOGRÁFICOS PREDEFINIDOS
+
+// Clases de utilidad para aplicación directa
+$typography-styles: (
+  'display-xl': (
+    'font-family': $font-family-editorial,
+    'font-size': $font-size-xl,
+    'font-weight': $font-weight-bold,
+    'line-height': $line-height-tight,
+    'letter-spacing': -0.02em,
+  ),
+  'heading-1': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-h1,
+    'font-weight': $font-weight-semibold,
+    'line-height': $line-height-tight,
+    'letter-spacing': -0.01em,
+  ),
+  'heading-2': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-h2,
+    'font-weight': $font-weight-medium,
+    'line-height': $line-height-tight,
+  ),
+  'heading-3': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-h3,
+    'font-weight': $font-weight-medium,
+    'line-height': $line-height-base,
+  ),
+  'body-large': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-body-lg,
+    'font-weight': $font-weight-regular,
+    'line-height': $line-height-loose,
+  ),
+  'body': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-body,
+    'font-weight': $font-weight-regular,
+    'line-height': $line-height-base,
+  ),
+  'body-small': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-body-sm,
+    'font-weight': $font-weight-regular,
+    'line-height': $line-height-base,
+  ),
+  'ui-large': (
+    'font-family': $font-family-ui,
+    'font-size': $font-size-ui-lg,
+    'font-weight': $font-weight-medium,
+    'line-height': $line-height-base,
+  ),
+  'ui': (
+    'font-family': $font-family-ui,
+    'font-size': $font-size-ui,
+    'font-weight': $font-weight-medium,
+    'line-height': $line-height-base,
+  ),
+  'ui-small': (
+    'font-family': $font-family-ui,
+    'font-size': $font-size-ui-sm,
+    'font-weight': $font-weight-regular,
+    'line-height': $line-height-base,
+  ),
+  'caption': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-caption,
+    'font-weight': $font-weight-light,
+    'line-height': $line-height-base,
+    'letter-spacing': 0.01em,
+  ),
+  'small': (
+    'font-family': $font-family-primary,
+    'font-size': $font-size-small,
+    'font-weight': $font-weight-light,
+    'line-height': $line-height-base,
+  ),
+);

@@ -1,0 +1,412 @@
+// ==============================
+// VANA EMAIL VERIFICATION PAGE
+// Post-registration email verification UI
+// Design: Clear instructions, progress feedback, support options
+// States: pending, sent, verified, expired, error
+// ==============================
+
+@use '../../styles/tokens' as *;
+@use 'sass:color';
+
+.email-verification-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-lg;
+  
+  // Softer gradient than registration page
+  background: linear-gradient(135deg, 
+    $vana-gray-50 0%,
+    $vana-registration-primary-50 100%
+  );
+  
+}
+
+// MAIN CONTAINER
+.verification-container {
+  width: 100%;
+  max-width: 480px;
+  
+  @include tablet-up {
+    max-width: 520px;
+  }
+}
+
+// PROGRESS HEADER
+.verification-progress {
+  margin-bottom: $spacing-2xl;
+  
+  @include mobile-only {
+    margin-bottom: $spacing-xl;
+  }
+}
+
+.progress-steps {
+  background: rgba($white, 90%);
+  backdrop-filter: blur(8px);
+  border-radius: $auth-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-sm;
+}
+  
+// MAIN VERIFICATION CARD
+.verification-card {
+  background: $white;
+  border-radius: $auth-radius-xl;
+  box-shadow: $registration-page-card-shadow;
+  border: $registration-page-card-border;
+  padding: $spacing-2xl;
+  text-align: center;
+  
+  @include mobile-only {
+    padding: $spacing-xl;
+    border-radius: $auth-radius-lg;
+  }
+  
+}
+
+// STATUS ICON
+.verification-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto $spacing-lg;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  
+  @include mobile-only {
+    width: 64px;
+    height: 64px;
+  }
+  
+  svg {
+    width: 40px;
+    height: 40px;
+    
+    @include mobile-only {
+      width: 32px;
+      height: 32px;
+    }
+  }
+    
+  // Status variants
+  &--pending {
+    background: rgba($vana-registration-warning, 10%);
+    color: $vana-registration-warning;
+    
+    // Pulsing animation for pending state
+    &::after {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border: 2px solid rgba($vana-registration-warning, 30%);
+      border-radius: 50%;
+      animation: pulse-ring 2s ease-in-out infinite;
+    }
+  }
+  
+  &--success {
+    background: rgba($vana-registration-accent, 10%);
+    color: $vana-registration-accent;
+  }
+  
+  &--expired,
+  &--error {
+    background: rgba($auth-error, 10%);
+    color: $auth-error;
+  }
+  
+  &--resent {
+    background: rgba($vana-registration-progress, 10%);
+    color: $vana-registration-progress;
+  }
+}
+  
+// VERIFICATION CONTENT
+.verification-content {
+  margin-bottom: $spacing-2xl;
+}
+
+.verification-title {
+  @include apply-typography('heading-2');
+  color: $vana-gray-800;
+  line-height: $line-height-tight;
+  margin: 0 0 $spacing-lg 0;
+  
+  @include mobile-only {
+    font-size: $font-size-h2-mobile;
+  }
+  
+  &--success {
+    color: $vana-registration-accent;
+  }
+  
+  &--error {
+    color: $auth-error;
+  }
+}
+
+.verification-description {
+  @include apply-typography('body');
+  color: $vana-gray-600;
+  line-height: $line-height-base;
+  margin: 0 0 $spacing-md 0;
+}
+
+.verification-instructions {
+  @include apply-typography('body-small');
+  color: $vana-gray-500;
+  line-height: $line-height-base;
+  margin: 0;
+}
+
+.user-email {
+  color: $vana-registration-primary;
+  font-weight: $font-weight-semibold;
+  word-break: break-all;
+}
+  
+// ACTION BUTTONS
+.verification-actions {
+  margin: $spacing-xl 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  align-items: stretch;
+}
+
+.continue-button {
+  background: $vana-registration-accent;
+  
+  &:hover {
+    background: color.adjust($vana-registration-accent, $lightness: -8%);
+  }
+}
+
+.resend-button,
+.check-button {
+  // Inherits from RegisterButton styles
+}
+
+.resend-timer {
+  @include apply-typography('ui-small');
+  color: $vana-gray-500;
+  text-align: center;
+  margin-top: $spacing-sm;
+  font-variant-numeric: tabular-nums;
+}
+  
+// HELP SECTION
+.verification-help {
+  margin-top: $spacing-2xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $vana-gray-200;
+}
+
+.help-section {
+  margin-bottom: $spacing-lg;
+}
+
+.help-title {
+  @include apply-typography('ui-large');
+  color: $vana-gray-700;
+  margin: 0 0 $spacing-sm 0;
+  font-weight: $font-weight-medium;
+}
+
+.help-list {
+  @include apply-typography('ui');
+  color: $vana-gray-600;
+  line-height: $line-height-base;
+  margin: 0;
+  padding-left: $spacing-lg;
+  
+  li {
+    margin-bottom: $spacing-xs;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.support-link {
+  text-align: center;
+}
+
+.support-button {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  color: $vana-registration-primary;
+  text-decoration: none;
+  font-size: $font-size-ui-sm;
+  font-weight: $font-weight-medium;
+  transition: $transition-color;
+  
+  &:hover {
+    color: $vana-registration-primary-dark;
+    text-decoration: underline;
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+  
+// SECURITY NOTE
+.security-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-xl;
+  padding: $spacing-md;
+  background: rgba($vana-registration-accent, 5%);
+  border-radius: $radius-md;
+  color: $vana-gray-600;
+  font-size: $font-size-ui-sm;
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    color: $vana-registration-accent;
+    flex-shrink: 0;
+  }
+}
+  
+// RESPONSIVE DESIGN
+@include mobile-only {
+  .email-verification-page {
+    padding: $spacing-md;
+  }
+  
+  .verification-container {
+    max-width: 100%;
+  }
+  
+  .verification-card {
+    padding: $spacing-lg;
+  }
+  
+  .verification-icon {
+    width: 64px;
+    height: 64px;
+    
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+  
+  .verification-title {
+    font-size: $font-size-h3-mobile;
+  }
+}
+  
+// ANIMATIONS
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 100%;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0%;
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 100%;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 80%;
+  }
+}
+  
+// ACCESSIBILITY
+.verification-card,
+.continue-button,
+.resend-button,
+.check-button,
+.support-button {
+  @include focus-visible;
+}
+  
+// High contrast support
+@media (prefers-contrast: high) {
+  .verification-card {
+    border: 2px solid $vana-gray-800;
+  }
+  
+  .verification-icon {
+    border: 2px solid currentColor;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .verification-icon--pending::after {
+    animation: none;
+  }
+}
+  
+// DARK MODE
+@media (prefers-color-scheme: dark) {
+  .email-verification-page {
+    background: linear-gradient(135deg, 
+      $auth-dark-bg 0%,
+      color.adjust($auth-dark-bg, $lightness: -3%) 100%
+    );
+  }
+  
+  .verification-card {
+    background: $auth-dark-card-bg;
+    box-shadow: 0 25px 50px rgba($black, 30%);
+    border-color: rgba($white, 10%);
+  }
+  
+  .progress-steps {
+    background: rgba($auth-dark-card-bg, 90%);
+  }
+  
+  .verification-title {
+    color: $auth-dark-text;
+  }
+  
+  .verification-description,
+  .verification-instructions {
+    color: rgba($auth-dark-text, 80%);
+  }
+  
+  .user-email {
+    color: $vana-registration-primary-light;
+  }
+  
+  .help-title {
+    color: $auth-dark-text;
+  }
+  
+  .help-list {
+    color: rgba($auth-dark-text, 70%);
+  }
+  
+  .verification-help {
+    border-top-color: rgba($auth-dark-text, 12%);
+  }
+  
+  .security-note {
+    background: rgba($vana-registration-accent, 8%);
+    color: rgba($auth-dark-text, 80%);
+  }
+}

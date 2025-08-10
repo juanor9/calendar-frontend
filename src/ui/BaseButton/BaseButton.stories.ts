@@ -25,8 +25,8 @@ export const Secondary: Story = {
   args: { label: 'Secondary', variant: 'secondary' },
 }
 
-export const Danger: Story = {
-  args: { label: 'Delete', variant: 'danger' },
+export const Outline: Story = {
+  args: { label: 'Outline', variant: 'outline' },
 }
 
 export const Disabled: Story = {

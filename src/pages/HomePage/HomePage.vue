@@ -5,7 +5,6 @@
 
   console.log('test')
 
-  const test = 'ok'
 </script>
 
 <template>

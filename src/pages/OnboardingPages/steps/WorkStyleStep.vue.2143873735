@@ -1,0 +1,663 @@
+<!--
+Work Style Step - Configure user work preferences
+Collects information about work schedule and style preferences
+-->
+<template>
+  <div class="work-style-step">
+    <div class="step-content">
+      <div class="step-header">
+        <h1 class="step-title">Tell us about your work style</h1>
+        <p class="step-subtitle">Help us optimize your calendar based on how you work best</p>
+      </div>
+
+      <!-- Work Style Selection -->
+      <div class="section work-style-section">
+        <h2 class="section-title">How do you prefer to work?</h2>
+
+        <div class="work-style-grid">
+          <div
+            v-for="style in workStyles"
+            :key="style.id"
+            class="work-style-card"
+            :class="{
+              selected: selectedWorkStyle === style.id,
+              disabled: isLoading,
+            }"
+            @click="selectWorkStyle(style.id)"
+          >
+            <div class="style-icon">
+              <component :is="style.icon" class="w-8 h-8" />
+            </div>
+            <h3 class="style-title">{{ style.title }}</h3>
+            <p class="style-description">{{ style.description }}</p>
+            <ul class="style-features">
+              <li v-for="feature in style.features" :key="feature">
+                {{ feature }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Work Hours Configuration -->
+      <div class="section work-hours-section">
+        <h2 class="section-title">What are your typical work hours?</h2>
+
+        <div class="work-hours-config">
+          <div class="time-inputs">
+            <div class="time-input-group">
+              <label class="input-label">Start time</label>
+              <select v-model="workHours.start" class="time-select" :disabled="isLoading">
+                <option v-for="time in timeOptions" :key="time.value" :value="time.value">
+                  {{ time.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="time-input-group">
+              <label class="input-label">End time</label>
+              <select v-model="workHours.end" class="time-select" :disabled="isLoading">
+                <option v-for="time in timeOptions" :key="time.value" :value="time.value">
+                  {{ time.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="work-days">
+            <label class="input-label">Work days</label>
+            <div class="days-grid">
+              <button
+                v-for="day in weekDays"
+                :key="day.value"
+                class="day-button"
+                :class="{
+                  selected: workHours.days.includes(day.value),
+                  disabled: isLoading,
+                }"
+                :disabled="isLoading"
+                type="button"
+                @click="toggleWorkDay(day.value)"
+              >
+                {{ day.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Work Hours Summary -->
+        <div v-if="workHoursSummary" class="work-hours-summary">
+          <ClockIcon class="w-5 h-5 text-blue-500" />
+          <span>{{ workHoursSummary }}</span>
+        </div>
+      </div>
+
+      <!-- Meeting Preferences -->
+      <div class="section meeting-preferences-section">
+        <h2 class="section-title">Meeting preferences</h2>
+
+        <div class="preferences-grid">
+          <div class="preference-item">
+            <label class="preference-label">
+              Preferred meeting duration
+              <select
+                v-model="meetingPreferences.defaultDuration"
+                class="preference-select"
+                :disabled="isLoading"
+              >
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60">60 minutes</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="preference-item">
+            <label class="preference-label">
+              Buffer time between meetings
+              <select
+                v-model="meetingPreferences.bufferTime"
+                class="preference-select"
+                :disabled="isLoading"
+              >
+                <option value="0">No buffer</option>
+                <option value="5">5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="15">15 minutes</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="preference-item">
+            <label class="preference-checkbox">
+              <input
+                v-model="meetingPreferences.avoidBackToBack"
+                type="checkbox"
+                :disabled="isLoading"
+              />
+              <span class="checkbox-label">Avoid back-to-back meetings when possible</span>
+            </label>
+          </div>
+
+          <div class="preference-item">
+            <label class="preference-checkbox">
+              <input
+                v-model="meetingPreferences.protectFocusTime"
+                type="checkbox"
+                :disabled="isLoading"
+              />
+              <span class="checkbox-label">Protect dedicated focus time blocks</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { ref, computed, watch, onMounted } from 'vue'
+  import {
+    ClockIcon,
+    BoltIcon,
+    CalendarDaysIcon,
+    UserGroupIcon,
+    PresentationChartLineIcon,
+  } from '@heroicons/vue/24/outline'
+
+  interface StepData {
+    workStyle?: string
+    workHours?: {
+      start: string
+      end: string
+      days: number[]
+    }
+    meetingPreferences?: {
+      defaultDuration: number
+      bufferTime: number
+      avoidBackToBack: boolean
+      protectFocusTime: boolean
+    }
+  }
+
+  interface Props {
+    stepData?: StepData
+    isLoading?: boolean
+    canProceed?: boolean
+  }
+
+  const props = defineProps<Props>()
+
+  const emit = defineEmits<{
+    'step-complete': [data: StepData]
+    'data-change': [data: StepData]
+    'validation-change': [isValid: boolean]
+  }>()
+
+  // Work style options
+  const workStyles = [
+    {
+      id: 'deep_work',
+      title: 'Deep Work Focused',
+      description: 'Long uninterrupted blocks for complex tasks',
+      icon: BoltIcon,
+      features: ['2-4 hour focus blocks', 'Minimal meetings', 'Morning productivity peaks'],
+    },
+    {
+      id: 'collaborative',
+      title: 'Collaborative',
+      description: 'Regular meetings and team interactions',
+      icon: UserGroupIcon,
+      features: ['Frequent check-ins', 'Team discussions', 'Flexible scheduling'],
+    },
+    {
+      id: 'mixed',
+      title: 'Mixed Approach',
+      description: 'Balance between focus work and meetings',
+      icon: CalendarDaysIcon,
+      features: ['Balanced schedule', 'Protected morning focus', 'Afternoon meetings'],
+    },
+    {
+      id: 'meeting_heavy',
+      title: 'Meeting Heavy',
+      description: 'Leadership role with many meetings',
+      icon: PresentationChartLineIcon,
+      features: ['Meeting optimization', 'Short focus bursts', 'Efficient transitions'],
+    },
+  ]
+
+  // Time options (24-hour format)
+  const timeOptions = Array.from({ length: 24 }, (_, i) => ({
+    value: i.toString().padStart(2, '0') + ':00',
+    label: i === 0 ? '12:00 AM' : i < 12 ? `${i}:00 AM` : i === 12 ? '12:00 PM' : `${i - 12}:00 PM`,
+  }))
+
+  // Week days
+  const weekDays = [
+    { value: 1, label: 'Mon' },
+    { value: 2, label: 'Tue' },
+    { value: 3, label: 'Wed' },
+    { value: 4, label: 'Thu' },
+    { value: 5, label: 'Fri' },
+    { value: 6, label: 'Sat' },
+    { value: 0, label: 'Sun' },
+  ]
+
+  // Reactive state
+  const selectedWorkStyle = ref<string>('')
+  const workHours = ref({
+    start: '09:00',
+    end: '17:00',
+    days: [1, 2, 3, 4, 5], // Monday to Friday
+  })
+  const meetingPreferences = ref({
+    defaultDuration: 30,
+    bufferTime: 5,
+    avoidBackToBack: true,
+    protectFocusTime: true,
+  })
+
+  // Computed properties
+  const workHoursSummary = computed(() => {
+    if (!workHours.value.start || !workHours.value.end || workHours.value.days.length === 0) {
+      return ''
+    }
+
+    const startHour = parseInt(workHours.value.start.split(':')[0])
+    const endHour = parseInt(workHours.value.end.split(':')[0])
+    const totalHours = endHour - startHour
+    const daysCount = workHours.value.days.length
+
+    const dayNames = [...workHours.value.days]
+      .sort((a, b) => a - b)
+      .map(day => weekDays.find(d => d.value === day)?.label || '')
+      .join(', ')
+
+    return `${totalHours} hours/day, ${daysCount} days/week (${dayNames})`
+  })
+
+  const isValid = computed(() => {
+    return (
+      selectedWorkStyle.value !== '' &&
+      workHours.value.start !== '' &&
+      workHours.value.end !== '' &&
+      workHours.value.days.length > 0
+    )
+  })
+
+  const formData = computed(() => ({
+    workStyle: selectedWorkStyle.value,
+    workHours: workHours.value,
+    meetingPreferences: meetingPreferences.value,
+  }))
+
+  // Event handlers
+  const selectWorkStyle = (styleId: string) => {
+    if (props.isLoading) return
+    selectedWorkStyle.value = styleId
+  }
+
+  const toggleWorkDay = (dayValue: number) => {
+    if (props.isLoading) return
+
+    const index = workHours.value.days.indexOf(dayValue)
+    if (index > -1) {
+      workHours.value.days.splice(index, 1)
+    } else {
+      workHours.value.days.push(dayValue)
+    }
+  }
+
+  // Watch for changes and emit data
+  watch(
+    [selectedWorkStyle, workHours, meetingPreferences],
+    () => {
+      emit('data-change', formData.value)
+    },
+    { deep: true }
+  )
+
+  watch(isValid, valid => {
+    emit('validation-change', valid)
+  })
+
+  // Initialize with saved data or defaults
+  onMounted(() => {
+    if (props.stepData) {
+      selectedWorkStyle.value = props.stepData.workStyle || ''
+      if (props.stepData.workHours) {
+        workHours.value = { ...workHours.value, ...props.stepData.workHours }
+      }
+      if (props.stepData.meetingPreferences) {
+        meetingPreferences.value = {
+          ...meetingPreferences.value,
+          ...props.stepData.meetingPreferences,
+        }
+      }
+    }
+
+    // Emit initial validation state
+    emit('validation-change', isValid.value)
+
+    if (import.meta.env.DEV) {
+      console.log('Work style step mounted with data:', props.stepData)
+    }
+  })
+</script>
+
+<style lang="scss" scoped>
+  .work-style-step {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .step-content {
+    padding: 2rem;
+  }
+
+  .step-header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    .step-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 0.75rem;
+
+      @media (width <= 640px) {
+        font-size: 1.75rem;
+      }
+    }
+
+    .step-subtitle {
+      font-size: 1.125rem;
+      color: #718096;
+      line-height: 1.6;
+    }
+  }
+
+  .section {
+    margin-bottom: 3rem;
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  /* Work Style Selection */
+
+  .work-style-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .work-style-card {
+    padding: 1.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+
+    &:hover:not(.disabled) {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 15%);
+    }
+
+    &.selected {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 5%), rgba(118, 75, 162, 5%));
+
+      .style-icon {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+      }
+    }
+
+    &.disabled {
+      opacity: 60%;
+      cursor: not-allowed;
+    }
+
+    .style-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f7fafc;
+      color: #4a5568;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .style-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 0.5rem;
+    }
+
+    .style-description {
+      color: #718096;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .style-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        color: #4a5568;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+        position: relative;
+        padding-left: 1rem;
+
+        &::before {
+          content: '•';
+          color: #667eea;
+          position: absolute;
+          left: 0;
+        }
+      }
+    }
+  }
+
+  /* Work Hours Configuration */
+
+  .work-hours-config {
+    background: #f7fafc;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .time-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .time-input-group {
+
+    .input-label {
+      display: block;
+      font-weight: 500;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    .time-select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      background: white;
+      color: #2d3748;
+      font-size: 0.875rem;
+
+      &:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 10%);
+      }
+
+      &:disabled {
+        background: #f7fafc;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .work-days {
+
+    .input-label {
+      display: block;
+      font-weight: 500;
+      color: #2d3748;
+      margin-bottom: 0.75rem;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+
+    .day-button {
+      padding: 0.75rem 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      background: white;
+      color: #4a5568;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        border-color: #667eea;
+      }
+
+      &.selected {
+        background: #667eea;
+        border-color: #667eea;
+        color: white;
+      }
+
+      &:disabled {
+        opacity: 50%;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .work-hours-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    font-size: 0.875rem;
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Meeting Preferences */
+
+  .preferences-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .preference-item {
+
+    .preference-label {
+      display: block;
+      font-weight: 500;
+      color: #2d3748;
+
+      .preference-select {
+        display: block;
+        width: 100%;
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        background: white;
+        color: #2d3748;
+
+        &:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 10%);
+        }
+
+        &:disabled {
+          background: #f7fafc;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .preference-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      cursor: pointer;
+
+      input[type='checkbox'] {
+        width: 18px;
+        height: 18px;
+        margin-top: 0.125rem;
+        accent-color: #667eea;
+
+        &:disabled {
+          cursor: not-allowed;
+        }
+      }
+
+      .checkbox-label {
+        color: #2d3748;
+        line-height: 1.5;
+      }
+    }
+  }
+
+  /* Responsive Design */
+  @media (width <= 640px) {
+
+    .step-content {
+      padding: 1rem;
+    }
+
+    .work-style-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .time-inputs {
+      grid-template-columns: 1fr;
+    }
+
+    .days-grid {
+      grid-template-columns: repeat(4, 1fr);
+
+      .day-button {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+</style>

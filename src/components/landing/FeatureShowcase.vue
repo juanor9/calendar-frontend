@@ -1,0 +1,117 @@
+<!--
+Feature Showcase Component
+Interactive feature presentation for landing page
+-->
+<template>
+  <div
+    class="feature-showcase"
+    :class="{ active: isActive }"
+    @click="$emit('feature-select', index)"
+  >
+    <div class="feature-content">
+      <div class="feature-header">
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+      </div>
+
+      <div class="feature-image">
+        <img :src="feature.image" :alt="feature.title" loading="lazy" />
+      </div>
+
+      <ul v-if="feature.benefits" class="benefits-list">
+        <li v-for="benefit in feature.benefits" :key="benefit" class="benefit-item">
+          <SparklesIcon class="w-4 h-4 text-blue-500" />
+          {{ benefit }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { SparklesIcon } from '@heroicons/vue/24/outline'
+
+  interface Feature {
+    id: number
+    title: string
+    description: string
+    image: string
+    benefits: string[]
+  }
+
+  interface Props {
+    feature: Feature
+    isActive: boolean
+    index: number
+  }
+
+  defineProps<Props>()
+
+  defineEmits<{
+    'feature-select': [index: number]
+  }>()
+</script>
+
+<style lang="scss" scoped>
+  .feature-showcase {
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.active {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 10%);
+    }
+
+    &:hover {
+      border-color: #667eea;
+    }
+  }
+
+  .feature-header {
+    margin-bottom: 1.5rem;
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1a202c;
+    }
+
+    .feature-description {
+      color: #718096;
+      line-height: 1.6;
+    }
+  }
+
+  .feature-image {
+    margin-bottom: 1.5rem;
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+    }
+  }
+
+  .benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: #4a5568;
+      margin-bottom: 0.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+</style>

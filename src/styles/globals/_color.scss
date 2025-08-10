@@ -1,68 +1,169 @@
-// Abyss (Deep Ocean Blue)
-$abyss-800: #012336;
-$abyss-600: #023e67;
-$abyss-400: #176295;
-$abyss-200: #5f8eb5;
+// ==============================
+// TANUKI PLANNER - DESIGN SYSTEM COLORS v1
+// Sistema cromático oficial según guía de color
+// ==============================
 
-// Azure (Sky Accent Blue)
-$azure-800: #0a4298;
-$azure-600: #2f80ed;
-$azure-400: #5fa2f0;
-$azure-200: #d8e8ff;
+@use 'sass:color';
 
-// Ivory (Soft Cream)
-$ivory-800: #d1c3ba;
-$ivory-600: #e8dcd6;
-$ivory-400: #fff9f1;
+// COLORES PRINCIPALES - MODO CLARO
+// Basado en la Guía de Color oficial de Tanuki Planner
 
-// Marigold (Golden Sunrise)
-$marigold-800: #ae7518;
-$marigold-600: #e6b544;
-$marigold-400: #fcd34d;
-$marigold-200: #f7eaa7;
+// Brand Primary - Azul teal principal
+$brand-primary: #4fa5d8;
 
-// Graphite (Slate Charcoal)
-$graphite-800: #1a1a1a;
-$graphite-600: #2f2f2f;
-$graphite-400: #4a4a4a;
-$graphite-200: #7a7a7a;
+// Surface Neutral - Fondos principales y tarjetas
+$surface-neutral: #f5f7f8;
 
-// Sand (Warm Cream Gray)
-$sand-800: #bdb4a9;
-$sand-600: #d2c7bd;
-$sand-400: #e5ddd6;
-$sand-200: #fef8ee;
-$white: #fdfdfd;
-$black: #121212;
+// Text Primary - Texto principal sobre fondo claro
+$text-primary: #1d1d1f;
 
-// Vana Semantic Colors — UI roles for alerts, notifications, states
+// Accent Happy - Iconos de éxito, badges, llamados positivos
+$accent-happy: #ffecb3;
 
-// Success
-$success-800: #1e5e3d;
-$success-600: #2f7d52;
-$success-400: #4fb278;
-$success-200: #b7e3c8;
+// COLORES AUXILIARES
+// Accent Peach - Ilustraciones, badges
+$accent-peach: #ffccbc;
 
-// Warning
-$warning-800: #a05e0f;
-$warning-600: #d2861b;
-$warning-400: #f5b942;
-$warning-200: #ffe7b5;
+// Accent Lavender - Fondos suaves alternos, gráficos
+$accent-lavender: #e9d7ff;
 
-// Error
-$error-800: #8b1e1e;
-$error-600: #c33131;
-$error-400: #f5625f;
-$error-200: #ffb8b5;
+// MODO OSCURO
+// Surface Neutral - Fondo principal oscuro
+$surface-neutral-dark: #001b2e;
 
-// Info
-$info-800: #1c4670;
-$info-600: #2f80ed;
-$info-400: #73adec;
-$info-200: #d0e6fa;
+// Brand Primary - Botones, links, focos (igual en modo oscuro)
+$brand-primary-dark: #4fa5d8;
 
-// Neutral States (for disabled or secondary UI)
-$neutral-800: #4b4b4b;
-$neutral-600: #7a7a7a;
-$neutral-400: #bdbdbd;
-$neutral-200: #e5e5e5;
+// Text Primary - Texto principal sobre fondo oscuro
+$text-primary-dark: #fff;
+
+// Accent Happy - Highlights, estados positivos
+$accent-happy-dark: #ffd56b;
+
+// Colores base
+$white: #fff;
+$black: #000;
+
+// TOKENS SEMÁNTICOS - MODO CLARO
+
+// Fondos
+$background-primary: $surface-neutral;
+$background-secondary: $white;
+$background-elevated: $white;
+$background-overlay: rgba($brand-primary, 5%);
+
+// Texto
+$text-primary-token: $text-primary;
+$text-secondary: rgba($text-primary, 70%);
+$text-tertiary: rgba($text-primary, 50%);
+$text-inverse: $white;
+$text-accent: $brand-primary;
+
+// Bordes
+$border-primary: rgba($text-primary, 12%);
+$border-secondary: rgba($text-primary, 8%);
+$border-focus: $brand-primary;
+$border-accent: $accent-happy;
+
+// Estados interactivos
+$interactive-primary: $brand-primary;
+$interactive-primary-hover: color.adjust($brand-primary, $lightness: -10%);
+$interactive-primary-active: color.adjust($brand-primary, $lightness: -15%);
+$interactive-secondary: $accent-happy;
+$interactive-secondary-hover: color.adjust($accent-happy, $lightness: -10%);
+$interactive-secondary-active: color.adjust($accent-happy, $lightness: -15%);
+
+// Sombras
+$shadow-subtle: rgba($text-primary, 8%);
+$shadow-medium: rgba($text-primary, 12%);
+$shadow-strong: rgba($text-primary, 16%);
+$shadow-accent: rgba($brand-primary, 20%);
+
+// ESTADOS Y FEEDBACK
+// Usando colores que mantienen contraste WCAG 2.2 AA
+
+// Success - Verde suave que no agrede visualmente
+$success-primary: #22c55e;
+$success-light: #4ade80;
+$success-lighter: #bbf7d0;
+$success-background: #f0fdf4;
+
+// Warning - Usando Accent Happy como base
+$warning-primary: #f59e0b;
+$warning-light: $accentHappy;
+$warning-lighter: #fef3c7;
+$warning-background: #fffbeb;
+
+// Error - Rojo suave que comunica sin alarmar
+$error-primary: #ef4444;
+$error-light: #f87171;
+$error-lighter: #fecaca;
+$error-background: #fef2f2;
+
+// Info - Brand Primary como base
+$info-primary: $brand-primary;
+$info-light: color.adjust($brand-primary, $lightness: 15%);
+$info-lighter: color.adjust($brand-primary, $lightness: 30%);
+$info-background: #f0f9ff;
+
+// Neutral - Para elementos deshabilitados
+$neutral-primary: #6b7280;
+$neutral-light: #9ca3af;
+$neutral-lighter: #d1d5db;
+$neutral-background: #f9fafb;
+
+// TOKENS SEMÁNTICOS - MODO OSCURO
+$dark-background-primary: $surface-neutral-dark;
+$dark-background-secondary: #0f172a;
+$dark-background-elevated: #1e293b;
+$dark-text-primary: $text-primary-dark;
+$dark-text-secondary: rgba($text-primary-dark, 80%);
+$dark-text-tertiary: rgba($text-primary-dark, 60%);
+$dark-border-primary: rgba($text-primary-dark, 12%);
+$dark-border-secondary: rgba($text-primary-dark, 8%);
+
+// MAPAS DE COLOR PARA FACILITAR MANTENIMIENTO
+$color-map: (
+  'brand-primary': $brand-primary,
+  'surface-neutral': $surface-neutral,
+  'text-primary': $text-primary,
+  'accent-happy': $accent-happy,
+  'accent-peach': $accent-peach,
+  'accent-lavender': $accent-lavender,
+  'success': $success-primary,
+  'warning': $warning-primary,
+  'error': $error-primary,
+  'info': $info-primary,
+  'neutral': $neutral-primary,
+);
+$semantic-colors: (
+  'success': (
+    'primary': $success-primary,
+    'light': $success-light,
+    'background': $success-background,
+  ),
+  'warning': (
+    'primary': $warning-primary,
+    'light': $warning-light,
+    'background': $warning-background,
+  ),
+  'error': (
+    'primary': $error-primary,
+    'light': $error-light,
+    'background': $error-background,
+  ),
+  'info': (
+    'primary': $info-primary,
+    'light': $info-light,
+    'background': $info-background,
+  ),
+  'neutral': (
+    'primary': $neutral-primary,
+    'light': $neutral-light,
+    'background': $neutral-background,
+  ),
+);
+
+// REGLAS DE ACCESIBILIDAD
+// Contraste mínimo 4.5:1 para texto normal y elementos esenciales (WCAG 2.2 AA)
+// Verificar combinaciones antes de usar en producción

@@ -1,0 +1,324 @@
+@use 'sass:color';
+@import '@/styles/auth/auth-tokens';
+
+.logout-button {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  :deep(.base-button) {
+    @include auth-button-base;
+
+    &.base-button--ghost {
+      background: transparent;
+      color: $auth-error;
+      border: 1px solid transparent;
+
+      &:hover:not(:disabled) {
+        background: rgba($auth-error, 0.05);
+        border-color: rgba($auth-error, 0.2);
+        color: color.adjust($auth-error, $lightness: -10%);
+        .logout-button__icon {
+          transform: translateX(2px);
+        }
+      }
+
+      &:active:not(:disabled) {
+        background: rgba($auth-error, 0.08);
+        transform: scale(0.98);
+      }
+    }
+
+    &.base-button--primary {
+      background: linear-gradient(
+        135deg,
+        $auth-error 0%,
+        color.adjust($auth-error, $lightness: -5%) 100%
+      );
+      color: $white;
+      border: none;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(
+          135deg,
+          color.adjust($auth-error, $lightness: -5%) 0%,
+          color.adjust($auth-error, $lightness: -10%) 100%
+        );
+        transform: translateY(-1px);
+        box-shadow: $auth-shadow-button-hover;
+      }
+
+      &:active:not(:disabled) {
+        background: linear-gradient(
+          135deg,
+          color.adjust($auth-error, $lightness: -10%) 0%,
+          color.adjust($auth-error, $lightness: -15%) 100%
+        );
+        transform: translateY(0);
+      }
+    }
+
+    &.base-button--secondary {
+      background: rgba($auth-error, 0.1);
+      color: $auth-error;
+      border: 1px solid rgba($auth-error, 0.2);
+
+      &:hover:not(:disabled) {
+        background: rgba($auth-error, 0.15);
+        border-color: rgba($auth-error, 0.3);
+      }
+    }
+
+    &.base-button--outline {
+      background: transparent;
+      color: $auth-error;
+      border: 2px solid $auth-error;
+
+      &:hover:not(:disabled) {
+        background: rgba($auth-error, 0.05);
+        border-color: color.adjust($auth-error, $lightness: -10%);
+      }
+    }
+
+    &.base-button--loading {
+      pointer-events: none;
+      position: relative;
+      color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba($auth-error, 0.3);
+        border-radius: 50%;
+        border-top-color: $auth-error;
+        animation: auth-logout-spin 0.8s linear infinite;
+      }
+
+      &.base-button--primary::after {
+        border-color: rgba($white, 0.3);
+        border-top-color: $white;
+      }
+    }
+  }
+
+  &__icon {
+    transition: $auth-transition-base;
+    flex-shrink: 0;
+
+    &.animate-spin {
+      animation: auth-logout-spin 1s linear infinite;
+    }
+  }
+
+  &__confirm-text {
+    margin: 0;
+    color: rgba($textPrimary, 0.8);
+    font-family: $font-family-ui;
+    font-size: $auth-text-md;
+    font-weight: $auth-font-weight-normal;
+    line-height: 1.5;
+    text-align: center;
+    padding: $auth-spacing-lg 0;
+  }
+
+  &__error {
+    margin-top: $auth-spacing-md;
+    padding: $auth-spacing-md $auth-spacing-lg;
+    background: $auth-error-background;
+    border: 1px solid $auth-error-lighter;
+    border-left: 4px solid $auth-error;
+    border-radius: $auth-radius-md;
+    color: $auth-error;
+    font-family: $font-family-ui;
+    font-size: $auth-text-sm;
+    font-weight: $auth-font-weight-medium;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: $auth-spacing-sm;
+    animation: auth-error-slide-in 0.3s ease-out;
+
+    &::before {
+      content: '⚠️';
+      font-size: $auth-text-md;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+  }
+
+  &--loading {
+    :deep(.base-button) {
+      animation: auth-logout-pulse 2s ease-in-out infinite;
+    }
+  }
+
+  &--error {
+    :deep(.base-button) {
+      &.base-button--ghost {
+        border-color: $auth-error;
+        color: $auth-error;
+        &:hover:not(:disabled) {
+          background: rgba($auth-error, 0.08);
+          border-color: color.adjust($auth-error, $lightness: -10%);
+        }
+      }
+    }
+  }
+
+  :deep(.base-button):focus-visible {
+    outline: 2px solid $auth-error;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba($auth-error, 0.12);
+  }
+
+  &--size-small :deep(.base-button) {
+    height: $auth-button-height-sm;
+    padding: 0 $auth-spacing-md;
+    font-size: $auth-text-xs;
+
+    .logout-button__icon {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &--size-large :deep(.base-button) {
+    height: $auth-button-height-lg;
+    padding: 0 $auth-spacing-xl;
+    font-size: $auth-text-md;
+    font-weight: $auth-font-weight-semibold;
+
+    .logout-button__icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+/* Modal styles */
+:deep(.base-modal) {
+  .modal__content {
+    max-width: 400px;
+    text-align: center;
+  }
+  .modal__title {
+    color: $auth-error;
+    font-weight: $auth-font-weight-semibold;
+    margin-bottom: $auth-spacing-lg;
+  }
+  .modal__actions {
+    display: flex;
+    gap: $auth-spacing-md;
+    justify-content: center;
+    margin-top: $auth-spacing-xl;
+    .base-button {
+      min-width: 120px;
+    }
+  }
+}
+
+/* Animations */
+@keyframes auth-logout-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes auth-error-slide-in {
+  from { opacity: 0%; transform: translateY(-8px); }
+  to { opacity: 100%; transform: translateY(0); }
+}
+@keyframes auth-logout-pulse {
+  0%, 100% { opacity: 100%; }
+  50% { opacity: 85%; }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .logout-button {
+    &__confirm-text { color: rgba($textPrimary-dark, 0.8); }
+    &__error {
+      background: rgba($auth-error, 0.1);
+      border-color: rgba($auth-error-light, 0.3);
+      border-left-color: $auth-error-light;
+      color: $auth-error-light;
+    }
+    :deep(.base-button) {
+      &.base-button--ghost {
+        color: color.adjust($auth-error, $lightness: 10%);
+        &:hover:not(:disabled) {
+          background: rgba($auth-error, 0.1);
+          border-color: rgba(color.adjust($auth-error, $lightness: 10%), 0.3);
+        }
+      }
+      &.base-button--secondary {
+        background: rgba($auth-error, 0.08);
+        color: color.adjust($auth-error, $lightness: 10%);
+        border-color: rgba(color.adjust($auth-error, $lightness: 10%), 0.2);
+        &:hover:not(:disabled) { background: rgba($auth-error, 0.15); }
+      }
+      &.base-button--outline {
+        color: color.adjust($auth-error, $lightness: 10%);
+        border-color: color.adjust($auth-error, $lightness: 10%);
+        &:hover:not(:disabled) { background: rgba($auth-error, 0.08); }
+      }
+    }
+  }
+  :deep(.base-modal) {
+    .modal__title { color: color.adjust($auth-error, $lightness: 15%); }
+  }
+}
+
+/* Responsive */
+@media (width <= 768px) {
+  .logout-button {
+    :deep(.base-button) {
+      min-height: 44px;
+      &.base-button--ghost { padding: 0 $auth-spacing-md; }
+    }
+    &__error {
+      font-size: $auth-text-xs;
+      padding: $auth-spacing-sm $auth-spacing-md;
+    }
+  }
+  :deep(.base-modal) {
+    .modal__content { margin: $auth-spacing-md; padding: $auth-spacing-lg; }
+    .modal__actions {
+      flex-direction: column;
+      .base-button { width: 100%; }
+    }
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .logout-button {
+    :deep(.base-button) {
+      transition: none;
+      &:hover:not(:disabled) { transform: none; }
+    }
+    &__icon.animate-spin { animation: none; }
+    &--loading {
+      :deep(.base-button) {
+        animation: none;
+        &::after {
+          animation: none;
+          border: 2px solid currentcolor;
+          border-top-color: transparent;
+        }
+      }
+    }
+  }
+}
+
+/* High contrast */
+@media (prefers-contrast: high) {
+  .logout-button {
+    :deep(.base-button).base-button--ghost { border: 2px solid currentcolor; }
+    &__error { border-width: 2px; border-left-width: 4px; }
+  }
+}

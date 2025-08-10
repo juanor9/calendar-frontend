@@ -1,0 +1,131 @@
+<!--
+Testimonial Grid Component
+Displays customer testimonials in a grid layout
+-->
+<template>
+  <div class="testimonial-grid">
+    <div v-for="testimonial in testimonials" :key="testimonial.id" class="testimonial-card">
+      <div class="testimonial-header">
+        <img
+          :src="testimonial.avatar || '/avatars/default-avatar.svg'"
+          :alt="testimonial.name"
+          class="testimonial-avatar"
+          loading="lazy"
+        />
+        <div class="testimonial-author">
+          <h4 class="author-name">{{ testimonial.name }}</h4>
+          <p class="author-role">{{ testimonial.role }}</p>
+          <p class="author-company">{{ testimonial.company }}</p>
+        </div>
+        <div class="testimonial-rating">
+          <StarIcon
+            v-for="i in testimonial.rating"
+            :key="i"
+            class="w-4 h-4 text-yellow-400 fill-current"
+          />
+        </div>
+      </div>
+
+      <blockquote class="testimonial-quote">"{{ testimonial.quote }}"</blockquote>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { StarIcon } from '@heroicons/vue/24/solid'
+
+  interface Testimonial {
+    id: number
+    name: string
+    role: string
+    company: string
+    avatar?: string
+    quote: string
+    rating: number
+  }
+
+  interface Props {
+    testimonials: Testimonial[]
+  }
+
+  defineProps<Props>()
+</script>
+
+<style lang="scss" scoped>
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .testimonial-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 10%);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 10%);
+    }
+  }
+
+  .testimonial-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .testimonial-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .testimonial-author {
+      flex: 1;
+
+      .author-name {
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.25rem;
+      }
+
+      .author-role {
+        font-size: 0.875rem;
+        color: #4a5568;
+        margin-bottom: 0.125rem;
+      }
+
+      .author-company {
+        font-size: 0.875rem;
+        color: #718096;
+      }
+    }
+
+    .testimonial-rating {
+      display: flex;
+      gap: 0.125rem;
+    }
+  }
+
+  .testimonial-quote {
+    font-style: italic;
+    color: #2d3748;
+    line-height: 1.6;
+    margin: 0;
+    position: relative;
+
+    &::before {
+      content: '"';
+      position: absolute;
+      left: -1rem;
+      top: -0.5rem;
+      font-size: 3rem;
+      color: #e2e8f0;
+      line-height: 1;
+    }
+  }
+</style>

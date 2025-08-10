@@ -1,0 +1,859 @@
+<!--
+Email Verification Page
+Handles email verification during registration flow
+-->
+<template>
+  <div class="email-verification-page">
+    <div class="verification-container">
+      <div class="verification-card">
+        <!-- Status Icon -->
+        <div class="status-icon" :class="statusIconClass">
+          <component 
+            :is="statusIconComponent" 
+            class="w-16 h-16"
+          />
+        </div>
+        
+        <!-- Dynamic Content Based on Status -->
+        <div class="verification-content">
+          <h1 class="verification-title">{{ statusTitle }}</h1>
+          <p class="verification-description">{{ statusDescription }}</p>
+          
+          <!-- Email Display -->
+          <div v-if="email" class="email-display">
+            <span class="email-label">Sent to:</span>
+            <span class="email-value">{{ email }}</span>
+          </div>
+          
+          <!-- Progress Steps -->
+          <div class="progress-steps" v-if="status === 'pending'">
+            <div 
+              v-for="(step, index) in verificationSteps" 
+              :key="step.id"
+              class="step"
+              :class="getStepClass(index)"
+            >
+              <div class="step-circle">
+                <CheckCircleIcon 
+                  v-if="index < currentStepIndex" 
+                  class="w-4 h-4 text-green-500"
+                />
+                <div 
+                  v-else-if="index === currentStepIndex"
+                  class="loading-spinner"
+                ></div>
+                <span v-else class="step-number">{{ index + 1 }}</span>
+              </div>
+              <div class="step-label">{{ step.label }}</div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="verification-actions">
+            <!-- Resend Button -->
+            <BaseButton
+              v-if="showResendButton"
+              :variant="canResend ? 'outline' : 'outline'"
+              :loading="isResending"
+              :disabled="!canResend || isResending"
+              @click="resendVerification"
+              class="resend-button"
+            >
+              <template #icon v-if="!canResend">
+                <ClockIcon class="w-4 h-4" />
+              </template>
+              {{ resendButtonText }}
+            </BaseButton>
+            
+            <!-- Primary Action Button -->
+            <BaseButton
+              v-if="primaryAction"
+              :variant="primaryAction.variant"
+              :loading="primaryAction.loading"
+              :disabled="primaryAction.disabled"
+              @click="primaryAction.handler"
+              class="primary-action"
+            >
+              <template #icon>
+                <component :is="primaryAction.icon" class="w-4 h-4" />
+              </template>
+              {{ primaryAction.text }}
+            </BaseButton>
+            
+            <!-- Check Email Button -->
+            <button 
+              v-if="status === 'pending'"
+              @click="checkNow"
+              class="check-email-button"
+              :disabled="isChecking"
+            >
+              <ArrowPathIcon 
+                class="w-4 h-4" 
+                :class="{ 'animate-spin': isChecking }"
+              />
+              Check Now
+            </button>
+          </div>
+          
+          <!-- Help Links -->
+          <div class="help-section">
+            <div class="help-links">
+              <button @click="openTroubleshooting" class="help-link">
+                <QuestionMarkCircleIcon class="w-4 h-4" />
+                Didn't receive the email?
+              </button>
+              <a href="/support" class="help-link">
+                <ChatBubbleLeftIcon class="w-4 h-4" />
+                Contact support
+              </a>
+            </div>
+            
+            <!-- Troubleshooting Tips -->
+            <div v-if="showTroubleshooting" class="troubleshooting">
+              <h3>Troubleshooting Tips:</h3>
+              <ul>
+                <li>Check your spam/junk folder</li>
+                <li>Make sure you entered the correct email address</li>
+                <li>Wait a few minutes - emails can take time to arrive</li>
+                <li>Try adding no-reply@vana.ai to your contacts</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Background Animation -->
+    <div class="background-animation">
+      <div class="floating-shapes">
+        <div 
+          v-for="i in 6" 
+          :key="i" 
+          class="shape"
+          :style="{ 
+            animationDelay: `${i * 0.5}s`,
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${3 + Math.random() * 2}s`
+          }"
+        ></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
+import { 
+  EnvelopeIcon,
+  CheckCircleIcon, 
+  ExclamationTriangleIcon,
+  ClockIcon,
+  ArrowRightIcon,
+  ArrowPathIcon,
+  QuestionMarkCircleIcon,
+  ChatBubbleLeftIcon,
+  RocketLaunchIcon
+} from '@heroicons/vue/24/outline'
+import BaseButton from '@/ui/BaseButton/BaseButton.vue'
+
+const route = useRoute()
+const router = useRouter()
+const { 
+  resendVerificationEmail, 
+  checkEmailVerification,
+  isLoading 
+} = useAuth()
+
+// Reactive state
+const status = ref<'pending' | 'verified' | 'expired' | 'error'>('pending')
+const isResending = ref(false)
+const isChecking = ref(false)
+const canResend = ref(false)
+const timeUntilResend = ref(60)
+const currentStepIndex = ref(0)
+const showTroubleshooting = ref(false)
+
+// Get email from route query
+const email = computed(() => route.query.email as string || '')
+const auth0Id = computed(() => route.query.auth0Id as string || '')
+
+// Verification steps
+const verificationSteps = [
+  { id: 1, label: 'Email sent' },
+  { id: 2, label: 'Check your inbox' },
+  { id: 3, label: 'Click verify link' },
+  { id: 4, label: 'Account activated' }
+]
+
+// Intervals for auto-checking and timers
+let checkInterval: number | null = null
+let resendTimer: number | null = null
+let progressTimer: number | null = null
+
+/**
+ * Computed Properties
+ */
+
+const statusIconClass = computed(() => ({
+  'status-pending': status.value === 'pending',
+  'status-verified': status.value === 'verified',
+  'status-expired': status.value === 'expired',
+  'status-error': status.value === 'error'
+}))
+
+const statusIconComponent = computed(() => {
+  switch (status.value) {
+    case 'pending': return EnvelopeIcon
+    case 'verified': return CheckCircleIcon
+    case 'expired': return ExclamationTriangleIcon
+    case 'error': return ExclamationTriangleIcon
+    default: return EnvelopeIcon
+  }
+})
+
+const statusTitle = computed(() => {
+  switch (status.value) {
+    case 'pending': return 'Check Your Email'
+    case 'verified': return 'Email Verified!'
+    case 'expired': return 'Verification Link Expired'
+    case 'error': return 'Something Went Wrong'
+    default: return 'Verifying Email'
+  }
+})
+
+const statusDescription = computed(() => {
+  switch (status.value) {
+    case 'pending': 
+      return 'We sent a verification link to your email address. Click the link to activate your account and continue.'
+    case 'verified': 
+      return 'Your email has been verified successfully! You can now continue setting up your calendar.'
+    case 'expired': 
+      return 'Your verification link has expired for security reasons. Please request a new verification email.'
+    case 'error': 
+      return 'We encountered an error while verifying your email. Please try again or contact support if the problem persists.'
+    default: 
+      return 'Checking your email verification status...'
+  }
+})
+
+const showResendButton = computed(() => {
+  return status.value === 'pending' || status.value === 'expired' || status.value === 'error'
+})
+
+const resendButtonText = computed(() => {
+  if (isResending.value) return 'Sending...'
+  if (!canResend.value && timeUntilResend.value > 0) {
+    return `Resend in ${timeUntilResend.value}s`
+  }
+  return 'Resend Email'
+})
+
+const primaryAction = computed(() => {
+  switch (status.value) {
+    case 'verified':
+      return {
+        text: 'Continue to Setup',
+        variant: 'primary' as const,
+        icon: RocketLaunchIcon,
+        loading: false,
+        disabled: false,
+        handler: continueToOnboarding
+      }
+    case 'expired':
+    case 'error':
+      return {
+        text: 'Start Over',
+        variant: 'primary' as const,
+        icon: ArrowRightIcon,
+        loading: false,
+        disabled: false,
+        handler: startNewRegistration
+      }
+    default:
+      return null
+  }
+})
+
+/**
+ * Step Management
+ */
+
+const getStepClass = (index: number) => ({
+  'completed': index < currentStepIndex.value,
+  'current': index === currentStepIndex.value,
+  'pending': index > currentStepIndex.value
+})
+
+const advanceStep = () => {
+  if (currentStepIndex.value < verificationSteps.length - 1) {
+    currentStepIndex.value++
+  }
+}
+
+/**
+ * Event Handlers
+ */
+
+const resendVerification = async () => {
+  if (!canResend.value || !email.value) return
+  
+  isResending.value = true
+  try {
+    await resendVerificationEmail(email.value)
+    
+    // Reset timer and status
+    status.value = 'pending'
+    startResendTimer()
+    
+    // Show success feedback
+    showSuccessToast('Verification email sent!')
+    
+  } catch (error) {
+    console.error('Resend failed:', error)
+    showErrorToast('Failed to resend email. Please try again.')
+  } finally {
+    isResending.value = false
+  }
+}
+
+const checkNow = async () => {
+  if (!auth0Id.value || isChecking.value) return
+  
+  isChecking.value = true
+  try {
+    await checkVerificationStatus()
+  } catch (error) {
+    console.error('Manual check failed:', error)
+  } finally {
+    isChecking.value = false
+  }
+}
+
+const continueToOnboarding = () => {
+  // Track successful verification
+  trackEmailVerified()
+  
+  router.push({ 
+    name: 'OnboardingWelcome',
+    query: { source: 'email_verification' }
+  })
+}
+
+const startNewRegistration = () => {
+  // Track restart action
+  trackRegistrationRestart()
+  
+  router.push({ 
+    name: 'Landing',
+    query: { restart: 'true' }
+  })
+}
+
+const openTroubleshooting = () => {
+  showTroubleshooting.value = !showTroubleshooting.value
+  
+  if (showTroubleshooting.value) {
+    trackTroubleshootingOpened()
+  }
+}
+
+/**
+ * Core Logic
+ */
+
+const checkVerificationStatus = async () => {
+  if (!auth0Id.value) return
+  
+  try {
+    const isVerified = await checkEmailVerification(auth0Id.value)
+    if (isVerified && status.value !== 'verified') {
+      status.value = 'verified'
+      currentStepIndex.value = 3 // Final step
+      
+      // Stop auto-checking
+      if (checkInterval) {
+        clearInterval(checkInterval)
+        checkInterval = null
+      }
+      
+      // Show success animation
+      showVerificationSuccess()
+    }
+  } catch (error) {
+    console.error('Verification check failed:', error)
+    // Don't change status on check failure - could be temporary network issue
+  }
+}
+
+const startResendTimer = () => {
+  canResend.value = false
+  timeUntilResend.value = 60
+  
+  if (resendTimer) {
+    clearInterval(resendTimer)
+  }
+  
+  resendTimer = window.setInterval(() => {
+    timeUntilResend.value--
+    if (timeUntilResend.value <= 0) {
+      canResend.value = true
+      if (resendTimer) {
+        clearInterval(resendTimer)
+        resendTimer = null
+      }
+    }
+  }, 1000)
+}
+
+const startProgressAnimation = () => {
+  // Simulate progress through steps
+  progressTimer = window.setInterval(() => {
+    if (status.value === 'pending' && currentStepIndex.value < 2) {
+      advanceStep()
+    } else if (progressTimer) {
+      clearInterval(progressTimer)
+      progressTimer = null
+    }
+  }, 3000)
+}
+
+const showVerificationSuccess = () => {
+  // Add success animation class
+  const card = document.querySelector('.verification-card')
+  card?.classList.add('success-animation')
+  
+  setTimeout(() => {
+    card?.classList.remove('success-animation')
+  }, 1000)
+}
+
+/**
+ * Utility Functions
+ */
+
+const showSuccessToast = (message: string) => {
+  // Implement toast notification
+  console.log('Success:', message)
+}
+
+const showErrorToast = (message: string) => {
+  // Implement toast notification
+  console.error('Error:', message)
+}
+
+/**
+ * Analytics Tracking
+ */
+
+const trackEmailVerified = () => {
+  if (import.meta.env.DEV) {
+    console.log('Email verified successfully')
+  }
+  // Implement actual analytics tracking
+}
+
+const trackRegistrationRestart = () => {
+  if (import.meta.env.DEV) {
+    console.log('Registration restarted from email verification')
+  }
+  // Implement actual analytics tracking
+}
+
+const trackTroubleshootingOpened = () => {
+  if (import.meta.env.DEV) {
+    console.log('Troubleshooting section opened')
+  }
+  // Implement actual analytics tracking
+}
+
+/**
+ * Lifecycle
+ */
+
+onMounted(() => {
+  // Validate required parameters
+  if (!email.value || !auth0Id.value) {
+    console.warn('Missing required parameters for email verification')
+    router.push({ name: 'Landing' })
+    return
+  }
+  
+  // Start checking verification status every 3 seconds
+  checkInterval = window.setInterval(checkVerificationStatus, 3000)
+  
+  // Initial check
+  checkVerificationStatus()
+  
+  // Start resend timer (allow resend after 10 seconds initially)
+  setTimeout(startResendTimer, 10000)
+  
+  // Start progress animation
+  setTimeout(startProgressAnimation, 1000)
+  
+  // Track page view
+  if (import.meta.env.DEV) {
+    console.log('Email verification page loaded', { email: email.value, auth0Id: auth0Id.value })
+  }
+})
+
+onUnmounted(() => {
+  // Clean up timers
+  if (checkInterval) clearInterval(checkInterval)
+  if (resendTimer) clearInterval(resendTimer)
+  if (progressTimer) clearInterval(progressTimer)
+})
+
+// Watch for successful authentication (if user verifies in another tab)
+watch(() => route.query, (newQuery) => {
+  if (newQuery.verified === 'true') {
+    status.value = 'verified'
+    currentStepIndex.value = 3
+    showVerificationSuccess()
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+.email-verification-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.verification-container {
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  z-index: 2;
+}
+
+.verification-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 25%);
+  transition: all 0.3s ease;
+  
+  &.success-animation {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(102, 126, 234, 30%);
+  }
+  
+  @media (width <= 640px) {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+}
+
+.status-icon {
+  margin: 0 auto 2rem;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &.status-pending {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+  }
+  
+  &.status-verified {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+  }
+  
+  &.status-expired,
+  &.status-error {
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+    color: white;
+  }
+}
+
+.verification-content {
+
+  .verification-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1a202c;
+  }
+  
+  .verification-description {
+    font-size: 1rem;
+    color: #718096;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+}
+
+.email-display {
+  background: #f7fafc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  
+  .email-label {
+    color: #718096;
+    margin-right: 0.5rem;
+  }
+  
+  .email-value {
+    font-weight: 600;
+    color: #2d3748;
+    word-break: break-all;
+  }
+}
+
+.progress-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background: #f7fafc;
+  border-radius: 0.75rem;
+  
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    
+    &.completed {
+
+      .step-circle {
+        background: #48bb78;
+        color: white;
+        border-color: #48bb78;
+      }
+      
+      .step-label {
+        color: #48bb78;
+        font-weight: 600;
+      }
+    }
+    
+    &.current {
+
+      .step-circle {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+      
+      .step-label {
+        color: #667eea;
+        font-weight: 600;
+      }
+    }
+    
+    &.pending {
+
+      .step-circle {
+        background: #e2e8f0;
+        color: #a0aec0;
+        border-color: #e2e8f0;
+      }
+      
+      .step-label {
+        color: #a0aec0;
+      }
+    }
+  }
+  
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .step-label {
+    font-size: 0.75rem;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .loading-spinner {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 30%);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.verification-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  
+  .primary-action {
+    order: 1;
+  }
+  
+  .resend-button {
+    order: 2;
+  }
+  
+  .check-email-button {
+    order: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: none;
+    color: #667eea;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover:not(:disabled) {
+      color: #5a67d8;
+    }
+    
+    &:disabled {
+      opacity: 50%;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.help-section {
+
+  .help-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    
+    @media (width <= 640px) {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+  
+  .help-link {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: #718096;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #667eea;
+    }
+  }
+  
+  .troubleshooting {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f7fafc;
+    border-radius: 0.5rem;
+    text-align: left;
+    
+    h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.8rem;
+      color: #718096;
+      
+      li {
+        padding: 0.25rem 0;
+        position: relative;
+        padding-left: 1rem;
+        
+        &::before {
+          content: '•';
+          position: absolute;
+          left: 0;
+          color: #667eea;
+        }
+      }
+    }
+  }
+}
+
+/* Background Animation */
+
+.background-animation {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.floating-shapes {
+
+  .shape {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 10%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+    
+    &:nth-child(2n) {
+      animation-direction: reverse;
+    }
+    
+    &:nth-child(3n) {
+      border-radius: 20% 80% 80% 20%;
+    }
+  }
+}
+
+@keyframes float {
+
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 70%;
+  }
+
+  50% {
+    transform: translateY(-100px) rotate(180deg);
+    opacity: 30%;
+  }
+}
+</style>

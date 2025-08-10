@@ -1,3 +1,9 @@
+// ==============================
+// VANA DESIGN SYSTEM - GLOBAL STYLES
+// Estilos globales que definen la base visual de la aplicación
+// Importación única en main.ts
+// ==============================
+
 @use 'globals/reset' as *;
 @use 'globals/variables' as *;
 @use 'globals/mixins' as *;
@@ -5,19 +11,429 @@
 @use 'globals/typography' as *;
 @use 'globals/a11y' as *;
 
+// ESTILOS BASE HTML
+
+html {
+  font-size: 16px; // Base para rem units
+  line-height: $line-height-base;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-size: $font-size-base;
-  font-family: $font-family-base;
+  font-family: $font-family-primary;
+  font-size: $font-size-body;
   font-weight: $font-weight-regular;
   font-stretch: $font-stretch-base;
-  line-height: 1.5;
-  color: $black;
-  background-color: $white;
+  line-height: $line-height-base;
+  color: $text-primary;
+  background-color: $background-primary;
+  transition:
+    color $transition-duration-base ease,
+    background-color $transition-duration-base ease;
 }
 
-* {
+// BOX SIZING UNIVERSAL
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+// ELEMENTOS DE TEXTO
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 $spacing-md;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  color: $text-primary;
+}
+
+h1 {
+  font-size: $font-size-h1;
+  font-weight: $font-weight-semibold;
+
+  @include mobile-only {
+    font-size: $font-size-h1-mobile;
+  }
+}
+
+h2 {
+  font-size: $font-size-h2;
+
+  @include mobile-only {
+    font-size: $font-size-h2-mobile;
+  }
+}
+
+h3 {
+  font-size: $font-size-h3;
+
+  @include mobile-only {
+    font-size: $font-size-h3-mobile;
+  }
+}
+
+h4 {
+  font-size: $font-size-h4;
+}
+
+h5 {
+  font-size: $font-size-h5;
+}
+
+h6 {
+  font-size: $font-size-h6;
+}
+
+p {
+  margin: 0 0 $spacing-md;
+  line-height: $line-height-base;
+}
+
+// ENLACES
+
+a {
+  color: $interactive-secondary;
+  text-decoration: none;
+  transition: $transition-color;
+
+  &:hover {
+    color: $interactive-secondary-hover;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $border-focus;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+// LISTAS
+
+ul,
+ol {
+  margin: 0 0 $spacing-md;
+  padding-left: $spacing-lg;
+}
+
+li {
+  margin-bottom: $spacing-xs;
+}
+
+// IMÁGENES
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+// FORMULARIOS - Estilos base
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+button {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+// SELECCIÓN DE TEXTO
+
+::selection {
+  background-color: rgba($interactive-secondary, 0.2);
+  color: $text-primary;
+}
+
+::selection {
+  background-color: rgba($interactive-secondary, 0.2);
+  color: $text-primary;
+}
+
+// SCROLLBARS (Para navegadores WebKit)
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $surfaceNeutral;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $neutral-light;
+  border-radius: $radius-pill;
+
+  &:hover {
+    background-color: $neutral-primary;
+  }
+}
+
+// CLASES DE UTILIDAD GLOBALES
+
+// Espaciado
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-xs {
+  margin-bottom: $spacing-xs;
+}
+
+.mb-sm {
+  margin-bottom: $spacing-sm;
+}
+
+.mb-md {
+  margin-bottom: $spacing-md;
+}
+
+.mb-lg {
+  margin-bottom: $spacing-lg;
+}
+
+.mb-xl {
+  margin-bottom: $spacing-xl;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+.mt-xs {
+  margin-top: $spacing-xs;
+}
+
+.mt-sm {
+  margin-top: $spacing-sm;
+}
+
+.mt-md {
+  margin-top: $spacing-md;
+}
+
+.mt-lg {
+  margin-top: $spacing-lg;
+}
+
+.mt-xl {
+  margin-top: $spacing-xl;
+}
+
+// Texto
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-primary {
+  color: $text-primary;
+}
+
+.text-secondary {
+  color: $text-secondary;
+}
+
+.text-tertiary {
+  color: $text-tertiary;
+}
+
+.text-accent {
+  color: $text-accent;
+}
+
+.text-success {
+  color: $success-primary;
+}
+
+.text-warning {
+  color: $warning-primary;
+}
+
+.text-error {
+  color: $error-primary;
+}
+
+.text-info {
+  color: $info-primary;
+}
+
+// Display
+
+.d-none {
+  display: none;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-inline {
+  display: inline;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.d-grid {
+  display: grid;
+}
+
+// Flexbox utilities
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-between {
+  @include flex-between;
+}
+
+.flex-column {
+  @include flex-column;
+}
+
+// Responsive utilities
+@include mobile-only {
+
+  .d-mobile-none {
+    display: none;
+  }
+
+  .d-mobile-block {
+    display: block;
+  }
+
+  .d-mobile-flex {
+    display: flex;
+  }
+}
+
+@include tablet-up {
+
+  .d-tablet-none {
+    display: none;
+  }
+
+  .d-tablet-block {
+    display: block;
+  }
+
+  .d-tablet-flex {
+    display: flex;
+  }
+}
+
+@include laptop-up {
+
+  .d-laptop-none {
+    display: none;
+  }
+
+  .d-laptop-block {
+    display: block;
+  }
+
+  .d-laptop-flex {
+    display: flex;
+  }
+}
+
+// CLASES TIPOGRÁFICAS
+
+.typography-display-xl {
+  font-family: $font-family-editorial;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  letter-spacing: -0.02em;
+
+  @include mobile-only {
+    font-size: $font-size-xl-mobile;
+  }
+}
+
+.typography-heading-1 {
+  font-family: $font-family-primary;
+  font-size: $font-size-h1;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  letter-spacing: -0.01em;
+
+  @include mobile-only {
+    font-size: $font-size-h1-mobile;
+  }
+}
+
+.typography-body {
+  font-family: $font-family-primary;
+  font-size: $font-size-body;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+}
+
+.typography-body-large {
+  font-family: $font-family-primary;
+  font-size: $font-size-body-lg;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-loose;
+}
+
+.typography-caption {
+  font-family: $font-family-primary;
+  font-size: $font-size-caption;
+  font-weight: $font-weight-light;
+  line-height: $line-height-base;
+  letter-spacing: 0.01em;
+  color: $text-secondary;
+}
+
+// ESTADO DE CARGA Y ANIMACIONES
+
+.loading {
+  @include pulse-subtle;
+}
+
+.fade-in {
+  @include fade-in;
+}
+
+.slide-up {
+  @include slide-up;
 }

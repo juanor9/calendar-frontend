@@ -1,0 +1,286 @@
+@use 'sass:color';
+@import '@/styles/auth/auth-tokens';
+
+.login-button {
+  // Contenedor principal del botón de login
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  // Efectos visuales mejorados para el botón
+  :deep(.base-button) {
+    @include auth-button-base;
+
+    &.base-button--primary {
+      background: linear-gradient(135deg, $auth-login-primary 0%, color.adjust($auth-login-primary, $lightness: -5%) 100%);
+      color: $white;
+      box-shadow: $auth-shadow-button;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(135deg, $auth-login-primary-hover 0%, color.adjust($auth-login-primary-hover, $lightness: -5%) 100%);
+        box-shadow: $auth-shadow-button-hover;
+        transform: translateY(-1px);
+      }
+
+      &:active:not(:disabled) {
+        background: linear-gradient(135deg, $auth-login-primary-active 0%, color.adjust($auth-login-primary-active, $lightness: -5%) 100%);
+        transform: translateY(0);
+        box-shadow: $auth-shadow-button;
+      }
+    }
+
+    &.base-button--secondary {
+      background: $auth-login-secondary;
+      color: $textPrimary;
+      border: 1px solid color.adjust($auth-login-secondary, $lightness: -10%);
+
+      &:hover:not(:disabled) {
+        background: $auth-login-secondary-hover;
+        border-color: color.adjust($auth-login-secondary-hover, $lightness: -10%);
+        transform: translateY(-1px);
+      }
+    }
+
+    &.base-button--outline {
+      background: transparent;
+      color: $auth-login-primary;
+      border: 2px solid $auth-login-primary;
+
+      &:hover:not(:disabled) {
+        background: rgba($auth-login-primary, 0.05);
+        border-color: $auth-login-primary-hover;
+      }
+    }
+
+    &.base-button--ghost {
+      background: transparent;
+      color: $auth-login-primary;
+
+      &:hover:not(:disabled) {
+        background: rgba($auth-login-primary, 0.05);
+      }
+    }
+
+    &.base-button--loading {
+      pointer-events: none;
+      position: relative;
+      color: transparent;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba($white, 0.3);
+        border-radius: 50%;
+        border-top-color: $white;
+        animation: auth-spin 0.8s linear infinite;
+      }
+
+      &.base-button--outline::after,
+      &.base-button--ghost::after {
+        border-color: rgba($auth-login-primary, 0.3);
+        border-top-color: $auth-login-primary;
+      }
+    }
+  }
+
+  &__icon {
+    transition: $auth-transition-fast;
+    flex-shrink: 0;
+
+    &.animate-spin {
+      animation: auth-spin 1s linear infinite;
+    }
+  }
+
+  &__error {
+    margin-top: $auth-spacing-md;
+    padding: $auth-spacing-md $auth-spacing-lg;
+    background: $auth-error-background;
+    border: 1px solid $auth-error-lighter;
+    border-left: 4px solid $auth-error;
+    border-radius: $auth-radius-md;
+    color: $auth-error;
+    font-family: $font-family-ui;
+    font-size: $auth-text-sm;
+    font-weight: $auth-font-weight-medium;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: $auth-spacing-sm;
+
+    &::before {
+      content: '⚠️';
+      font-size: $auth-text-md;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    animation: auth-slide-in 0.3s ease-out;
+  }
+
+  &--error {
+    :deep(.base-button) {
+      &.base-button--primary {
+        background: linear-gradient(135deg, $auth-error 0%, color.adjust($auth-error, $lightness: -5%) 100%);
+        &:hover:not(:disabled) {
+          background: linear-gradient(135deg, $auth-error-light 0%, $auth-error 100%);
+        }
+      }
+
+      &.base-button--outline,
+      &.base-button--ghost {
+        color: $auth-error;
+        border-color: $auth-error;
+
+        &:hover:not(:disabled) {
+          background: rgba($auth-error, 0.05);
+          border-color: $auth-error-light;
+        }
+      }
+    }
+  }
+
+  &--loading {
+    :deep(.base-button) {
+      animation: auth-pulse 2s ease-in-out infinite;
+    }
+  }
+
+  :deep(.base-button):focus-visible {
+    outline: 2px solid $auth-login-primary;
+    outline-offset: 2px;
+    box-shadow: $auth-shadow-button-focus;
+  }
+
+  &--size-small :deep(.base-button) {
+    height: $auth-button-height-sm;
+    padding: 0 $auth-spacing-md;
+    font-size: $auth-text-xs;
+
+    .login-button__icon {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &--size-large :deep(.base-button) {
+    height: $auth-button-height-lg;
+    padding: 0 $auth-spacing-xl;
+    font-size: $auth-text-md;
+    font-weight: $auth-font-weight-semibold;
+
+    .login-button__icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Animaciones
+@keyframes auth-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes auth-slide-in {
+  from { opacity: 0%; transform: translateY(-8px); }
+  to { opacity: 100%; transform: translateY(0); }
+}
+
+@keyframes auth-pulse {
+  0%, 100% { opacity: 100%; }
+  50% { opacity: 90%; }
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+  .login-button {
+    &__error {
+      background: rgba($auth-error, 0.1);
+      border-color: rgba($auth-error-light, 0.3);
+      border-left-color: $auth-error-light;
+      color: $auth-error-light;
+    }
+
+    :deep(.base-button) {
+      &.base-button--secondary {
+        background: rgba($auth-login-secondary, 0.15);
+        color: $textPrimary-dark;
+        border-color: rgba($auth-login-secondary, 0.3);
+
+        &:hover:not(:disabled) {
+          background: rgba($auth-login-secondary, 0.25);
+        }
+      }
+
+      &.base-button--outline {
+        color: color.adjust($auth-login-primary, $lightness: 10%);
+        border-color: color.adjust($auth-login-primary, $lightness: 10%);
+
+        &:hover:not(:disabled) {
+          background: rgba($auth-login-primary, 0.1);
+        }
+      }
+
+      &.base-button--ghost {
+        color: color.adjust($auth-login-primary, $lightness: 10%);
+
+        &:hover:not(:disabled) {
+          background: rgba($auth-login-primary, 0.1);
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (width <= 768px) {
+  .login-button {
+    :deep(.base-button) {
+      width: 100%;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 $auth-spacing-lg;
+    }
+
+    &__error {
+      font-size: $auth-text-xs;
+      padding: $auth-spacing-sm $auth-spacing-md;
+    }
+  }
+}
+
+// Accesibilidad
+@media (prefers-reduced-motion: reduce) {
+  .login-button {
+    :deep(.base-button) {
+      transition: none;
+
+      &:hover:not(:disabled) {
+        transform: none;
+      }
+    }
+
+    &__icon {
+      &.animate-spin {
+        animation: none;
+      }
+    }
+
+    &--loading :deep(.base-button) {
+      animation: none;
+
+      &::after {
+        animation: none;
+        border: 2px solid currentcolor;
+        border-top-color: transparent;
+      }
+    }
+  }
+}

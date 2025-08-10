@@ -1,0 +1,387 @@
+// ==============================
+// VANA REGISTER PAGE COMPONENT
+// Página intermedia pre-Auth0 redirect
+// Design: Professional, trustworthy, conversion-focused
+// Layout: Mobile-first, responsive, accessible
+// ==============================
+
+@use '../../styles/tokens' as *;
+@use 'sass:color';
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-lg;
+
+  // Beautiful gradient background - Vana brand
+  background: linear-gradient(
+    135deg,
+    $registration-page-bg-start 0%,
+    $registration-page-bg-end 100%
+  );
+
+  // Subtle pattern overlay for texture
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 25% 25%, rgba($white, 10%) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba($white, 10%) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
+  // MAIN CONTAINER
+
+  &__container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+
+    @include tablet-up {
+      max-width: 520px;
+    }
+  }
+
+  // MAIN CARD
+
+  &__card {
+    background: $registration-page-card-bg;
+    border-radius: $auth-radius-xl;
+    box-shadow: $registration-page-card-shadow;
+    padding: $spacing-2xl;
+    text-align: center;
+    animation: fade-in-up 0.6s ease-out;
+
+    @include mobile-only {
+      padding: $spacing-xl;
+      border-radius: $auth-radius-lg;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  // HEADER SECTION
+
+  &__header {
+    margin-bottom: $spacing-2xl;
+  }
+
+  &__logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto $spacing-lg;
+    display: block;
+
+    @include mobile-only {
+      width: 56px;
+      height: 56px;
+    }
+  }
+
+  &__title {
+    font-family: $font-family-primary;
+    font-size: $font-size-h1;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    line-height: $line-height-tight;
+    margin: 0 0 $spacing-md;
+
+    @include mobile-only {
+      font-size: $font-size-h1-mobile;
+    }
+  }
+
+  &__subtitle {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-lg;
+    color: $text-secondary;
+    line-height: $line-height-base;
+    margin: 0;
+
+    @include mobile-only {
+      font-size: $font-size-body;
+    }
+  }
+
+  // VALUE PROPOSITION SECTION
+
+  &__value-props {
+    margin: $spacing-xl 0;
+    text-align: left;
+  }
+
+  &__value-prop {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__value-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: $vana-registration-accent;
+    margin-top: 2px; // Optical alignment
+  }
+
+  &__value-text {
+    flex: 1;
+
+    strong {
+      display: block;
+      font-weight: $font-weight-medium;
+      color: $text-primary;
+      margin-bottom: 2px;
+    }
+
+    span {
+      font-size: $font-size-body-sm;
+      color: $text-secondary;
+      line-height: $line-height-base;
+    }
+  }
+
+  // SOCIAL PROOF SECTION
+
+  &__social-proof {
+    margin: $spacing-xl 0;
+    padding: $spacing-lg;
+    background: rgba($vana-registration-accent, 3%);
+    border-radius: $auth-radius-md;
+    border-left: 3px solid $vana-registration-accent;
+  }
+
+  &__testimonial {
+    font-style: italic;
+    color: $text-secondary;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-body-sm;
+  }
+
+  &__testimonial-author {
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    font-size: $font-size-ui-sm;
+
+    &::before {
+      content: '— ';
+    }
+  }
+
+  // TRUST INDICATORS
+
+  &__trust-indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-xl;
+    margin: $spacing-lg 0;
+    flex-wrap: wrap;
+
+    @include mobile-only {
+      gap: $spacing-lg;
+    }
+  }
+
+  &__trust-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    color: $text-tertiary;
+    font-size: $font-size-ui-sm;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: $vana-registration-accent;
+    }
+  }
+
+  // ACTION SECTION
+
+  &__actions {
+    margin: $spacing-2xl 0 $spacing-lg;
+  }
+
+  &__cta-button {
+    margin-bottom: $spacing-md;
+  }
+
+  &__alternative {
+    font-size: $font-size-ui-sm;
+    color: $text-tertiary;
+
+    a {
+      color: $vana-registration-primary;
+      text-decoration: none;
+      font-weight: $font-weight-medium;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // LEGAL SECTION
+
+  &__legal {
+    margin-top: $spacing-xl;
+    padding-top: $spacing-lg;
+    border-top: 1px solid $border-secondary;
+  }
+
+  &__terms {
+    font-size: $font-size-small;
+    color: $text-tertiary;
+    line-height: $line-height-loose;
+
+    a {
+      color: $vana-registration-primary;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // LOADING OVERLAY
+
+  &--loading {
+    pointer-events: none;
+
+    .register-page__card {
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba($white, 80%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $auth-radius-xl;
+        z-index: 10;
+      }
+    }
+  }
+
+  // High contrast mode
+  @media (prefers-contrast: high) {
+
+    .register-page__card {
+      border: 2px solid $text-primary;
+    }
+
+    .register-page__trust-item svg {
+      color: currentcolor;
+    }
+  }
+
+  // Reduced motion
+  @media (prefers-reduced-motion: reduce) {
+
+    .register-page__cta-button {
+      transition: none;
+
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+
+  // DARK MODE SUPPORT
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(135deg, $auth-dark-bg 0%, color.adjust($auth-dark-bg, $lightness: -5%) 100%);
+
+    .register-page__card {
+      background: $auth-dark-card-bg;
+      box-shadow: 0 25px 50px rgba($black, 30%);
+    }
+
+    .register-page__title {
+      color: $auth-dark-text;
+    }
+
+    .register-page__subtitle {
+      color: rgba($auth-dark-text, 80%);
+    }
+
+    .register-page__value-text {
+
+      strong {
+        color: $auth-dark-text;
+      }
+
+      span {
+        color: rgba($auth-dark-text, 70%);
+      }
+    }
+
+    .register-page__social-proof {
+      background: rgba($vana-registration-accent, 5%);
+    }
+
+    .register-page__testimonial {
+      color: rgba($auth-dark-text, 80%);
+    }
+
+    .register-page__testimonial-author {
+      color: $auth-dark-text;
+    }
+
+    .register-page__trust-item {
+      color: rgba($auth-dark-text, 60%);
+    }
+
+    .register-page__alternative {
+      color: rgba($auth-dark-text, 60%);
+    }
+
+    .register-page__terms {
+      color: rgba($auth-dark-text, 60%);
+    }
+
+    .register-page__legal {
+      border-top-color: rgba($auth-dark-text, 12%);
+    }
+
+    &--loading .register-page__card::after {
+      background: rgba($auth-dark-card-bg, 90%);
+    }
+  }
+}
+
+// ANIMATION KEYFRAMES
+@keyframes fade-in-up {
+
+  from {
+    opacity: 0%;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 100%;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .register-page__card {
+    animation: none;
+  }
+}
