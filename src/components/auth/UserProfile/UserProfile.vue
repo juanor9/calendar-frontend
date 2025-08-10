@@ -116,16 +116,16 @@
     QuestionMarkCircleIcon,
   } from '@heroicons/vue/24/outline'
   import { useAuth } from '@/auth/auth-composable'
-  import LogoutButton from './LogoutButton.vue'
+  import LogoutButton from '@/components/auth/LogoutButton/LogoutButton.vue'
 
   // Props
-  interface MenuItem {
+  export interface MenuItem {
     label: string
     to: string
     icon: typeof UserIcon
   }
 
-  interface Props {
+  export interface Props {
     showName?: boolean
     showEmail?: boolean
     showRole?: boolean

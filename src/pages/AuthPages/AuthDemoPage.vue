@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-  import AuthDemo from '@/components/auth/AuthDemo.vue'
+  import AuthDemo from '@/components/auth/AuthDemo/AuthDemo.vue'
 </script>
 
 <style lang="scss" scoped>

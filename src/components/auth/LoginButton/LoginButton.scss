@@ -9,22 +9,35 @@
   align-items: stretch;
 
   // Efectos visuales mejorados para el botón
+
   :deep(.base-button) {
     @include auth-button-base;
 
     &.base-button--primary {
-      background: linear-gradient(135deg, $auth-login-primary 0%, color.adjust($auth-login-primary, $lightness: -5%) 100%);
+      background: linear-gradient(
+        135deg,
+        $auth-login-primary 0%,
+        color.adjust($auth-login-primary, $lightness: -5%) 100%
+      );
       color: $white;
       box-shadow: $auth-shadow-button;
 
       &:hover:not(:disabled) {
-        background: linear-gradient(135deg, $auth-login-primary-hover 0%, color.adjust($auth-login-primary-hover, $lightness: -5%) 100%);
+        background: linear-gradient(
+          135deg,
+          $auth-login-primary-hover 0%,
+          color.adjust($auth-login-primary-hover, $lightness: -5%) 100%
+        );
         box-shadow: $auth-shadow-button-hover;
         transform: translateY(-1px);
       }
 
       &:active:not(:disabled) {
-        background: linear-gradient(135deg, $auth-login-primary-active 0%, color.adjust($auth-login-primary-active, $lightness: -5%) 100%);
+        background: linear-gradient(
+          135deg,
+          $auth-login-primary-active 0%,
+          color.adjust($auth-login-primary-active, $lightness: -5%) 100%
+        );
         transform: translateY(0);
         box-shadow: $auth-shadow-button;
       }
@@ -32,7 +45,7 @@
 
     &.base-button--secondary {
       background: $auth-login-secondary;
-      color: $textPrimary;
+      color: $text-primary;
       border: 1px solid color.adjust($auth-login-secondary, $lightness: -10%);
 
       &:hover:not(:disabled) {
@@ -125,9 +138,16 @@
   }
 
   &--error {
+
     :deep(.base-button) {
+
       &.base-button--primary {
-        background: linear-gradient(135deg, $auth-error 0%, color.adjust($auth-error, $lightness: -5%) 100%);
+        background: linear-gradient(
+          135deg,
+          $auth-error 0%,
+          color.adjust($auth-error, $lightness: -5%) 100%
+        );
+
         &:hover:not(:disabled) {
           background: linear-gradient(135deg, $auth-error-light 0%, $auth-error 100%);
         }
@@ -147,6 +167,7 @@
   }
 
   &--loading {
+
     :deep(.base-button) {
       animation: auth-pulse 2s ease-in-out infinite;
     }
@@ -184,23 +205,46 @@
 
 // Animaciones
 @keyframes auth-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 @keyframes auth-slide-in {
-  from { opacity: 0%; transform: translateY(-8px); }
-  to { opacity: 100%; transform: translateY(0); }
+
+  from {
+    opacity: 0%;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 100%;
+    transform: translateY(0);
+  }
 }
 
 @keyframes auth-pulse {
-  0%, 100% { opacity: 100%; }
-  50% { opacity: 90%; }
+
+  0%,
+  100% {
+    opacity: 100%;
+  }
+
+  50% {
+    opacity: 90%;
+  }
 }
 
 // Dark mode
 @media (prefers-color-scheme: dark) {
+
   .login-button {
+
     &__error {
       background: rgba($auth-error, 0.1);
       border-color: rgba($auth-error-light, 0.3);
@@ -209,9 +253,10 @@
     }
 
     :deep(.base-button) {
+
       &.base-button--secondary {
         background: rgba($auth-login-secondary, 0.15);
-        color: $textPrimary-dark;
+        color: $text-primary-dark;
         border-color: rgba($auth-login-secondary, 0.3);
 
         &:hover:not(:disabled) {
@@ -241,7 +286,9 @@
 
 // Responsive
 @media (width <= 768px) {
+
   .login-button {
+
     :deep(.base-button) {
       width: 100%;
       justify-content: center;
@@ -258,7 +305,9 @@
 
 // Accesibilidad
 @media (prefers-reduced-motion: reduce) {
+
   .login-button {
+
     :deep(.base-button) {
       transition: none;
 
@@ -268,6 +317,7 @@
     }
 
     &__icon {
+
       &.animate-spin {
         animation: none;
       }

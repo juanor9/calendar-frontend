@@ -3,11 +3,13 @@
 
 .user-profile {
   /* CONTENEDOR PRINCIPAL */
+
   &__wrapper {
     position: relative;
   }
 
   /* TRIGGER BUTTON */
+
   &__trigger {
     display: flex;
     align-items: center;
@@ -21,24 +23,26 @@
     user-select: none;
 
     &:hover {
-      background: rgba($brandPrimary, 0.05);
+      background: rgba($brand-primary, 0.05);
       transform: scale(1.02);
     }
 
     &--active {
-      background: rgba($brandPrimary, 0.08);
-      box-shadow: 0 2px 8px rgba($brandPrimary, 0.12);
+      background: rgba($brand-primary, 0.08);
+      box-shadow: 0 2px 8px rgba($brand-primary, 0.12);
     }
 
     &:focus {
-      outline: 2px solid $brandPrimary;
+      outline: 2px solid $brand-primary;
       outline-offset: 2px;
     }
   }
 
   /* AVATAR */
+
   &__avatar {
     @include auth-avatar('md');
+
     position: relative;
     background: linear-gradient(
       135deg,
@@ -46,12 +50,12 @@
       color.adjust($auth-avatar-bg, $lightness: -10%) 100%
     );
     border: 2px solid $white;
-    box-shadow: 0 2px 8px rgba($textPrimary, 0.08);
+    box-shadow: 0 2px 8px rgba($text-primary, 0.08);
     transition: $auth-transition-avatar;
 
     &:hover {
       transform: scale(1.05);
-      box-shadow: 0 4px 16px rgba($textPrimary, 0.12);
+      box-shadow: 0 4px 16px rgba($text-primary, 0.12);
     }
   }
 
@@ -83,6 +87,7 @@
   }
 
   /* STATUS */
+
   &__status {
     position: absolute;
     bottom: -2px;
@@ -98,73 +103,83 @@
       box-shadow: 0 0 0 2px rgba($auth-avatar-status-online, 0.3);
       animation: auth-status-pulse 2s ease-in-out infinite;
     }
+
     &--away {
       background: $auth-avatar-status-away;
       box-shadow: 0 0 0 2px rgba($auth-avatar-status-away, 0.3);
     }
+
     &--busy {
       background: $auth-avatar-status-busy;
       box-shadow: 0 0 0 2px rgba($auth-avatar-status-busy, 0.3);
     }
+
     &--offline {
       background: $auth-avatar-status-offline;
     }
   }
 
   /* INFO */
+
   &__info {
     flex: 1;
     text-align: left;
     min-width: 0;
     line-height: 1;
   }
+
   &__name {
     font-family: $font-family-ui;
     font-size: $auth-text-sm;
     font-weight: $auth-font-weight-semibold;
-    color: $textPrimary;
+    color: $text-primary;
     line-height: 1.3;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 2px;
   }
+
   &__email {
     font-family: $font-family-ui;
     font-size: $auth-text-xs;
-    color: rgba($textPrimary, 0.7);
+    color: rgba($text-primary, 0.7);
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 1px;
   }
+
   &__role {
     font-family: $font-family-ui;
     font-size: $auth-text-xs;
-    color: $brandPrimary;
+    color: $brand-primary;
     line-height: 1.2;
     font-weight: $auth-font-weight-medium;
     text-transform: capitalize;
   }
 
   /* CHEVRON */
+
   &__chevron {
     width: 16px;
     height: 16px;
-    color: rgba($textPrimary, 0.6);
+    color: rgba($text-primary, 0.6);
     transition: $auth-transition-base;
     margin-left: $auth-spacing-xs;
 
     &--rotated {
       transform: rotate(180deg);
-      color: $brandPrimary;
+      color: $brand-primary;
     }
   }
 
   /* DROPDOWN */
+
   &__dropdown {
     @include auth-dropdown-base;
+
     position: absolute;
     top: calc(100% + #{$auth-spacing-sm});
     right: 0;
@@ -174,39 +189,44 @@
     backdrop-filter: blur(12px);
     animation: auth-dropdown-in 0.2s ease-out;
   }
+
   &__dropdown-header {
     padding: $auth-spacing-lg;
     border-bottom: 1px solid $auth-dropdown-divider;
     background: linear-gradient(
       135deg,
-      rgba($brandPrimary, 0.03) 0%,
-      rgba($brandPrimary, 0.08) 100%
+      rgba($brand-primary, 0.03) 0%,
+      rgba($brand-primary, 0.08) 100%
     );
   }
+
   &__dropdown-name {
     font-family: $font-family-ui;
     font-size: $auth-text-sm;
     font-weight: $auth-font-weight-semibold;
-    color: $textPrimary;
+    color: $text-primary;
     line-height: 1.4;
     margin-bottom: 4px;
   }
+
   &__dropdown-email {
     font-family: $font-family-ui;
     font-size: $auth-text-xs;
-    color: rgba($textPrimary, 0.7);
+    color: rgba($text-primary, 0.7);
     line-height: 1.3;
     word-break: break-all;
   }
+
   &__dropdown-menu {
     padding: $auth-spacing-sm 0;
   }
+
   &__dropdown-item {
     display: flex;
     align-items: center;
     gap: $auth-spacing-md;
     padding: $auth-spacing-md $auth-spacing-lg;
-    color: $textPrimary;
+    color: $text-primary;
     text-decoration: none;
     font-family: $font-family-ui;
     font-size: $auth-text-sm;
@@ -217,23 +237,27 @@
 
     &:hover {
       background: $auth-dropdown-item-hover;
-      color: $brandPrimary;
+      color: $brand-primary;
+
       .user-profile__dropdown-icon {
-        color: $brandPrimary;
+        color: $brand-primary;
         transform: scale(1.1);
       }
     }
+
     &:active {
-      background: rgba($brandPrimary, 0.08);
+      background: rgba($brand-primary, 0.08);
     }
   }
+
   &__dropdown-icon {
     width: 18px;
     height: 18px;
-    color: rgba($textPrimary, 0.6);
+    color: rgba($text-primary, 0.6);
     flex-shrink: 0;
     transition: $auth-transition-fast;
   }
+
   &__dropdown-divider {
     height: 1px;
     background: $auth-dropdown-divider;
@@ -241,6 +265,7 @@
   }
 
   /* LOGOUT */
+
   &__logout {
     width: calc(100% - #{$auth-spacing-lg});
     margin: 0 $auth-spacing-sm $auth-spacing-sm;
@@ -261,17 +286,27 @@
   }
 
   /* VARIANTES DE TAMAÑO */
+
   &--small {
+
     .user-profile__trigger {
       gap: $auth-spacing-sm;
       padding: $auth-spacing-xs $auth-spacing-sm;
     }
+
     .user-profile__avatar {
       @include auth-avatar('sm');
     }
-    .user-profile__name { font-size: $auth-text-xs; }
+
+    .user-profile__name {
+      font-size: $auth-text-xs;
+    }
+
     .user-profile__email,
-    .user-profile__role { font-size: 10px; }
+    .user-profile__role {
+      font-size: 10px;
+    }
+
     .user-profile__status {
       width: $auth-status-size-sm;
       height: $auth-status-size-sm;
@@ -279,16 +314,25 @@
   }
 
   &--large {
+
     .user-profile__trigger {
       gap: $auth-spacing-lg;
       padding: $auth-spacing-md $auth-spacing-lg;
     }
+
     .user-profile__avatar {
       @include auth-avatar('lg');
     }
-    .user-profile__name { font-size: $auth-text-md; }
+
+    .user-profile__name {
+      font-size: $auth-text-md;
+    }
+
     .user-profile__email,
-    .user-profile__role { font-size: $auth-text-sm; }
+    .user-profile__role {
+      font-size: $auth-text-sm;
+    }
+
     .user-profile__status {
       width: $auth-status-size-lg;
       height: $auth-status-size-lg;
@@ -298,101 +342,191 @@
 
 /* ANIMACIONES */
 @keyframes auth-status-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px rgba($auth-avatar-status-online, 0.3); }
-  50% { box-shadow: 0 0 0 4px rgba($auth-avatar-status-online, 0.1); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px rgba($auth-avatar-status-online, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px rgba($auth-avatar-status-online, 0.1);
+  }
 }
+
 @keyframes auth-dropdown-in {
-  from { opacity: 0%; transform: translateY(-8px) scale(0.95); }
-  to { opacity: 100%; transform: translateY(0) scale(1); }
+
+  from {
+    opacity: 0%;
+    transform: translateY(-8px) scale(0.95);
+  }
+
+  to {
+    opacity: 100%;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* DARK MODE */
 @media (prefers-color-scheme: dark) {
+
   .user-profile {
+
     &__trigger {
-      &:hover { background: rgba(color.adjust($brandPrimary, $lightness: 10%), 0.08); }
+
+      &:hover {
+        background: rgba(color.adjust($brand-primary, $lightness: 10%), 0.08);
+      }
+
       &--active {
-        background: rgba(color.adjust($brandPrimary, $lightness: 10%), 0.12);
-        box-shadow: 0 2px 8px rgba(color.adjust($brandPrimary, $lightness: 10%), 0.2);
+        background: rgba(color.adjust($brand-primary, $lightness: 10%), 0.12);
+        box-shadow: 0 2px 8px rgba(color.adjust($brand-primary, $lightness: 10%), 0.2);
       }
     }
+
     &__avatar {
       border-color: rgba($white, 0.1);
       box-shadow: 0 2px 8px rgba($black, 0.3);
     }
+
     &__avatar-fallback {
-      background: linear-gradient(135deg, color.adjust($auth-avatar-bg, $lightness: 10%) 0%, $auth-avatar-bg 100%);
+      background: linear-gradient(
+        135deg,
+        color.adjust($auth-avatar-bg, $lightness: 10%) 0%,
+        $auth-avatar-bg 100%
+      );
     }
-    &__name { color: $textPrimary-dark; }
-    &__email { color: rgba($textPrimary-dark, 0.7); }
-    &__role { color: color.adjust($brandPrimary, $lightness: 15%); }
+
+    &__name {
+      color: $text-primary-dark;
+    }
+
+    &__email {
+      color: rgba($text-primary-dark, 0.7);
+    }
+
+    &__role {
+      color: color.adjust($brand-primary, $lightness: 15%);
+    }
+
     &__chevron {
-      color: rgba($textPrimary-dark, 0.6);
-      &--rotated { color: color.adjust($brandPrimary, $lightness: 15%); }
+      color: rgba($text-primary-dark, 0.6);
+
+      &--rotated {
+        color: color.adjust($brand-primary, $lightness: 15%);
+      }
     }
+
     &__dropdown {
       background: $auth-dark-dropdown-bg;
       border-color: $auth-dark-border;
     }
+
     &__dropdown-header {
       background: linear-gradient(
         135deg,
-        rgba(color.adjust($brandPrimary, $lightness: 10%), 0.05) 0%,
-        rgba(color.adjust($brandPrimary, $lightness: 10%), 0.1) 100%
+        rgba(color.adjust($brand-primary, $lightness: 10%), 0.05) 0%,
+        rgba(color.adjust($brand-primary, $lightness: 10%), 0.1) 100%
       );
-      border-bottom-color: rgba($textPrimary-dark, 0.1);
+      border-bottom-color: rgba($text-primary-dark, 0.1);
     }
-    &__dropdown-name { color: $textPrimary-dark; }
-    &__dropdown-email { color: rgba($textPrimary-dark, 0.7); }
+
+    &__dropdown-name {
+      color: $text-primary-dark;
+    }
+
+    &__dropdown-email {
+      color: rgba($text-primary-dark, 0.7);
+    }
+
     &__dropdown-item {
-      color: $textPrimary-dark;
+      color: $text-primary-dark;
+
       &:hover {
-        background: rgba(color.adjust($brandPrimary, $lightness: 10%), 0.1);
-        color: color.adjust($brandPrimary, $lightness: 15%);
+        background: rgba(color.adjust($brand-primary, $lightness: 10%), 0.1);
+        color: color.adjust($brand-primary, $lightness: 15%);
       }
     }
-    &__dropdown-icon { color: rgba($textPrimary-dark, 0.6); }
-    &__dropdown-divider { background: rgba($textPrimary-dark, 0.1); }
+
+    &__dropdown-icon {
+      color: rgba($text-primary-dark, 0.6);
+    }
+
+    &__dropdown-divider {
+      background: rgba($text-primary-dark, 0.1);
+    }
   }
 }
 
 /* RESPONSIVE */
 @media (width <= 768px) {
+
   .user-profile {
+
     &__dropdown {
       left: 0;
       right: 0;
       min-width: auto;
       margin: 0 $auth-spacing-md;
     }
-    &__info { display: none; }
-    &__trigger { padding: $auth-spacing-sm; }
+
+    &__info {
+      display: none;
+    }
+
+    &__trigger {
+      padding: $auth-spacing-sm;
+    }
   }
 }
 
 /* ACCESIBILIDAD */
 @media (prefers-reduced-motion: reduce) {
+
   .user-profile {
+
     &__avatar,
     &__chevron,
     &__trigger,
-    &__dropdown-item { transition: none; }
+    &__dropdown-item {
+      transition: none;
+    }
+
     &__avatar:hover,
-    &__trigger:hover { transform: none; }
-    &__status--online { animation: none; }
-    &__dropdown { animation: none; }
+    &__trigger:hover {
+      transform: none;
+    }
+
+    &__status--online {
+      animation: none;
+    }
+
+    &__dropdown {
+      animation: none;
+    }
   }
 }
 
 /* ALTO CONTRASTE */
 @media (prefers-contrast: high) {
+
   .user-profile {
-    &__avatar { border-width: 3px; }
+
+    &__avatar {
+      border-width: 3px;
+    }
+
     &__trigger {
       border: 2px solid transparent;
-      &:focus { border-color: currentcolor; }
+
+      &:focus {
+        border-color: currentcolor;
+      }
     }
-    &__dropdown { border-width: 2px; }
+
+    &__dropdown {
+      border-width: 2px;
+    }
+
     &__dropdown-item:hover {
       background: currentcolor;
       color: var(--background-color, white);

@@ -200,8 +200,8 @@
   import { ref } from 'vue'
   import { useAuth } from '@/auth/auth-composable'
   import { useAuthStore } from '@/store/auth'
-  import LoginButton from './LoginButton.vue'
-  import LogoutButton from './LogoutButton.vue'
+  import LoginButton from '@/components/auth/LoginButton/LoginButton.vue'
+  import LogoutButton from '@/components/auth/LogoutButton/LogoutButton.vue'
   import BaseButton from '@/ui/BaseButton/BaseButton.vue'
 
   // Auth

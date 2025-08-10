@@ -6,6 +6,8 @@
 
 @use 'sass:color';
 @use 'sass:map';
+@use '../globals/color' as *;
+@use '../globals/typography' as *;
 
 // COLORES AUTH ESPECÍFICOS - VANA REGISTRATION FLOW
 // Extendiendo el sistema base con colores específicos para autenticación

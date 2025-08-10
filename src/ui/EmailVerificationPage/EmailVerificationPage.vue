@@ -3,7 +3,7 @@
     <div class="verification-container">
       <!-- Progress Header -->
       <div class="verification-progress">
-        <ProgressSteps 
+        <ProgressSteps
           :current-step="2"
           :total-steps="4"
           :steps="progressSteps"
@@ -27,12 +27,12 @@
           <template v-if="verificationStatus === 'pending'">
             <h1 class="verification-title">Check Your Email</h1>
             <p class="verification-description">
-              We've sent a verification link to 
+              We've sent a verification link to
               <strong class="user-email">{{ userEmail }}</strong>
             </p>
             <p class="verification-instructions">
-              Click the link in the email to continue setting up your account.
-              It might take a few minutes to arrive.
+              Click the link in the email to continue setting up your account. It might take a few
+              minutes to arrive.
             </p>
           </template>
 
@@ -40,8 +40,8 @@
           <template v-if="verificationStatus === 'success'">
             <h1 class="verification-title verification-title--success">Email Verified!</h1>
             <p class="verification-description">
-              Great! Your email has been successfully verified.
-              Let's continue setting up your calendar.
+              Great! Your email has been successfully verified. Let's continue setting up your
+              calendar.
             </p>
           </template>
 
@@ -49,8 +49,7 @@
           <template v-if="verificationStatus === 'expired'">
             <h1 class="verification-title verification-title--error">Link Expired</h1>
             <p class="verification-description">
-              The verification link has expired. Don't worry, 
-              we can send you a new one.
+              The verification link has expired. Don't worry, we can send you a new one.
             </p>
           </template>
 
@@ -58,8 +57,8 @@
           <template v-if="verificationStatus === 'resent'">
             <h1 class="verification-title">New Email Sent</h1>
             <p class="verification-description">
-              We've sent a fresh verification link to your email.
-              Please check your inbox and spam folder.
+              We've sent a fresh verification link to your email. Please check your inbox and spam
+              folder.
             </p>
           </template>
         </div>
@@ -96,7 +95,7 @@
               </template>
               {{ resendButtonText }}
             </RegisterButton>
-            
+
             <p v-if="!canResend" class="resend-timer">
               You can request another email in {{ resendCountdown }}s
             </p>
@@ -128,7 +127,7 @@
               <li>Wait up to 10 minutes for delivery</li>
             </ul>
           </div>
-          
+
           <!-- Contact Support -->
           <div class="support-link">
             <a href="/support" class="support-button">
@@ -142,152 +141,152 @@
       <!-- Security Note -->
       <div class="security-note">
         <ShieldIcon />
-        <span>
-          Your privacy is protected. We'll never share your email address.
-        </span>
+        <span> Your privacy is protected. We'll never share your email address. </span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
-import { RegisterButton } from '@/ui'
-import ProgressSteps from '@/components/onboarding/ProgressSteps.vue'
-import MailIcon from '@/components/icons/MailIcon.vue'
-import CheckCircleIcon from '@/components/icons/CheckCircleIcon.vue'
-import ExclamationCircleIcon from '@/components/icons/ExclamationCircleIcon.vue'
-import ClockIcon from '@/components/icons/ClockIcon.vue'
-import ArrowRightIcon from '@/components/icons/ArrowRightIcon.vue'
-import RefreshIcon from '@/components/icons/RefreshIcon.vue'
-import SupportIcon from '@/components/icons/SupportIcon.vue'
-import ShieldIcon from '@/components/icons/ShieldIcon.vue'
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { RegisterButton } from '@/ui'
+  import ProgressSteps from '@/components/onboarding/ProgressSteps.vue'
+  import MailIcon from '@/components/icons/MailIcon.vue'
+  import CheckCircleIcon from '@/components/icons/CheckCircleIcon.vue'
+  import ExclamationCircleIcon from '@/components/icons/ExclamationCircleIcon.vue'
+  import ClockIcon from '@/components/icons/ClockIcon.vue'
+  import ArrowRightIcon from '@/components/icons/ArrowRightIcon.vue'
+  import RefreshIcon from '@/components/icons/RefreshIcon.vue'
+  import SupportIcon from '@/components/icons/SupportIcon.vue'
+  import ShieldIcon from '@/components/icons/ShieldIcon.vue'
 
-interface Props {
-  email?: string
-  token?: string
-  status?: 'pending' | 'success' | 'expired' | 'resent'
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  email: '',
-  token: '',
-  status: 'pending'
-})
-
-const router = useRouter()
-
-// Reactive state
-const verificationStatus = ref<'pending' | 'success' | 'expired' | 'resent'>(props.status)
-const isResending = ref(false)
-const canResend = ref(false)
-const resendCountdown = ref(60)
-
-// Timer for resend cooldown
-let resendTimer: number | null = null
-
-// Computed properties
-const userEmail = computed(() => props.email || 'your email')
-
-const progressSteps = computed(() => [
-  { id: 1, title: 'Account', status: 'completed' },
-  { id: 2, title: 'Email Verification', status: 'current' },
-  { id: 3, title: 'Preferences', status: 'pending' },
-  { id: 4, title: 'Calendar Setup', status: 'pending' }
-])
-
-const resendButtonText = computed(() => {
-  if (verificationStatus.value === 'expired') {
-    return 'Send New Link'
+  export interface Props {
+    email?: string
+    token?: string
+    status?: 'pending' | 'success' | 'expired' | 'resent'
   }
-  return 'Resend Email'
-})
 
-// Methods
-const continueToOnboarding = () => {
-  router.push('/onboarding/preferences')
-}
+  const props = withDefaults(defineProps<Props>(), {
+    email: '',
+    token: '',
+    status: 'pending',
+  })
 
-const resendVerification = async () => {
-  if (!canResend.value || isResending.value) return
+  const router = useRouter()
 
-  isResending.value = true
-  
-  try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    verificationStatus.value = 'resent'
-    startResendCooldown()
-    
-    // Auto-switch back to pending after showing confirmation
-    setTimeout(() => {
-      verificationStatus.value = 'pending'
-    }, 3000)
-    
-  } catch (error) {
-    console.error('Failed to resend verification email:', error)
-  } finally {
-    isResending.value = false
-  }
-}
+  // Reactive state
+  const verificationStatus = ref<'pending' | 'success' | 'expired' | 'resent'>(props.status)
+  const isResending = ref(false)
+  const canResend = ref(false)
+  const resendCountdown = ref(60)
 
-const checkVerificationStatus = async () => {
-  // Simulate checking verification status
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  
-  // For demo purposes, randomly verify or keep pending
-  const isVerified = Math.random() > 0.5
-  verificationStatus.value = isVerified ? 'success' : 'pending'
-}
+  // Timer for resend cooldown
+  let resendTimer: number | null = null
 
-const startResendCooldown = () => {
-  canResend.value = false
-  resendCountdown.value = 60
-  
-  resendTimer = window.setInterval(() => {
-    resendCountdown.value--
-    
-    if (resendCountdown.value <= 0) {
-      canResend.value = true
-      if (resendTimer) {
-        clearInterval(resendTimer)
-        resendTimer = null
-      }
+  // Computed properties
+  const userEmail = computed(() => props.email || 'your email')
+
+  const progressSteps = computed(() => [
+    { id: 1, title: 'Account', status: 'completed' as const },
+    { id: 2, title: 'Email Verification', status: 'current' as const },
+    { id: 3, title: 'Preferences', status: 'pending' as const },
+    { id: 4, title: 'Calendar Setup', status: 'pending' as const },
+  ])
+
+  const resendButtonText = computed(() => {
+    if (verificationStatus.value === 'expired') {
+      return 'Send New Link'
     }
-  }, 1000)
-}
+    return 'Resend Email'
+  })
 
-// Lifecycle
-onMounted(() => {
-  // Check URL token if provided
-  if (props.token) {
-    // Simulate token verification
-    setTimeout(() => {
-      const isValidToken = props.token.length > 10 // Simple validation
-      verificationStatus.value = isValidToken ? 'success' : 'expired'
+  // Methods
+  const continueToOnboarding = () => {
+    router.push('/onboarding/preferences')
+  }
+
+  const resendVerification = async () => {
+    if (!canResend.value || isResending.value) return
+
+    isResending.value = true
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
+      verificationStatus.value = 'resent'
+      startResendCooldown()
+
+      // Auto-switch back to pending after showing confirmation
+      setTimeout(() => {
+        verificationStatus.value = 'pending'
+      }, 3000)
+    } catch (error) {
+      console.error('Failed to resend verification email:', error)
+    } finally {
+      isResending.value = false
+    }
+  }
+
+  const checkVerificationStatus = async () => {
+    // Simulate checking verification status
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    // For demo purposes, randomly verify or keep pending
+    const isVerified = Math.random() > 0.5
+    verificationStatus.value = isVerified ? 'success' : 'pending'
+  }
+
+  const startResendCooldown = () => {
+    canResend.value = false
+    resendCountdown.value = 60
+
+    resendTimer = window.setInterval(() => {
+      resendCountdown.value--
+
+      if (resendCountdown.value <= 0) {
+        canResend.value = true
+        if (resendTimer) {
+          clearInterval(resendTimer)
+          resendTimer = null
+        }
+      }
     }, 1000)
-  } else {
-    // Start resend cooldown for initial load
-    startResendCooldown()
   }
-})
 
-onBeforeUnmount(() => {
-  if (resendTimer) {
-    clearInterval(resendTimer)
-  }
-})
+  // Lifecycle
+  onMounted(() => {
+    // Check URL token if provided
+    if (props.token) {
+      // Simulate token verification
+      setTimeout(() => {
+        const isValidToken = props.token.length > 10 // Simple validation
+        verificationStatus.value = isValidToken ? 'success' : 'expired'
+      }, 1000)
+    } else {
+      // Start resend cooldown for initial load
+      startResendCooldown()
+    }
+  })
+
+  onBeforeUnmount(() => {
+    if (resendTimer) {
+      clearInterval(resendTimer)
+    }
+  })
 </script>
 
 <script lang="ts">
-export default {
-  name: 'EmailVerificationPage'
-}
+  export default {
+    name: 'EmailVerificationPage',
+  }
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/tokens' as *;
-@use './EmailVerificationPage';
+  @use '../../styles/globals/variables' as *;
+  @use '../../styles/globals/color' as *;
+  @use '../../styles/globals/typography' as *;
+  @use '../../styles/globals/mixins' as *;
+  @use './EmailVerificationPage';
 </style>

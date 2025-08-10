@@ -10,14 +10,14 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba($vana-slate, 60%);
+  background-color: rgba($neutral-primary, 60%);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: $spacing-md;
   overflow: hidden auto;
-  
+
   @include mobile-only {
     padding: $spacing-sm;
   }
@@ -35,21 +35,21 @@
   display: flex;
   flex-direction: column;
   transform: scale(1);
-  
+
   // TAMAÑOS
 
   &--small {
     max-width: 400px;
   }
-  
+
   &--medium {
     max-width: 600px;
   }
-  
+
   &--large {
     max-width: 900px;
   }
-  
+
   &--fullscreen {
     max-width: none;
     max-height: none;
@@ -57,18 +57,18 @@
     height: 100vh;
     border-radius: 0;
     margin: 0;
-    
+
     .modal-overlay {
       padding: 0;
     }
   }
-  
+
   // CENTRADO VERTICAL
 
   &--centered {
     margin: auto 0;
   }
-  
+
   // SCROLLABLE
 
   &--scrollable {
@@ -76,13 +76,13 @@
     .modal__body {
       overflow-y: auto;
       max-height: calc(90vh - 200px); // Aproximadamente header + footer
-      
+
       .modal--fullscreen & {
         max-height: calc(100vh - 200px);
       }
     }
   }
-  
+
   // ESTADO DE CARGA
 
   &--loading {
@@ -111,7 +111,7 @@
   padding: $spacing-lg $spacing-lg $spacing-md;
   border-bottom: 1px solid $border-primary;
   flex-shrink: 0;
-  
+
   @include mobile-only {
     padding: $spacing-md $spacing-md $spacing-sm;
   }
@@ -129,7 +129,7 @@
   color: $text-primary;
   margin: 0 0 $spacing-xs;
   line-height: $line-height-tight;
-  
+
   @include mobile-only {
     font-size: $font-size-h4;
   }
@@ -141,7 +141,7 @@
   color: $text-secondary;
   margin: 0;
   line-height: $line-height-base;
-  
+
   @include mobile-only {
     font-size: $font-size-body-sm;
   }
@@ -164,18 +164,18 @@
   line-height: 1;
   transition: $transition-all;
   flex-shrink: 0;
-  
+
   &:hover {
-    background-color: $vana-warm-gray-light;
+    background-color: $neutral-lighter;
     color: $text-secondary;
   }
-  
+
   &:focus {
     outline: none;
-    background-color: $vana-warm-gray;
+    background-color: $neutral-light;
     color: $text-primary;
   }
-  
+
   &:active {
     transform: scale(0.95);
   }
@@ -187,29 +187,29 @@
   flex: 1;
   padding: $spacing-md $spacing-lg;
   overflow-y: auto;
-  
+
   @include mobile-only {
     padding: $spacing-sm $spacing-md;
   }
-  
+
   // Espaciado para elementos comunes en body
 
   > *:first-child {
     margin-top: 0;
   }
-  
+
   > *:last-child {
     margin-bottom: 0;
   }
-  
+
   p {
     margin: 0 0 $spacing-md;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
   }
-  
+
   // Formularios en modales
 
   .form-group + .form-group {
@@ -227,27 +227,27 @@
   padding: $spacing-md $spacing-lg $spacing-lg;
   border-top: 1px solid $border-primary;
   flex-shrink: 0;
-  
+
   @include mobile-only {
     padding: $spacing-sm $spacing-md $spacing-md;
     flex-direction: column-reverse;
     align-items: stretch;
-    
+
     .button {
       width: 100%;
     }
   }
-  
+
   // Variantes de alineación
 
   &--start {
     justify-content: flex-start;
   }
-  
+
   &--center {
     justify-content: center;
   }
-  
+
   &--between {
     justify-content: space-between;
   }
@@ -280,7 +280,7 @@
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity $transition-duration-slow $transition-easing-smooth;
-  
+
   .modal {
     transition: transform $transition-duration-slow $transition-easing-smooth;
   }
@@ -289,7 +289,7 @@
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0%;
-  
+
   .modal {
     transform: scale(0.95) translateY(-20px);
   }
@@ -298,7 +298,7 @@
 .modal-enter-to,
 .modal-leave-from {
   opacity: 100%;
-  
+
   .modal {
     transform: scale(1) translateY(0);
   }
@@ -320,36 +320,36 @@
   .modal__body {
     text-align: center;
     padding: $spacing-lg;
-    
+
     .icon {
       font-size: 48px;
       margin-bottom: $spacing-md;
-      
+
       &--warning {
         color: $warning-primary;
       }
-      
+
       &--danger {
         color: $error-primary;
       }
-      
+
       &--success {
         color: $success-primary;
       }
     }
-    
+
     h3 {
       margin: 0 0 $spacing-sm;
       font-size: $font-size-h4;
       font-weight: $font-weight-medium;
     }
-    
+
     p {
       margin: 0 0 $spacing-lg;
       color: $text-secondary;
     }
   }
-  
+
   .modal__footer {
     justify-content: center;
     gap: $spacing-md;
@@ -363,15 +363,15 @@
   .modal__body {
     padding: $spacing-lg;
   }
-  
+
   .form-group {
     margin-bottom: $spacing-md;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
   }
-  
+
   .form-actions {
     display: flex;
     gap: $spacing-sm;
@@ -379,10 +379,10 @@
     margin-top: $spacing-lg;
     padding-top: $spacing-md;
     border-top: 1px solid $border-primary;
-    
+
     @include mobile-only {
       flex-direction: column-reverse;
-      
+
       .button {
         width: 100%;
       }
@@ -399,9 +399,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: $vana-slate-dark;
-    
-    img, video {
+    background-color: $neutral-primary;
+
+    img,
+    video {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
@@ -414,12 +415,12 @@
 
   .modal-overlay {
     align-items: flex-end;
-    
+
     .modal {
       border-radius: $radius-lg $radius-lg 0 0;
       max-height: 95vh;
       margin: 0;
-      
+
       &--fullscreen {
         border-radius: 0;
         max-height: 100vh;

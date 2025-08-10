@@ -6,6 +6,7 @@
 
 @use 'variables' as *;
 @use 'typography' as *;
+@use 'color' as *;
 
 // BREAKPOINTS RESPONSIVOS (Mobile-first approach)
 $breakpoint-xs: 320px;
@@ -192,7 +193,7 @@ $breakpoint-2xl: 1536px;
   border: 1px solid $border-primary;
 
   &:hover:not(:disabled) {
-    background-color: $vana-cream;
+    background-color: $neutral-background;
     border-color: $interactive-secondary;
     color: $interactive-secondary;
   }
@@ -321,6 +322,7 @@ $breakpoint-2xl: 1536px;
 
 // Definir las animaciones
 @keyframes vana-fade-in {
+
   from {
     opacity: 0%;
   }
@@ -331,6 +333,7 @@ $breakpoint-2xl: 1536px;
 }
 
 @keyframes vana-slide-up {
+
   from {
     opacity: 0%;
     transform: translateY(20px);
@@ -343,6 +346,7 @@ $breakpoint-2xl: 1536px;
 }
 
 @keyframes vana-pulse {
+
   0%,
   100% {
     opacity: 100%;

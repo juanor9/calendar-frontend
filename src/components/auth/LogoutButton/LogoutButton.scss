@@ -19,6 +19,7 @@
         background: rgba($auth-error, 0.05);
         border-color: rgba($auth-error, 0.2);
         color: color.adjust($auth-error, $lightness: -10%);
+
         .logout-button__icon {
           transform: translateX(2px);
         }
@@ -118,7 +119,7 @@
 
   &__confirm-text {
     margin: 0;
-    color: rgba($textPrimary, 0.8);
+    color: rgba($text-primary, 0.8);
     font-family: $font-family-ui;
     font-size: $auth-text-md;
     font-weight: $auth-font-weight-normal;
@@ -153,16 +154,20 @@
   }
 
   &--loading {
+
     :deep(.base-button) {
       animation: auth-logout-pulse 2s ease-in-out infinite;
     }
   }
 
   &--error {
+
     :deep(.base-button) {
+
       &.base-button--ghost {
         border-color: $auth-error;
         color: $auth-error;
+
         &:hover:not(:disabled) {
           background: rgba($auth-error, 0.08);
           border-color: color.adjust($auth-error, $lightness: -10%);
@@ -202,21 +207,26 @@
 }
 
 /* Modal styles */
+
 :deep(.base-modal) {
+
   .modal__content {
     max-width: 400px;
     text-align: center;
   }
+
   .modal__title {
     color: $auth-error;
     font-weight: $auth-font-weight-semibold;
     margin-bottom: $auth-spacing-lg;
   }
+
   .modal__actions {
     display: flex;
     gap: $auth-spacing-md;
     justify-content: center;
     margin-top: $auth-spacing-xl;
+
     .base-button {
       min-width: 120px;
     }
@@ -225,86 +235,155 @@
 
 /* Animations */
 @keyframes auth-logout-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
+
 @keyframes auth-error-slide-in {
-  from { opacity: 0%; transform: translateY(-8px); }
-  to { opacity: 100%; transform: translateY(0); }
+
+  from {
+    opacity: 0%;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 100%;
+    transform: translateY(0);
+  }
 }
+
 @keyframes auth-logout-pulse {
-  0%, 100% { opacity: 100%; }
-  50% { opacity: 85%; }
+
+  0%,
+  100% {
+    opacity: 100%;
+  }
+
+  50% {
+    opacity: 85%;
+  }
 }
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
+
   .logout-button {
-    &__confirm-text { color: rgba($textPrimary-dark, 0.8); }
+
+    &__confirm-text {
+      color: rgba($text-primary-dark, 0.8);
+    }
+
     &__error {
       background: rgba($auth-error, 0.1);
       border-color: rgba($auth-error-light, 0.3);
       border-left-color: $auth-error-light;
       color: $auth-error-light;
     }
+
     :deep(.base-button) {
+
       &.base-button--ghost {
         color: color.adjust($auth-error, $lightness: 10%);
+
         &:hover:not(:disabled) {
           background: rgba($auth-error, 0.1);
           border-color: rgba(color.adjust($auth-error, $lightness: 10%), 0.3);
         }
       }
+
       &.base-button--secondary {
         background: rgba($auth-error, 0.08);
         color: color.adjust($auth-error, $lightness: 10%);
         border-color: rgba(color.adjust($auth-error, $lightness: 10%), 0.2);
-        &:hover:not(:disabled) { background: rgba($auth-error, 0.15); }
+
+        &:hover:not(:disabled) {
+          background: rgba($auth-error, 0.15);
+        }
       }
+
       &.base-button--outline {
         color: color.adjust($auth-error, $lightness: 10%);
         border-color: color.adjust($auth-error, $lightness: 10%);
-        &:hover:not(:disabled) { background: rgba($auth-error, 0.08); }
+
+        &:hover:not(:disabled) {
+          background: rgba($auth-error, 0.08);
+        }
       }
     }
   }
+
   :deep(.base-modal) {
-    .modal__title { color: color.adjust($auth-error, $lightness: 15%); }
+
+    .modal__title {
+      color: color.adjust($auth-error, $lightness: 15%);
+    }
   }
 }
 
 /* Responsive */
 @media (width <= 768px) {
+
   .logout-button {
+
     :deep(.base-button) {
       min-height: 44px;
-      &.base-button--ghost { padding: 0 $auth-spacing-md; }
+
+      &.base-button--ghost {
+        padding: 0 $auth-spacing-md;
+      }
     }
+
     &__error {
       font-size: $auth-text-xs;
       padding: $auth-spacing-sm $auth-spacing-md;
     }
   }
+
   :deep(.base-modal) {
-    .modal__content { margin: $auth-spacing-md; padding: $auth-spacing-lg; }
+
+    .modal__content {
+      margin: $auth-spacing-md;
+      padding: $auth-spacing-lg;
+    }
+
     .modal__actions {
       flex-direction: column;
-      .base-button { width: 100%; }
+
+      .base-button {
+        width: 100%;
+      }
     }
   }
 }
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
+
   .logout-button {
+
     :deep(.base-button) {
       transition: none;
-      &:hover:not(:disabled) { transform: none; }
+
+      &:hover:not(:disabled) {
+        transform: none;
+      }
     }
-    &__icon.animate-spin { animation: none; }
+
+    &__icon.animate-spin {
+      animation: none;
+    }
+
     &--loading {
+
       :deep(.base-button) {
         animation: none;
+
         &::after {
           animation: none;
           border: 2px solid currentcolor;
@@ -317,8 +396,16 @@
 
 /* High contrast */
 @media (prefers-contrast: high) {
+
   .logout-button {
-    :deep(.base-button).base-button--ghost { border: 2px solid currentcolor; }
-    &__error { border-width: 2px; border-left-width: 4px; }
+
+    :deep(.base-button).base-button--ghost {
+      border: 2px solid currentcolor;
+    }
+
+    &__error {
+      border-width: 2px;
+      border-left-width: 4px;
+    }
   }
 }

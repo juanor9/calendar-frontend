@@ -166,11 +166,6 @@ button {
   color: $text-primary;
 }
 
-::selection {
-  background-color: rgba($interactive-secondary, 0.2);
-  color: $text-primary;
-}
-
 // SCROLLBARS (Para navegadores WebKit)
 
 ::-webkit-scrollbar {
@@ -179,7 +174,7 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: $surfaceNeutral;
+  background-color: $surface-neutral;
 }
 
 ::-webkit-scrollbar-thumb {
