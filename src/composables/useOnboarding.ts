@@ -471,6 +471,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
     progress,
     isStepValid,
     canProceed,
+    estimatedTimeRemaining: computed(() => 5), // Mock value, implement proper calculation
 
     // Loading states
     isLoading,

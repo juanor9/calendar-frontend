@@ -235,7 +235,8 @@ export class RegistrationCache {
 
     // Validate status values
     const validStatuses = ['idle', 'redirecting', 'processing', 'verifying', 'completed', 'error']
-    if (!validStatuses.includes(stateObj.status)) return false
+    if (typeof stateObj.status !== 'string' || !validStatuses.includes(stateObj.status))
+      return false
 
     // Validate step values
     const validSteps = [
@@ -247,7 +248,7 @@ export class RegistrationCache {
       'onboarding',
       'completed',
     ]
-    if (!validSteps.includes(stateObj.step)) return false
+    if (typeof stateObj.step !== 'string' || !validSteps.includes(stateObj.step)) return false
 
     // Validate timestamp
     if (typeof stateObj.timestamp !== 'number' || stateObj.timestamp <= 0) return false

@@ -35,7 +35,8 @@ VITE_AUTH0_AUDIENCE=https://your-api.com
       app.use(auth0Plugin)
 
       // Get the Auth0 client instance and provide it
-      const auth0Client = (auth0Plugin as { client?: unknown })?.client || auth0Plugin
+      const auth0Instance = auth0Plugin.install ? auth0Plugin : { client: auth0Plugin }
+      const auth0Client = 'client' in auth0Instance ? auth0Instance.client : auth0Plugin
       app.config.globalProperties.$auth0 = auth0Client
       app.provide(Auth0ClientKey, auth0Client)
 

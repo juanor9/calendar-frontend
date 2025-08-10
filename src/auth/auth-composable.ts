@@ -90,7 +90,12 @@ export const useAuth = () => {
       }
 
       const token = await auth0Client.getAccessTokenSilently(
-        Object.keys(options || {}).length > 0 ? options : undefined
+        options && Object.keys(options).length > 0
+          ? {
+              audience: options.audience,
+              scope: options.scope,
+            }
+          : undefined
       )
       const accessToken =
         typeof token === 'string'

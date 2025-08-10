@@ -9,6 +9,7 @@
 
 export interface User {
   id: string
+  sub: string // Auth0 subject identifier
   email: string
   name?: string
   picture?: string
@@ -29,6 +30,9 @@ export interface LoginOptions {
   redirect_uri?: string
   response_type?: string
   response_mode?: string
+  appState?: {
+    targetUrl?: string
+  }
 }
 
 export interface Role {
@@ -53,6 +57,7 @@ export type RegistrationStatus =
   | 'verifying'
   | 'completed'
   | 'error'
+  | 'emailVerified'
 
 export interface UserResponse {
   success: boolean
@@ -74,12 +79,14 @@ export interface CallbackRequest {
 export interface OnboardingError {
   code: string
   message: string
-  type: 'network' | 'validation' | 'auth' | 'unknown'
+  userMessage?: string
+  type: 'network' | 'validation' | 'auth' | 'unknown' | 'onboarding'
   retryable: boolean
   field?: string
 }
 
 export interface WorkPreferences {
+  [key: string]: unknown
   workStyle: WorkStyle
   workHours: WorkHours
   focusTime: FocusTimePreferences
@@ -87,10 +94,16 @@ export interface WorkPreferences {
 }
 
 export interface CalendarIntegration {
+  [key: string]: unknown
   provider: CalendarProvider
   accountEmail: string
   calendars: Calendar[]
   syncSettings: CalendarSyncSettings
+  credentials?: {
+    accessToken?: string
+    refreshToken?: string
+    expiresAt?: Date
+  }
 }
 
 export type CalendarProvider = 'google' | 'microsoft' | 'apple' | 'caldav'
@@ -153,6 +166,8 @@ export interface RegistrationInitRequest {
 export interface RegistrationState {
   status: 'idle' | 'redirecting' | 'processing' | 'verifying' | 'completed' | 'error'
   step: RegistrationStep
+  email?: string
+  source?: string
   startedAt?: Date
   completedAt?: Date
   error?: RegistrationError
@@ -232,6 +247,7 @@ export interface OnboardingState {
   currentStep: OnboardingStep
   completedSteps: OnboardingStep[]
   skippedSteps: OnboardingStep[]
+  stepData: Record<string, unknown>
   preferences: UserPreferences
   calendarConnections: CalendarConnection[]
   startedAt?: Date
@@ -389,6 +405,7 @@ export interface CalendarConnection {
 }
 
 export interface Calendar {
+  [key: string]: unknown
   id: string
   connectionId: string
   name: string

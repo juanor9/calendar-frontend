@@ -89,7 +89,7 @@ class BaseApiClient {
     } catch (error) {
       clearTimeout(timeoutId)
 
-      if (error.name === 'AbortError') {
+      if ((error as Error)?.name === 'AbortError') {
         throw new ApiError('Request timeout', 'TIMEOUT', 408)
       }
 
@@ -294,7 +294,7 @@ export class OnboardingAPI extends BaseApiClient {
       const response = await client.patch<ApiResponse<void>>(
         `/auth/onboarding/${encodeURIComponent(userId)}/progress`,
         {
-          ...progressData,
+          ...(progressData || {}),
           lastSavedAt: new Date().toISOString(),
         }
       )

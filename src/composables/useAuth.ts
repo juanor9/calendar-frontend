@@ -438,7 +438,7 @@ export const useAuth = (): UseAuthReturn => {
   // Load cached registration state on initialization
   const cachedState = RegistrationCache.load()
   if (cachedState && cachedState.status !== 'completed') {
-    registrationStore.restoreState(cachedState)
+    registrationStore.loadCachedState()
   }
 
   return {
