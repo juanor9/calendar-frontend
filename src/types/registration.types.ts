@@ -8,16 +8,19 @@
 // ============================================================================
 
 export interface User {
-  id: string
-  sub: string // Auth0 subject identifier
-  email: string
+  // Auth0 User fields
+  sub: string
   name?: string
+  email?: string
   picture?: string
-  email_verified: boolean
-  user_metadata?: Record<string, unknown>
-  app_metadata?: Record<string, unknown>
+  email_verified?: boolean
+
+  // Custom fields
+  id: string
   created_at: string
   updated_at: string
+  user_metadata?: Record<string, unknown>
+  app_metadata?: Record<string, unknown>
 }
 
 export interface LoginOptions {
@@ -35,20 +38,9 @@ export interface LoginOptions {
   }
 }
 
-export interface Role {
-  id: string
-  name: string
-  description: string
-  permissions: Permission[]
-}
+export type Role = import('@/auth/types').Role
 
-export interface Permission {
-  id: string
-  name: string
-  description: string
-  resource: string
-  action: string
-}
+export type Permission = import('@/auth/types').Permission
 
 export type RegistrationStatus =
   | 'idle'
@@ -63,6 +55,12 @@ export interface UserResponse {
   success: boolean
   user?: User
   error?: string
+}
+
+export interface RegistrationStatusResponse {
+  completed: boolean
+  emailVerified: boolean
+  status: RegistrationStatus
 }
 
 export interface CallbackRequest {
@@ -83,6 +81,7 @@ export interface OnboardingError {
   type: 'network' | 'validation' | 'auth' | 'unknown' | 'onboarding'
   retryable: boolean
   field?: string
+  timestamp?: number
 }
 
 export interface WorkPreferences {

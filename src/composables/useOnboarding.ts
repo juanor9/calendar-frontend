@@ -21,6 +21,7 @@ export interface UseOnboardingReturn {
   progress: ComputedRef<number>
   isStepValid: ComputedRef<boolean>
   canProceed: ComputedRef<boolean>
+  estimatedTimeRemaining: ComputedRef<number>
 
   // Loading and error states
   isLoading: Ref<boolean>
@@ -366,7 +367,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
   const updateCalendarIntegration = async (integration: CalendarIntegration) => {
     try {
       isLoading.value = true
-      await onboardingStore.connectCalendar(integration.provider, integration.credentials)
+      await onboardingStore.connectCalendar(integration.provider, integration.credentials || {})
 
       // Update step data
       updateStepData('calendar_sync', integration)

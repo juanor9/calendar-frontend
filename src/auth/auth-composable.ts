@@ -89,13 +89,12 @@ export const useAuth = () => {
         throw new Error('User not authenticated')
       }
 
+      const tokenOptions: Record<string, string> = {}
+      if (options?.audience) tokenOptions.audience = options.audience
+      if (options?.scope) tokenOptions.scope = options.scope
+
       const token = await auth0Client.getAccessTokenSilently(
-        options && Object.keys(options).length > 0
-          ? {
-              audience: options.audience,
-              scope: options.scope,
-            }
-          : undefined
+        Object.keys(tokenOptions).length > 0 ? tokenOptions : undefined
       )
       const accessToken =
         typeof token === 'string'

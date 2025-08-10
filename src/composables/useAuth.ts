@@ -17,6 +17,7 @@ import type {
   RegistrationInitRequest,
   RegistrationResponse,
   RegistrationStatus,
+  RegistrationStatusResponse,
   RegistrationState,
   RegistrationError,
 } from '@/types/registration.types'
@@ -324,7 +325,7 @@ export const useAuth = (): UseAuthReturn => {
     }
   }
 
-  const checkRegistrationStatus = async (auth0Id: string): Promise<RegistrationStatus> => {
+  const checkRegistrationStatus = async (auth0Id: string): Promise<RegistrationStatusResponse> => {
     try {
       const status = await RegistrationAPI.getRegistrationStatus(auth0Id)
 
@@ -353,9 +354,9 @@ export const useAuth = (): UseAuthReturn => {
 
       // Retry the last failed operation
       if (state.step === 'email_verification') {
-        await resendVerificationEmail(state.email)
+        await resendVerificationEmail(state.email || '')
       } else {
-        await registerWithRedirect(state.email, state.source)
+        await registerWithRedirect(state.email || '', state.source || 'retry')
       }
     } catch (err) {
       console.error('Registration retry failed:', err)
