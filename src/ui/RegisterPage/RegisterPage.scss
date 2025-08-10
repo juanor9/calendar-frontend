@@ -65,6 +65,10 @@
     &:focus {
       outline: none;
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   }
 
   // HEADER SECTION
@@ -305,7 +309,11 @@
 
   // DARK MODE SUPPORT
   @media (prefers-color-scheme: dark) {
-    background: linear-gradient(135deg, $auth-dark-bg 0%, color.adjust($auth-dark-bg, $lightness: -5%) 100%);
+    background: linear-gradient(
+      135deg,
+      $auth-dark-bg 0%,
+      color.adjust($auth-dark-bg, $lightness: -5%) 100%
+    );
 
     .register-page__card {
       background: $auth-dark-card-bg;
@@ -376,12 +384,5 @@
   to {
     opacity: 100%;
     transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-  .register-page__card {
-    animation: none;
   }
 }
