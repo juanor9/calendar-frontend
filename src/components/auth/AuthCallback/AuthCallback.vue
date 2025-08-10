@@ -57,7 +57,6 @@
   import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline'
   import BaseButton from '@/ui/BaseButton/BaseButton.vue'
   import { useAuth } from '@/auth/auth-composable'
-  import type { AppState } from '@/auth/types'
 
   // Router
   const router = useRouter()
@@ -146,14 +145,20 @@
     }
   }
 
-  const redirectToIntendedDestination = (result?: { appState?: AppState | undefined }) => {
+  const redirectToIntendedDestination = (result?: {
+    appState?: Record<string, unknown> | undefined
+  }) => {
     try {
       // Try to get redirect URL from multiple sources
       let redirectUrl = '/'
 
       // 1. From callback result app state
-      if (result?.appState?.targetUrl) {
-        redirectUrl = result.appState.targetUrl
+      if (
+        result?.appState &&
+        typeof result.appState === 'object' &&
+        'targetUrl' in result.appState
+      ) {
+        redirectUrl = result.appState.targetUrl as string
       }
       // 2. From query parameters
       else if (route.query.redirect && typeof route.query.redirect === 'string') {

@@ -188,7 +188,31 @@ export const useOnboardingStore = defineStore('onboarding', () => {
         }
 
         if (existingState.preferences) {
-          preferences.value = { ...DEFAULT_PREFERENCES, ...existingState.preferences }
+          // Convert UserPreferences to OnboardingPreferences format
+          const prefs = existingState.preferences as Record<string, unknown>
+          preferences.value = {
+            ...DEFAULT_PREFERENCES,
+            workStyle: (prefs?.workStyle as WorkStyle) || null,
+            workHours: (prefs?.workHours as WorkHours) || null,
+            meetingPreferences: (prefs?.meetingPreferences as MeetingPreferences) || null,
+            focusTimePreferences: (prefs?.focusTimePreferences as FocusTimePreferences) || null,
+            aiOptimizationLevel: (prefs?.aiOptimizationLevel as AIOptimizationLevel) || null,
+            theme: existingState.preferences.theme || 'auto',
+            notifications: {
+              email:
+                typeof existingState.preferences.notifications === 'object'
+                  ? (existingState.preferences.notifications.email?.enabled ?? true)
+                  : true,
+              push:
+                typeof existingState.preferences.notifications === 'object'
+                  ? (existingState.preferences.notifications.push?.enabled ?? true)
+                  : true,
+              inApp:
+                typeof existingState.preferences.notifications === 'object'
+                  ? (existingState.preferences.notifications.inApp?.enabled ?? true)
+                  : true,
+            },
+          }
         }
       } else {
         // Start fresh onboarding
@@ -220,8 +244,9 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   }
 
   const updateStepData = (step: OnboardingStep, data: Record<string, unknown>) => {
+    const existingStepData = wizard.value.stepData[step] as Record<string, unknown> | undefined
     wizard.value.stepData[step] = {
-      ...wizard.value.stepData[step],
+      ...(existingStepData || {}),
       ...data,
     }
     wizard.value.lastActivityAt = new Date()
@@ -457,13 +482,20 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     try {
       if (!userId.value) return
 
-      const savedProgress = await OnboardingAPI.loadProgress(userId.value)
+      const rawProgress = await OnboardingAPI.loadProgress(userId.value)
+      const savedProgress = rawProgress as {
+        wizard?: Partial<OnboardingWizardState>
+        preferences?: Partial<OnboardingPreferences>
+        calendarIntegration?: Partial<OnboardingCalendarIntegration>
+      } | null
 
       if (savedProgress) {
-        wizard.value = {
-          ...wizard.value,
-          ...savedProgress.wizard,
-          lastActivityAt: new Date(),
+        if (savedProgress.wizard) {
+          wizard.value = {
+            ...wizard.value,
+            ...savedProgress.wizard,
+            lastActivityAt: new Date(),
+          }
         }
 
         if (savedProgress.preferences) {

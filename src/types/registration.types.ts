@@ -7,10 +7,11 @@
 // Auth Types
 // ============================================================================
 
-// Re-export User from auth types to maintain compatibility
-export type { User } from '@/auth/types'
+// Import types for local use and re-export
+import type { User as AuthUser, AppState as AuthAppState } from '@/auth/types'
 
-// Re-export AppState from auth types to maintain compatibility
+// Re-export for external use
+export type { User } from '@/auth/types'
 export type { AppState } from '@/auth/types'
 
 export interface LoginOptions {
@@ -23,7 +24,7 @@ export interface LoginOptions {
   redirect_uri?: string
   response_type?: string
   response_mode?: string
-  appState?: AppState
+  appState?: AuthAppState
 }
 
 export type Role = import('@/auth/types').Role
@@ -41,7 +42,7 @@ export type RegistrationStatus =
 
 export interface UserResponse {
   success: boolean
-  user?: User
+  user?: AuthUser
   error?: string
 }
 

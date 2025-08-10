@@ -529,7 +529,20 @@ export class OnboardingAPI extends BaseApiClient {
       [key: string]: unknown
     }
   ): Promise<void> {
-    return this.updatePreferences(userId, preferences)
+    // Update each preference type individually since they don't match UserPreferences structure
+    const promises: Promise<void>[] = []
+
+    if (preferences.workStyle) {
+      promises.push(this.updateWorkStyle(userId, preferences.workStyle))
+    }
+    if (preferences.workHours) {
+      promises.push(this.updateWorkHours(userId, preferences.workHours))
+    }
+    if (preferences.meetingPreferences) {
+      promises.push(this.updateMeetingPreferences(userId, preferences.meetingPreferences))
+    }
+
+    await Promise.all(promises)
   }
 }
 

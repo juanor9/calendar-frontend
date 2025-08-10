@@ -186,9 +186,9 @@ Sets up AI optimization levels and preferences
   onMounted(() => {
     if (props.stepData) {
       selectedLevel.value = props.stepData.optimizationLevel || 'balanced'
-      if (props.stepData.preferences) {
+      if (props.stepData?.preferences) {
         aiPreferences.value.forEach(pref => {
-          if (props.stepData.preferences[pref.id] !== undefined) {
+          if (props.stepData?.preferences?.[pref.id] !== undefined) {
             pref.enabled = props.stepData.preferences[pref.id]
           }
         })

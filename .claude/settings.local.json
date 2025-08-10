@@ -5,7 +5,9 @@
       "Bash(git commit:*)",
       "Bash(npx vue-tsc:*)",
       "Bash(npm run build:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

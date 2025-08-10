@@ -146,12 +146,12 @@ Main container for the multi-step onboarding process
       </template>
 
       <div class="error-content">
-        <p class="error-message">{{ error.userMessage || error.message }}</p>
+        <p class="error-message">{{ error?.userMessage || error?.message }}</p>
 
         <div class="error-actions">
           <BaseButton variant="outline" @click="clearError"> Dismiss </BaseButton>
 
-          <BaseButton v-if="error.retryable" variant="primary" @click="retryLastAction">
+          <BaseButton v-if="error?.retryable" variant="primary" @click="retryLastAction">
             Try Again
           </BaseButton>
         </div>
@@ -560,8 +560,14 @@ Main container for the multi-step onboarding process
           .replace(/([a-z])([A-Z])/g, '$1_$2')
           .toLowerCase()
 
-        if (stepFromRoute !== currentStep.value) {
-          goToStep(stepFromRoute as string)
+        const isValidStep = (
+          step: string
+        ): step is import('@/types/registration.types').OnboardingStep => {
+          return ['welcome', 'preferences', 'calendar_sync', 'ai_setup', 'tutorial'].includes(step)
+        }
+
+        if (stepFromRoute !== currentStep.value && isValidStep(stepFromRoute)) {
+          goToStep(stepFromRoute)
         }
       }
     }

@@ -149,7 +149,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
     const stepConfig = STEP_CONFIGS.find(config => config.id === currentStep.value)
     if (!stepConfig?.validationRules) return true
 
-    const data = stepData.value[currentStep.value]
+    const data = stepData.value[currentStep.value] as Record<string, unknown> | undefined
     if (!data) return !stepConfig.required
 
     return stepConfig.validationRules.every(rule => {
@@ -159,11 +159,16 @@ export const useOnboarding = (): UseOnboardingReturn => {
         case 'required':
           return value !== undefined && value !== null && value !== ''
         case 'email':
-          return !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+          return !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value))
         case 'min':
-          return !value || value.length >= (rule.value || 0)
+          return (
+            !value || (typeof value === 'string' && value.length >= ((rule.value as number) || 0))
+          )
         case 'max':
-          return !value || value.length <= (rule.value || Infinity)
+          return (
+            !value ||
+            (typeof value === 'string' && value.length <= ((rule.value as number) || Infinity))
+          )
         case 'custom':
           return !rule.validator || rule.validator(value)
         default:
@@ -426,8 +431,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
     message,
     userMessage,
     retryable: true,
-    timestamp: new Date(),
-    step: currentStep.value,
+    timestamp: Date.now(),
   })
 
   const trackStepViewed = (step: OnboardingStep) => {
