@@ -1,0 +1,750 @@
+<!--
+Calendar Demo Widget
+Interactive demo showing calendar transformation for landing page
+-->
+<template>
+  <div class="calendar-demo-widget">
+    <div class="demo-container" :class="{ transforming: isTransforming }">
+      <!-- Before/After Toggle -->
+      <div class="demo-toggle">
+        <button
+          v-for="state in demoStates"
+          :key="state.id"
+          class="toggle-button"
+          :class="{ active: currentState === state.id }"
+          @click="setDemoState(state.id)"
+        >
+          {{ state.label }}
+        </button>
+      </div>
+
+      <!-- Calendar Visualization -->
+      <div class="calendar-container">
+        <!-- Timeline View -->
+        <div class="timeline-header">
+          <h3 class="demo-title">{{ currentStateData.title }}</h3>
+          <p class="demo-subtitle">{{ currentStateData.subtitle }}</p>
+        </div>
+
+        <div class="timeline-content">
+          <!-- Time Labels -->
+          <div class="time-labels">
+            <div v-for="hour in timeSlots" :key="hour" class="time-label">
+              {{ formatTime(hour) }}
+            </div>
+          </div>
+
+          <!-- Calendar Events -->
+          <div class="events-container">
+            <TransitionGroup name="event" tag="div">
+              <div
+                v-for="event in currentEvents"
+                :key="event.id"
+                class="calendar-event"
+                :class="[`event--${event.type}`, { 'event--optimized': event.optimized }]"
+                :style="getEventStyle(event)"
+              >
+                <div class="event-title">{{ event.title }}</div>
+                <div class="event-time">{{ event.duration }}min</div>
+                <div v-if="event.optimized" class="optimization-badge">
+                  <SparklesIcon class="w-3 h-3" />
+                </div>
+              </div>
+            </TransitionGroup>
+          </div>
+        </div>
+
+        <!-- Transformation Button -->
+        <div v-if="showTransformation" class="transformation-controls">
+          <button class="transform-button" :disabled="isTransforming" @click="startTransformation">
+            <template v-if="isTransforming">
+              <div class="loading-spinner"></div>
+              Optimizing...
+            </template>
+            <template v-else>
+              <SparklesIcon class="w-5 h-5" />
+              Transform My Day
+            </template>
+          </button>
+        </div>
+      </div>
+
+      <!-- Insights Panel -->
+      <div class="insights-panel" :class="{ visible: showInsights }">
+        <h4 class="insights-title">Optimization Results</h4>
+        <div class="insights-grid">
+          <div v-for="insight in currentInsights" :key="insight.id" class="insight-item">
+            <div class="insight-icon" :class="`icon--${insight.type}`">
+              <component :is="insight.icon" class="w-5 h-5" />
+            </div>
+            <div class="insight-content">
+              <div class="insight-value">{{ insight.value }}</div>
+              <div class="insight-label">{{ insight.label }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+      <button class="control-button" title="Restart Demo" @click="restartDemo">
+        <ArrowPathIcon class="w-4 h-4" />
+      </button>
+
+      <button
+        class="control-button"
+        :class="{ active: autoPlay }"
+        title="Auto Play"
+        @click="toggleAutoPlay"
+      >
+        <PlayIcon v-if="!autoPlay" class="w-4 h-4" />
+        <PauseIcon v-else class="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+  import {
+    SparklesIcon,
+    ClockIcon,
+    CalendarIcon,
+    CheckCircleIcon,
+    ArrowPathIcon,
+    PlayIcon,
+    PauseIcon,
+  } from '@heroicons/vue/24/outline'
+
+  interface CalendarEvent {
+    id: string
+    title: string
+    start: number // hour in decimal (e.g., 9.5 for 9:30)
+    duration: number // minutes
+    type: 'meeting' | 'focus' | 'break' | 'personal'
+    optimized?: boolean
+  }
+
+  interface DemoState {
+    id: 'before' | 'after'
+    label: string
+    title: string
+    subtitle: string
+    events: CalendarEvent[]
+    insights: Insight[]
+  }
+
+  interface Insight {
+    id: string
+    type: 'time' | 'meetings' | 'focus' | 'efficiency'
+    icon: unknown
+    value: string
+    label: string
+  }
+
+  interface Props {
+    showTransformation?: boolean
+    autoPlay?: boolean
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    showTransformation: true,
+    autoPlay: false,
+  })
+
+  const emit = defineEmits<{
+    transformationComplete: []
+    demoRestart: []
+  }>()
+
+  // State management
+  const currentState = ref<'before' | 'after'>('before')
+  const isTransforming = ref(false)
+  const showInsights = ref(false)
+  const autoPlay = ref(props.autoPlay)
+
+  // Demo data
+  const demoStates: DemoState[] = [
+    {
+      id: 'before',
+      label: 'Before',
+      title: 'Chaotic Calendar',
+      subtitle: 'Context switching every 30 minutes',
+      events: [
+        { id: '1', title: 'Team Standup', start: 9, duration: 30, type: 'meeting' },
+        { id: '2', title: 'Quick Chat', start: 9.5, duration: 15, type: 'meeting' },
+        { id: '3', title: 'Code Review', start: 10, duration: 45, type: 'meeting' },
+        { id: '4', title: 'Write Documentation', start: 11, duration: 30, type: 'focus' },
+        { id: '5', title: 'Client Call', start: 11.5, duration: 60, type: 'meeting' },
+        { id: '6', title: 'Lunch Break', start: 12.5, duration: 30, type: 'break' },
+        { id: '7', title: 'Feature Development', start: 13, duration: 45, type: 'focus' },
+        { id: '8', title: 'Design Review', start: 14, duration: 30, type: 'meeting' },
+        { id: '9', title: 'Bug Fixes', start: 14.5, duration: 60, type: 'focus' },
+        { id: '10', title: 'Team Sync', start: 15.5, duration: 30, type: 'meeting' },
+        { id: '11', title: 'Email', start: 16, duration: 30, type: 'personal' },
+        { id: '12', title: '1:1 with Manager', start: 16.5, duration: 30, type: 'meeting' },
+      ],
+      insights: [
+        { id: '1', type: 'meetings', icon: CalendarIcon, value: '8', label: 'Meetings' },
+        { id: '2', type: 'focus', icon: ClockIcon, value: '2h 15m', label: 'Focus Time' },
+        { id: '3', type: 'efficiency', icon: CheckCircleIcon, value: '45%', label: 'Efficiency' },
+      ],
+    },
+    {
+      id: 'after',
+      label: 'After',
+      title: 'Optimized Schedule',
+      subtitle: 'Protected focus blocks with clustered meetings',
+      events: [
+        {
+          id: '1',
+          title: 'Morning Focus Block',
+          start: 9,
+          duration: 150,
+          type: 'focus',
+          optimized: true,
+        },
+        { id: '2', title: 'Lunch Break', start: 11.5, duration: 60, type: 'break' },
+        {
+          id: '3',
+          title: 'Meeting Cluster',
+          start: 12.5,
+          duration: 120,
+          type: 'meeting',
+          optimized: true,
+        },
+        {
+          id: '4',
+          title: 'Deep Work Session',
+          start: 14.5,
+          duration: 120,
+          type: 'focus',
+          optimized: true,
+        },
+        {
+          id: '5',
+          title: 'Admin & Email',
+          start: 16.5,
+          duration: 60,
+          type: 'personal',
+          optimized: true,
+        },
+      ],
+      insights: [
+        { id: '1', type: 'meetings', icon: CalendarIcon, value: '4', label: 'Meetings' },
+        { id: '2', type: 'focus', icon: ClockIcon, value: '4h 30m', label: 'Focus Time' },
+        { id: '3', type: 'efficiency', icon: CheckCircleIcon, value: '85%', label: 'Efficiency' },
+        { id: '4', type: 'time', icon: SparklesIcon, value: '2h 15m', label: 'Time Saved' },
+      ],
+    },
+  ]
+
+  // Time configuration
+  const timeSlots = Array.from({ length: 9 }, (_, i) => 9 + i) // 9 AM to 5 PM
+
+  // Auto-play management
+  let autoPlayInterval: number | null = null
+
+  /**
+   * Computed Properties
+   */
+
+  const currentStateData = computed(
+    () => demoStates.find(state => state.id === currentState.value) || demoStates[0]
+  )
+
+  const currentEvents = computed(() => currentStateData.value.events)
+
+  const currentInsights = computed(() => currentStateData.value.insights)
+
+  /**
+   * Event Handlers
+   */
+
+  const setDemoState = (stateId: 'before' | 'after') => {
+    if (isTransforming.value) return
+
+    currentState.value = stateId
+    showInsights.value = stateId === 'after'
+  }
+
+  const startTransformation = async () => {
+    if (isTransforming.value) return
+
+    isTransforming.value = true
+
+    // Simulate transformation process
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    currentState.value = 'after'
+    showInsights.value = true
+    isTransforming.value = false
+
+    emit('transformationComplete')
+  }
+
+  const restartDemo = () => {
+    currentState.value = 'before'
+    showInsights.value = false
+    isTransforming.value = false
+
+    emit('demoRestart')
+  }
+
+  const toggleAutoPlay = () => {
+    autoPlay.value = !autoPlay.value
+
+    if (autoPlay.value) {
+      startAutoPlay()
+    } else {
+      stopAutoPlay()
+    }
+  }
+
+  const startAutoPlay = () => {
+    if (autoPlayInterval) return
+
+    autoPlayInterval = window.setInterval(() => {
+      if (currentState.value === 'before' && !isTransforming.value) {
+        startTransformation()
+      } else if (currentState.value === 'after') {
+        setTimeout(() => restartDemo(), 3000)
+      }
+    }, 5000)
+  }
+
+  const stopAutoPlay = () => {
+    if (autoPlayInterval) {
+      clearInterval(autoPlayInterval)
+      autoPlayInterval = null
+    }
+  }
+
+  /**
+   * Utility Functions
+   */
+
+  const formatTime = (hour: number): string => {
+    const h = Math.floor(hour)
+    const isPM = h >= 12
+    const displayHour = h > 12 ? h - 12 : h
+    return `${displayHour}${isPM ? 'pm' : 'am'}`
+  }
+
+  const getEventStyle = (event: CalendarEvent) => {
+    const startPercent = ((event.start - 9) / 8) * 100
+    const heightPercent = (event.duration / 60 / 8) * 100
+
+    return {
+      top: `${startPercent}%`,
+      height: `${heightPercent}%`,
+    }
+  }
+
+  /**
+   * Lifecycle
+   */
+
+  onMounted(() => {
+    if (props.autoPlay) {
+      setTimeout(startAutoPlay, 2000)
+    }
+  })
+
+  onUnmounted(() => {
+    stopAutoPlay()
+  })
+
+  // Watch for prop changes
+  watch(
+    () => props.autoPlay,
+    newValue => {
+      autoPlay.value = newValue
+      if (newValue) {
+        startAutoPlay()
+      } else {
+        stopAutoPlay()
+      }
+    }
+  )
+</script>
+
+<style lang="scss" scoped>
+  .calendar-demo-widget {
+    position: relative;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 25%);
+    overflow: hidden;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .demo-container {
+    padding: 1.5rem;
+
+    &.transforming {
+
+      .calendar-event {
+        animation: pulse 1s ease-in-out infinite;
+      }
+    }
+  }
+
+  /* Demo Toggle */
+
+  .demo-toggle {
+    display: flex;
+    background: #f7fafc;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+    margin-bottom: 1.5rem;
+
+    .toggle-button {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #718096;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.active {
+        background: white;
+        color: #2d3748;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 10%);
+      }
+
+      &:hover:not(.active) {
+        color: #4a5568;
+      }
+    }
+  }
+
+  /* Timeline */
+
+  .timeline-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+
+    .demo-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #2d3748;
+    }
+
+    .demo-subtitle {
+      font-size: 0.875rem;
+      color: #718096;
+    }
+  }
+
+  .timeline-content {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1rem;
+    height: 300px;
+    position: relative;
+  }
+
+  .time-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+
+    .time-label {
+      font-size: 0.75rem;
+      color: #a0aec0;
+      text-align: right;
+      line-height: 1;
+    }
+  }
+
+  /* Events */
+
+  .events-container {
+    position: relative;
+    background: #f7fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+  }
+
+  .calendar-event {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    color: white;
+    transition: all 0.3s ease;
+
+    &.event--meeting {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    &.event--focus {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+    }
+
+    &.event--break {
+      background: linear-gradient(135deg, #ed8936, #dd6b20);
+    }
+
+    &.event--personal {
+      background: linear-gradient(135deg, #9f7aea, #805ad5);
+    }
+
+    &.event--optimized {
+      box-shadow: 0 0 0 2px #ffd89b;
+
+      .optimization-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #ffd89b;
+        color: #744210;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .event-title {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      line-height: 1.2;
+    }
+
+    .event-time {
+      opacity: 80%;
+      font-size: 0.7rem;
+    }
+  }
+
+  /* Event Transitions */
+
+  .event-enter-active,
+  .event-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .event-enter-from {
+    opacity: 0%;
+    transform: scale(0.8);
+  }
+
+  .event-leave-to {
+    opacity: 0%;
+    transform: scale(0.8);
+  }
+
+  /* Transformation Controls */
+
+  .transformation-controls {
+    margin-top: 1.5rem;
+    text-align: center;
+
+    .transform-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 40%);
+      }
+
+      &:disabled {
+        opacity: 70%;
+        cursor: not-allowed;
+      }
+
+      .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 30%);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+
+  /* Insights Panel */
+
+  .insights-panel {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f7fafc;
+    border-radius: 0.5rem;
+    opacity: 0%;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+
+    &.visible {
+      opacity: 100%;
+      transform: translateY(0);
+    }
+
+    .insights-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .insight-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 0.375rem;
+
+      .insight-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.icon--time {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+        }
+
+        &.icon--meetings {
+          background: linear-gradient(135deg, #f093fb, #f5576c);
+          color: white;
+        }
+
+        &.icon--focus {
+          background: linear-gradient(135deg, #4facfe, #00f2fe);
+          color: white;
+        }
+
+        &.icon--efficiency {
+          background: linear-gradient(135deg, #43e97b, #38f9d7);
+          color: white;
+        }
+      }
+
+      .insight-content {
+
+        .insight-value {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #2d3748;
+        }
+
+        .insight-label {
+          font-size: 0.75rem;
+          color: #718096;
+        }
+      }
+    }
+  }
+
+  /* Demo Controls */
+
+  .demo-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+
+    .control-button {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #e2e8f0;
+      background: white;
+      color: #718096;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #667eea;
+        border-color: #667eea;
+      }
+
+      &.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+    }
+  }
+
+  /* Animations */
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 100%;
+    }
+
+    50% {
+      opacity: 70%;
+    }
+  }
+
+  @keyframes spin {
+
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive Design */
+  @media (width <= 640px) {
+
+    .timeline-content {
+      height: 250px;
+    }
+
+    .insights-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .calendar-event {
+      font-size: 0.7rem;
+      padding: 0.375rem;
+    }
+  }
+</style>

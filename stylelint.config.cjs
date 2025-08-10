@@ -18,5 +18,11 @@ module.exports = {
     'color-function-notation': 'legacy',
     'alpha-value-notation': 'percentage',
     'color-function-alias-notation': null,
+    'selector-pseudo-class-no-unknown': [
+      true,
+      {
+        ignorePseudoClasses: ['deep', 'global']
+      }
+    ],
   },
 }
