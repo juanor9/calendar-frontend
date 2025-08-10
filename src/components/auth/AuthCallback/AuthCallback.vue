@@ -57,6 +57,7 @@
   import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline'
   import BaseButton from '@/ui/BaseButton/BaseButton.vue'
   import { useAuth } from '@/auth/auth-composable'
+  import type { AppState } from '@/auth/types'
 
   // Router
   const router = useRouter()
@@ -145,7 +146,7 @@
     }
   }
 
-  const redirectToIntendedDestination = (result?: { appState?: { targetUrl?: string } }) => {
+  const redirectToIntendedDestination = (result?: { appState?: AppState | undefined }) => {
     try {
       // Try to get redirect URL from multiple sources
       let redirectUrl = '/'

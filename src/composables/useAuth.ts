@@ -16,10 +16,10 @@ import type {
   Permission,
   RegistrationInitRequest,
   RegistrationResponse,
-  RegistrationStatus,
   RegistrationStatusResponse,
   RegistrationState,
   RegistrationError,
+  AppState,
 } from '@/types/registration.types'
 
 // Injection key for Auth0 client
@@ -45,7 +45,7 @@ export interface UseAuthReturn {
   // Methods - Registration Flow
   initiateRegistration: (request: RegistrationInitRequest) => Promise<RegistrationResponse>
   handleRegistrationCallback: (code: string, state: string) => Promise<void>
-  checkRegistrationStatus: (auth0Id: string) => Promise<RegistrationStatus>
+  checkRegistrationStatus: (auth0Id: string) => Promise<RegistrationStatusResponse>
   retryRegistration: () => Promise<void>
 
   // Methods - Email Verification
@@ -89,7 +89,13 @@ export const useAuth = (): UseAuthReturn => {
   // Combined state
   const isAuthenticated = computed(() => auth0Authenticated.value && authStore.isAuthenticated)
 
-  const user = computed(() => authStore.user || (auth0User.value as User))
+  const user = computed((): User | null => {
+    if (authStore.user) {
+      return authStore.user
+    }
+
+    return auth0User.value ? (auth0User.value as User) : null
+  })
 
   // Registration state
   const registrationState = computed(() => registrationStore.registrationState)
@@ -155,7 +161,11 @@ export const useAuth = (): UseAuthReturn => {
 
         // Get access token and store it
         const token = await auth0Client.getAccessTokenSilently()
-        authStore.setToken(typeof token === 'string' ? token : token.access_token)
+        const accessToken =
+          typeof token === 'string'
+            ? token
+            : (token as { access_token?: string })?.access_token || token
+        authStore.setToken(accessToken)
       }
     } catch (err) {
       console.warn('Failed to sync auth state:', err)
@@ -211,7 +221,7 @@ export const useAuth = (): UseAuthReturn => {
           email,
           source,
           targetUrl: '/onboarding/welcome',
-        },
+        } as AppState,
       })
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed'

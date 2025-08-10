@@ -157,6 +157,10 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     return remainingSteps.reduce((total, step) => total + (stepTimes[step] || 60), 0)
   })
 
+  // Additional computed properties for easier access
+  const completedSteps = computed(() => wizard.value.completedSteps)
+  const skippedSteps = computed(() => wizard.value.skippedSteps)
+
   /**
    * Onboarding Actions
    */
@@ -572,6 +576,8 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     // Computed
     currentStep,
     stepData,
+    completedSteps,
+    skippedSteps,
     completionPercentage,
     isComplete,
     hasCompletedStep,

@@ -1,7 +1,7 @@
 import { computed, inject, type InjectionKey } from 'vue'
 import type { Auth0VueClient } from '@auth0/auth0-vue'
 import { useAuthStore } from '@/store/auth'
-import type { User, LoginOptions, Role, Permission } from './types'
+import type { User, LoginOptions, Role, Permission, AppState } from './types'
 
 // Injection key for Auth0 client
 export const Auth0ClientKey: InjectionKey<Auth0VueClient> = Symbol('Auth0Client')
@@ -155,7 +155,8 @@ export const useAuth = () => {
 
       if (result && result.appState) {
         // Redirect to intended URL if stored in app state
-        const targetUrl = result.appState.targetUrl || '/'
+        const appState = result.appState as AppState
+        const targetUrl = appState.targetUrl || '/'
         window.history.replaceState({}, document.title, targetUrl)
       }
 

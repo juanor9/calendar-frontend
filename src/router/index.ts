@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout/DefaultLayout.vue'
-import AuthCallback from '@/components/auth/AuthCallback.vue'
+import AuthCallback from '@/components/auth/AuthCallback/AuthCallback.vue'
 import {
   authGuard,
   guestGuard,

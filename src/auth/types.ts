@@ -24,6 +24,10 @@ export interface User extends Auth0User {
   address?: string
   updated_at?: string
 
+  // Additional custom fields for registration compatibility
+  id?: string
+  created_at?: string
+
   // Custom app metadata
   'https://vana.app/roles'?: string[]
   'https://vana.app/permissions'?: string[]
@@ -51,11 +55,17 @@ export interface AuthState {
   token: string | null
 }
 
+// App State for Auth0 callbacks
+export interface AppState {
+  targetUrl?: string
+  action?: string
+  email?: string
+  source?: string
+}
+
 export interface LoginOptions {
   redirect_uri?: string
-  appState?: {
-    targetUrl?: string
-  }
+  appState?: AppState
 }
 
 export interface AuthConfig {

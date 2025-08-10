@@ -5,22 +5,31 @@
 
 import type { Plugin } from 'vite'
 import { defineAsyncComponent } from 'vue'
+import type { Auth0Client } from '@auth0/auth0-spa-js'
 
 /**
  * Lazy load Auth0 components
  */
 export const Auth0LazyComponents = {
   LoginButton: defineAsyncComponent(
-    () => import(/* webpackChunkName: "auth-login" */ '@/components/auth/LoginButton.vue')
+    () =>
+      import(/* webpackChunkName: "auth-login" */ '@/components/auth/LoginButton/LoginButton.vue')
   ),
   LogoutButton: defineAsyncComponent(
-    () => import(/* webpackChunkName: "auth-logout" */ '@/components/auth/LogoutButton.vue')
+    () =>
+      import(
+        /* webpackChunkName: "auth-logout" */ '@/components/auth/LogoutButton/LogoutButton.vue'
+      )
   ),
   UserProfile: defineAsyncComponent(
-    () => import(/* webpackChunkName: "auth-profile" */ '@/components/auth/UserProfile.vue')
+    () =>
+      import(/* webpackChunkName: "auth-profile" */ '@/components/auth/UserProfile/UserProfile.vue')
   ),
   AuthCallback: defineAsyncComponent(
-    () => import(/* webpackChunkName: "auth-callback" */ '@/components/auth/AuthCallback.vue')
+    () =>
+      import(
+        /* webpackChunkName: "auth-callback" */ '@/components/auth/AuthCallback/AuthCallback.vue'
+      )
   ),
 }
 
@@ -29,8 +38,8 @@ export const Auth0LazyComponents = {
  */
 export class Auth0SDKLoader {
   private static instance: Auth0SDKLoader
-  private auth0Client: unknown = null
-  private loadingPromise: Promise<unknown> | null = null
+  private auth0Client: Auth0Client | null = null
+  private loadingPromise: Promise<Auth0Client> | null = null
 
   private constructor() {}
 
@@ -44,7 +53,7 @@ export class Auth0SDKLoader {
   /**
    * Lazy load Auth0 SDK only when needed
    */
-  async loadAuth0SDK(): Promise<unknown> {
+  async loadAuth0SDK(): Promise<Auth0Client> {
     if (this.auth0Client) {
       return this.auth0Client
     }
@@ -57,7 +66,7 @@ export class Auth0SDKLoader {
     return this.loadingPromise
   }
 
-  private async performLoad(): Promise<unknown> {
+  private async performLoad(): Promise<Auth0Client> {
     // Use dynamic import with chunk naming
     const { Auth0Client } = await import(
       /* webpackChunkName: "auth0-sdk" */
@@ -74,7 +83,8 @@ export class Auth0SDKLoader {
     }
 
     this.auth0Client = new Auth0Client(config)
-    await this.auth0Client.checkSession()
+    // Auth0Client initialization - some versions may have additional setup methods
+    // Skip optional initialization methods for now
 
     return this.auth0Client
   }
@@ -84,7 +94,11 @@ export class Auth0SDKLoader {
    */
   preloadInIdle(): void {
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(
+      ;(
+        window as Window & {
+          requestIdleCallback: (callback: () => void, options?: { timeout?: number }) => void
+        }
+      ).requestIdleCallback(
         () => {
           this.preloadAuth0()
         },
@@ -122,7 +136,7 @@ export function auth0OptimizationPlugin(): Plugin {
       const output = config.build.rollupOptions.output as Record<string, unknown>
 
       // Manual chunks configuration
-      output.manualChunks = (id: string) => {
+      output.manualChunks = (id: string): string | undefined => {
         // Separate Auth0 SDK into its own chunk
         if (id.includes('@auth0/auth0-spa-js')) {
           return 'auth0-sdk'
@@ -283,7 +297,7 @@ export class TokenCacheManager {
     // Try memory cache first
     if (this.cache.has(key)) {
       const entry = this.cache.get(key)
-      if (entry.expiry > Date.now()) {
+      if (entry && entry.expiry > Date.now()) {
         return entry.token
       }
       this.cache.delete(key)

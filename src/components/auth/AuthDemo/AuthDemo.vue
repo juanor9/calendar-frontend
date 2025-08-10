@@ -38,13 +38,13 @@
               class="auth-demo__avatar-image"
             />
             <div v-else class="auth-demo__avatar-fallback">
-              {{ getUserDisplayName().charAt(0).toUpperCase() }}
+              {{ (getUserDisplayName() || 'U').charAt(0).toUpperCase() }}
             </div>
           </div>
           <div class="auth-demo__user-details">
             <div><strong>Nombre:</strong> {{ getUserDisplayName() }}</div>
-            <div v-if="user.email"><strong>Email:</strong> {{ user.email }}</div>
-            <div v-if="user.sub"><strong>ID:</strong> {{ user.sub }}</div>
+            <div v-if="user?.email"><strong>Email:</strong> {{ user.email }}</div>
+            <div v-if="user?.sub"><strong>ID:</strong> {{ user.sub }}</div>
             <div v-if="getUserRoles().length > 0">
               <strong>Roles:</strong> {{ getUserRoles().join(', ') }}
             </div>

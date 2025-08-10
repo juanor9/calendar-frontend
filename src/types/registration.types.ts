@@ -7,21 +7,11 @@
 // Auth Types
 // ============================================================================
 
-export interface User {
-  // Auth0 User fields
-  sub: string
-  name?: string
-  email?: string
-  picture?: string
-  email_verified?: boolean
+// Re-export User from auth types to maintain compatibility
+export type { User } from '@/auth/types'
 
-  // Custom fields
-  id: string
-  created_at: string
-  updated_at: string
-  user_metadata?: Record<string, unknown>
-  app_metadata?: Record<string, unknown>
-}
+// Re-export AppState from auth types to maintain compatibility
+export type { AppState } from '@/auth/types'
 
 export interface LoginOptions {
   audience?: string
@@ -33,9 +23,7 @@ export interface LoginOptions {
   redirect_uri?: string
   response_type?: string
   response_mode?: string
-  appState?: {
-    targetUrl?: string
-  }
+  appState?: AppState
 }
 
 export type Role = import('@/auth/types').Role

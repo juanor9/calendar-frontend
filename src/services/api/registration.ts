@@ -6,7 +6,7 @@
 import type {
   RegistrationInitRequest,
   RegistrationResponse,
-  RegistrationStatus,
+  RegistrationStatusResponse,
   UserResponse,
   CallbackRequest,
 } from '@/types/registration.types'
@@ -86,7 +86,7 @@ class BaseApiClient {
     } catch (error) {
       clearTimeout(timeoutId)
 
-      if (error.name === 'AbortError') {
+      if ((error as Error).name === 'AbortError') {
         throw new ApiError('Request timeout', 'TIMEOUT', 408)
       }
 
@@ -233,11 +233,11 @@ export class RegistrationAPI extends BaseApiClient {
   /**
    * Get registration status for a user
    */
-  static async getRegistrationStatus(auth0Id: string): Promise<RegistrationStatus> {
+  static async getRegistrationStatus(auth0Id: string): Promise<RegistrationStatusResponse> {
     const client = new RegistrationAPI()
 
     try {
-      const response = await client.get<ApiResponse<RegistrationStatus>>(
+      const response = await client.get<ApiResponse<RegistrationStatusResponse>>(
         `/auth/register/status/${encodeURIComponent(auth0Id)}`
       )
 
