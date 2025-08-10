@@ -189,7 +189,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
 
         if (existingState.preferences) {
           // Convert UserPreferences to OnboardingPreferences format
-          const prefs = existingState.preferences as Record<string, unknown>
+          const prefs = existingState.preferences as unknown as Record<string, unknown>
           preferences.value = {
             ...DEFAULT_PREFERENCES,
             workStyle: (prefs?.workStyle as WorkStyle) || null,
