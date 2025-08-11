@@ -3,7 +3,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import VueInspector from 'vite-plugin-vue-inspector'
-import path from 'path' // <-- ¡Añade esta línea!
 
 const isStorybook = !!process.env.STORYBOOK
 const isVitest = !!process.env.VITEST
@@ -17,7 +16,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
     // AÑADE ESTA LÍNEA:
     // Indica a Vite qué extensiones de archivo debe intentar resolver automáticamente.

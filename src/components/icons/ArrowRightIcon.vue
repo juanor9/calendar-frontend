@@ -17,9 +17,4 @@
   }
 </script>
 
-<style scoped>
-  .arrow-right-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-</style>
+<style lang="scss" src="./ArrowRightIcon.scss"></style>

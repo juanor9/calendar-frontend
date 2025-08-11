@@ -1,24 +1,15 @@
 import type { StorybookConfig } from '@storybook/vue3-vite'
-import { mergeConfig, type Plugin, type UserConfig } from 'vite'
-import viteConfig from '../vite.config'
-
-/* Plugins que no queremos en Storybook */
-const BLOCKLIST = [
-  'vite-plugin-vue-devtools',
-  'vite-plugin-vue-inspector',
-  'storybook:vue-docgen-plugin',
-  'storybook:vue-template-compilation',
-]
+import { fileURLToPath, URL } from 'node:url'
+import type { UserConfig } from 'vite'
 
 const config: StorybookConfig = {
-  stories: ['../src/**/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
 
-  addons: ['@storybook/addon-links', '@storybook/addon-a11y'],
+  addons: ['@storybook/addon-links', '@storybook/addon-a11y', '@storybook/addon-docs'],
 
   framework: {
     name: '@storybook/vue3-vite',
     options: {
-      /* Motor docgen moderno y estable */
       docgen: {
         plugin: 'vue-component-meta',
         tsconfig: 'tsconfig.app.json',
@@ -26,30 +17,46 @@ const config: StorybookConfig = {
     },
   },
 
-  core: { builder: '@storybook/builder-vite' },
+  core: {
+    builder: '@storybook/builder-vite',
+    disableTelemetry: true,
+  },
 
-  async viteFinal(stb: UserConfig) {
-    const merged = mergeConfig(stb, viteConfig as UserConfig)
+  async viteFinal(config: UserConfig) {
+    // Return minimal Vite configuration optimized for Storybook
+    return {
+      ...config,
+      resolve: {
+        ...config.resolve,
+        alias: {
+          ...config.resolve?.alias,
+          '@': fileURLToPath(new URL('../src', import.meta.url)),
+        },
+        extensions: ['.mjs', '.ts', '.js', '.jsx', '.tsx', '.json', '.vue'],
+      },
+      css: {
+        ...config.css,
+        preprocessorOptions: {
+          scss: {
+            additionalData: `@use "@/styles/_tokens.scss" as *;\n`,
+          },
+        },
+      },
+      define: {
+        ...config.define,
+        // Ensure process.env.STORYBOOK is available
+        'process.env.STORYBOOK': JSON.stringify('true'),
+      },
+    }
+  },
 
-    /* 1. Filtra plugins conflictivos */
-    let plugins = (merged.plugins ?? []).filter((p: Plugin | [Plugin]) => {
-      const name = Array.isArray(p) ? p[0].name : (p as Plugin).name
-      return !BLOCKLIST.some(bad => name?.includes(bad))
-    })
-
-    /* 2. Elimina duplicados de `vite:vue` (deja solo la primera instancia) */
-    let seenVue = false
-    plugins = plugins.filter((p: Plugin | [Plugin]) => {
-      const name = Array.isArray(p) ? p[0].name : (p as Plugin).name
-      if (name === 'vite:vue') {
-        if (seenVue) return false // descarta duplicado
-        seenVue = true
-      }
-      return true
-    })
-
-    merged.plugins = plugins
-    return merged
+  typescript: {
+    check: false,
+    reactDocgen: 'react-docgen-typescript',
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      propFilter: prop => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
+    },
   },
 }
 

@@ -1,83 +1,92 @@
+// ==============================
+// VANA DESIGN SYSTEM - HEADER BAR
+// Componente de navegación principal siguiendo la identidad visual Vana
+// Estados: authenticated, unauthenticated, mobile
+// ==============================
+
 .header-bar {
-  background-color: $brand-primary;
-  padding: 1rem 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 5%);
+  background-color: $interactive-primary;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-sm;
   height: fit-content;
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: $z-sticky;
 
   &__nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1280px;
-    margin: 0 auto;
-    gap: 2rem;
+    @include flex-between;
+    @include container($content-width-wide, 0);
+
+    gap: $spacing-xl;
   }
 
   &__brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    @include flex-start;
+
+    gap: $spacing-sm;
     flex-shrink: 0;
   }
 
   &__logo {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: $spacing-3xl;
+    height: $spacing-3xl;
     object-fit: contain;
   }
 
   &__brand-text {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: $white;
+    font-family: $font-family-primary;
+    font-size: $font-size-h5;
+    font-weight: $font-weight-bold;
+    color: $text-inverse;
     text-decoration: none;
-    transition: opacity 0.2s ease;
+    transition: $transition-opacity;
 
     &:hover {
-      opacity: 90%;
+      opacity: $opacity-hover;
     }
   }
 
   &__nav-links {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
+    @include flex-center;
+
+    gap: $spacing-lg;
     flex: 1;
-    justify-content: center;
+
+    @include mobile-tablet {
+      display: none; // Hide navigation on mobile, use sidebar instead
+    }
   }
 
   &__nav-link {
-    color: rgba($white, 0.9);
+    color: rgba($text-inverse, 0.9);
     text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease;
+    font-family: $font-family-ui;
+    font-size: $font-size-ui-sm;
+    font-weight: $font-weight-medium;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    transition: $transition-all;
     position: relative;
 
     &:hover {
-      color: $white;
-      background-color: rgba($white, 0.1);
+      color: $text-inverse;
+      background-color: rgba($text-inverse, 0.1);
     }
 
     &--active {
-      color: $white;
-      background-color: rgba($white, 0.15);
+      color: $text-inverse;
+      background-color: rgba($text-inverse, 0.15);
 
       &::after {
         content: '';
         position: absolute;
-        bottom: -0.5rem;
+        bottom: -$spacing-sm;
         left: 50%;
         transform: translateX(-50%);
-        width: 0.25rem;
-        height: 0.25rem;
-        background-color: $white;
-        border-radius: 50%;
+        width: $spacing-xs;
+        height: $spacing-xs;
+        background-color: $text-inverse;
+        border-radius: $radius-round;
       }
     }
   }
@@ -93,67 +102,107 @@
     :deep(.user-profile__trigger) {
 
       &:hover {
-        background-color: rgba($white, 0.1);
+        background-color: rgba($text-inverse, 0.1);
       }
     }
 
     :deep(.user-profile__trigger--active) {
-      background-color: rgba($white, 0.15);
+      background-color: rgba($text-inverse, 0.15);
     }
 
     :deep(.user-profile__name) {
-      color: $white;
+      color: $text-inverse;
     }
 
     :deep(.user-profile__email) {
-      color: rgba($white, 0.8);
+      color: rgba($text-inverse, 0.8);
     }
 
     :deep(.user-profile__chevron) {
-      color: rgba($white, 0.8);
+      color: rgba($text-inverse, 0.8);
     }
   }
 
   &__login-button {
 
-    :deep(.base-button) {
-      border-color: rgba($white, 0.3);
-      color: $white;
+    :deep(.button) {
+      border-color: rgba($text-inverse, 0.3);
+      color: $text-inverse;
 
-      &:hover {
-        border-color: $white;
-        background-color: rgba($white, 0.1);
+      &:hover:not(:disabled) {
+        border-color: $text-inverse;
+        background-color: rgba($text-inverse, 0.1);
       }
+    }
+  }
+
+  // MOBILE NAVIGATION TOGGLE
+
+  &__mobile-toggle {
+    display: none;
+
+    @include mobile-tablet {
+      display: flex;
+    }
+
+    .button {
+      background: transparent;
+      border: 1px solid rgba($text-inverse, 0.3);
+      color: $text-inverse;
+      padding: $spacing-xs;
+      min-height: auto;
+      width: auto;
+
+      &:hover:not(:disabled) {
+        background-color: rgba($text-inverse, 0.1);
+        border-color: rgba($text-inverse, 0.5);
+      }
+    }
+  }
+
+  // MOBILE MENU OVERLAY
+
+  &__mobile-menu {
+    position: fixed;
+    inset: 0;
+    background-color: $interactive-primary;
+    z-index: $z-modal;
+    display: none;
+    flex-direction: column;
+    padding: $spacing-lg;
+
+    &--open {
+      display: flex;
+    }
+
+    .header-bar__nav-link {
+      display: block;
+      width: 100%;
+      padding: $spacing-md;
+      text-align: center;
+      font-size: $font-size-body;
+      margin-bottom: $spacing-xs;
+    }
+
+    &-close {
+      align-self: flex-end;
+      margin-bottom: $spacing-lg;
     }
   }
 }
 
-// Responsive design
-@media (width <= 768px) {
+// RESPONSIVE DESIGN
+@include mobile-only {
 
   .header-bar {
-    padding: 1rem;
+    padding: $spacing-md;
 
     &__nav {
-      gap: 1rem;
-    }
-
-    &__nav-links {
-      display: none; // Hide navigation on mobile, use sidebar instead
+      gap: $spacing-md;
     }
 
     &__brand-text {
       display: none; // Hide brand text on very small screens
-    }
-  }
-}
-
-@media (width <= 480px) {
-
-  .header-bar {
-
-    &__brand-text {
-      display: none;
     }
   }
 }

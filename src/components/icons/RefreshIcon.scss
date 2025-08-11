@@ -1,0 +1,158 @@
+// ==============================
+// VANA DESIGN SYSTEM - REFRESH ICON
+// Reload and sync icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.refresh-icon {
+  width: $spacing-lg; // 24px - following design tokens
+  height: $spacing-lg; // 24px
+  flex-shrink: 0;
+  transition: $transition-color;
+
+  // Responsive sizing
+
+  &--small {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: rotate(-45deg);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations - semantic for sync and reload states
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--info {
+    color: $info-primary;
+  }
+
+  &--success {
+    color: $success-primary;
+  }
+
+  &--warning {
+    color: $warning-primary;
+  }
+
+  &--error {
+    color: $error-primary;
+  }
+
+  &--muted {
+    color: $neutral-primary;
+  }
+
+  // Animation states for different refresh scenarios
+
+  &--spinning {
+    animation: spin-refresh 1s linear infinite;
+  }
+
+  &--syncing {
+    animation: sync-refresh 2s ease-in-out infinite;
+  }
+
+  &--loading {
+    animation: loading-pulse 1.5s ease-in-out infinite;
+  }
+
+  // Quick refresh indication
+
+  &--quick {
+    animation: quick-refresh 0.6s ease-out;
+  }
+}
+
+@keyframes spin-refresh {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sync-refresh {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+    opacity: 100%;
+  }
+
+  25% {
+    transform: rotate(90deg);
+    opacity: 70%;
+  }
+
+  50% {
+    transform: rotate(180deg);
+    opacity: 50%;
+  }
+
+  75% {
+    transform: rotate(270deg);
+    opacity: 70%;
+  }
+}
+
+@keyframes loading-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 100%;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 60%;
+  }
+}
+
+@keyframes quick-refresh {
+
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  25% {
+    transform: rotate(-45deg) scale(1.1);
+  }
+
+  50% {
+    transform: rotate(-90deg) scale(1.2);
+  }
+
+  75% {
+    transform: rotate(-135deg) scale(1.1);
+  }
+
+  100% {
+    transform: rotate(-180deg) scale(1);
+  }
+}
