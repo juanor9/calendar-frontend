@@ -1,0 +1,58 @@
+// ==============================
+// VANA DESIGN SYSTEM - ARROW RIGHT ICON
+// Navigation icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.arrow-right-icon {
+  width: $spacing-lg; // 24px - following design tokens
+  height: $spacing-lg; // 24px
+  flex-shrink: 0;
+  transition: $transition-color;
+
+  // Responsive sizing
+
+  &--small {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateX(2px);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--success {
+    color: $success-primary;
+  }
+
+  &--warning {
+    color: $warning-primary;
+  }
+
+  &--error {
+    color: $error-primary;
+  }
+}

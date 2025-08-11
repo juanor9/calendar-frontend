@@ -7,10 +7,27 @@ const meta: Meta<typeof BaseButton> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'danger'],
+      options: ['primary', 'secondary', 'ghost', 'outline'],
+    },
+    size: {
+      control: 'select',
+      options: ['small', 'medium', 'large'],
+    },
+    width: {
+      control: 'select',
+      options: ['auto', 'full'],
     },
     disabled: { control: 'boolean' },
+    loading: { control: 'boolean' },
+    iconOnly: { control: 'boolean' },
     label: { control: 'text' },
+    leftIcon: { control: 'text' },
+    rightIcon: { control: 'text' },
+    type: {
+      control: 'select',
+      options: ['button', 'submit', 'reset'],
+    },
+    ariaLabel: { control: 'text' },
   },
 }
 export default meta
@@ -25,10 +42,22 @@ export const Secondary: Story = {
   args: { label: 'Secondary', variant: 'secondary' },
 }
 
+export const Ghost: Story = {
+  args: { label: 'Ghost', variant: 'ghost' },
+}
+
 export const Outline: Story = {
   args: { label: 'Outline', variant: 'outline' },
 }
 
 export const Disabled: Story = {
   args: { label: 'Disabled', disabled: true },
+}
+
+export const Loading: Story = {
+  args: { label: 'Loading...', loading: true },
+}
+
+export const FullWidth: Story = {
+  args: { label: 'Full Width Button', width: 'full' },
 }

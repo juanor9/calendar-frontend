@@ -1,0 +1,120 @@
+// ==============================
+// VANA DESIGN SYSTEM - EXCLAMATION CIRCLE ICON
+// Warning and alert icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.exclamation-circle-icon {
+  width: $spacing-lg; // 24px - following design tokens
+  height: $spacing-lg; // 24px
+  flex-shrink: 0;
+  transition: $transition-color;
+
+  // Responsive sizing
+
+  &--small {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations - semantic for warnings and alerts
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--warning {
+    color: $warning-primary;
+  }
+
+  &--error {
+    color: $error-primary;
+  }
+
+  &--info {
+    color: $info-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--attention {
+    color: $accent-happy;
+  }
+
+  // Attention-grabbing animations
+
+  &--pulse {
+    animation: pulse-warning 2s ease-in-out infinite;
+  }
+
+  &--shake {
+    animation: shake-alert 0.5s ease-in-out;
+  }
+
+  &--urgent {
+    animation: urgent-flash 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-warning {
+
+  0%,
+  100% {
+    opacity: 100%;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 80%;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shake-alert {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-2px);
+  }
+
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes urgent-flash {
+
+  0%,
+  50%,
+  100% {
+    opacity: 100%;
+  }
+
+  25%,
+  75% {
+    opacity: 30%;
+  }
+}

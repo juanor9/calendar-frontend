@@ -1,0 +1,144 @@
+// ==============================
+// VANA DESIGN SYSTEM - MAIL ICON
+// Email and communication icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.mail-icon {
+  width: $spacing-lg; // 24px - following design tokens
+  height: $spacing-lg; // 24px
+  flex-shrink: 0;
+  transition: $transition-color;
+
+  // Responsive sizing
+
+  &--small {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations - semantic for email states
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--info {
+    color: $info-primary;
+  }
+
+  &--success {
+    color: $success-primary;
+  }
+
+  &--unread {
+    color: $warning-primary;
+  }
+
+  &--error {
+    color: $error-primary;
+  }
+
+  &--muted {
+    color: $neutral-primary;
+  }
+
+  // Special states for email functionality
+
+  &--new {
+    color: $success-primary;
+    animation: bounce-mail 2s ease-in-out infinite;
+  }
+
+  &--sending {
+    color: $info-primary;
+    animation: send-mail 1.5s ease-in-out infinite;
+  }
+
+  &--bounce {
+    animation: bounce-notification 0.6s ease-in-out;
+  }
+}
+
+@keyframes bounce-mail {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-4px);
+  }
+
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes send-mail {
+
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateX(4px) rotate(5deg);
+  }
+
+  50% {
+    transform: translateX(8px) rotate(10deg);
+  }
+
+  75% {
+    transform: translateX(4px) rotate(5deg);
+  }
+
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes bounce-notification {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  25% {
+    transform: scale(1.2);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  75% {
+    transform: scale(1.15);
+  }
+}

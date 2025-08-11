@@ -40,3 +40,7 @@ storybook-static
 #Linters
 .eslintcache
 .stylelintcache
+/.claude
+/.idx
+/package-lock.json
+/docs

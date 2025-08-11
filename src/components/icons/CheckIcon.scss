@@ -1,0 +1,108 @@
+// ==============================
+// VANA DESIGN SYSTEM - CHECK ICON
+// Success/confirmation icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.check-icon {
+  width: $spacing-md; // 16px - following design tokens
+  height: $spacing-md; // 16px
+  flex-shrink: 0;
+  transition: $transition-color;
+  color: $success-primary; // Default to success color
+
+  // Size variations
+
+  &--small {
+    width: $spacing-sm; // 8px
+    height: $spacing-sm;
+  }
+
+  &--medium {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-lg; // 24px
+    height: $spacing-lg;
+  }
+
+  &--extra-large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--animated {
+    animation: vana-check-appear $transition-duration-slow $transition-easing-bounce;
+  }
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--success {
+    color: $success-primary;
+  }
+
+  &--white {
+    color: $text-inverse;
+  }
+
+  &--current {
+    color: currentcolor;
+  }
+
+  // Special states
+
+  &--in-circle {
+    background-color: $success-primary;
+    color: $text-inverse;
+    border-radius: $radius-round;
+    padding: $spacing-xs;
+  }
+
+  &--in-badge {
+    background-color: rgba($success-primary, 10%);
+    color: $success-primary;
+    border-radius: $radius-sm;
+    padding: 2px;
+  }
+}
+
+// Keyframe animation for check appearance
+@keyframes vana-check-appear {
+
+  0% {
+    opacity: 0%;
+    transform: scale(0.5) rotate(-45deg);
+  }
+
+  50% {
+    opacity: 100%;
+    transform: scale(1.2) rotate(0deg);
+  }
+
+  100% {
+    opacity: 100%;
+    transform: scale(1) rotate(0deg);
+  }
+}
