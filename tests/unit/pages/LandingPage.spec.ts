@@ -28,7 +28,7 @@ vi.mock('@heroicons/vue/24/outline', () => ({
   PlayIcon: { name: 'PlayIcon', render: () => null },
   ShieldCheckIcon: { name: 'ShieldCheckIcon', render: () => null },
   ClockIcon: { name: 'ClockIcon', render: () => null },
-  CurrencyDollarIcon: { name: 'CurrencyDollarIcon', render: () => null }
+  CurrencyDollarIcon: { name: 'CurrencyDollarIcon', render: () => null },
 }))
 
 // Mock child components
@@ -46,8 +46,8 @@ vi.mock('@/ui/RegisterButton/RegisterButton.vue', () => ({
       </button>
     `,
     props: ['variant', 'size', 'loading', 'disabled'],
-    emits: ['click']
-  }
+    emits: ['click'],
+  },
 }))
 
 vi.mock('@/components/landing/CalendarDemoWidget.vue', () => ({
@@ -61,8 +61,8 @@ vi.mock('@/components/landing/CalendarDemoWidget.vue', () => ({
       </div>
     `,
     props: ['showTransformation', 'autoPlay'],
-    emits: ['transformation-complete', 'demo-restart']
-  }
+    emits: ['transformation-complete', 'demo-restart'],
+  },
 }))
 
 vi.mock('@/components/landing/ValuePropCard.vue', () => ({
@@ -75,8 +75,8 @@ vi.mock('@/components/landing/ValuePropCard.vue', () => ({
         <div>{{ stat }}</div>
       </div>
     `,
-    props: ['icon', 'title', 'description', 'stat', 'features']
-  }
+    props: ['icon', 'title', 'description', 'stat', 'features'],
+  },
 }))
 
 vi.mock('@/components/landing/FeatureShowcase.vue', () => ({
@@ -93,8 +93,8 @@ vi.mock('@/components/landing/FeatureShowcase.vue', () => ({
       </div>
     `,
     props: ['feature', 'isActive', 'index'],
-    emits: ['feature-select']
-  }
+    emits: ['feature-select'],
+  },
 }))
 
 vi.mock('@/components/landing/TestimonialGrid.vue', () => ({
@@ -107,8 +107,8 @@ vi.mock('@/components/landing/TestimonialGrid.vue', () => ({
         </div>
       </div>
     `,
-    props: ['testimonials']
-  }
+    props: ['testimonials'],
+  },
 }))
 
 describe('LandingPage', () => {
@@ -126,14 +126,14 @@ describe('LandingPage', () => {
       history: createMemoryHistory(),
       routes: [
         { path: '/', component: { template: '<div>Home</div>' } },
-        { path: '/auth/callback', component: { template: '<div>Callback</div>' } }
-      ]
+        { path: '/auth/callback', component: { template: '<div>Callback</div>' } },
+      ],
     })
 
     // Setup mock auth
     mockAuth = {
       registerWithRedirect: vi.fn(),
-      isLoading: ref(false)
+      isLoading: ref(false),
     }
 
     vi.mocked(useAuth).mockReturnValue(mockAuth)
@@ -150,23 +150,29 @@ describe('LandingPage', () => {
   const renderLandingPage = () => {
     return render(LandingPage, {
       global: {
-        plugins: [router, pinia]
-      }
+        plugins: [router, pinia],
+      },
     })
   }
 
   describe('hero section rendering', () => {
     it('displays hero content correctly', () => {
       renderLandingPage()
-      
-      expect(screen.getByRole('heading', { name: /Transform Your Chaotic Calendar Into Productive Focus Time/i })).toBeInTheDocument()
-      expect(screen.getByText(/AI-powered calendar optimization that saves you 4\+ hours every week/i)).toBeInTheDocument()
+
+      expect(
+        screen.getByRole('heading', {
+          name: /Transform Your Chaotic Calendar Into Productive Focus Time/i,
+        })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/AI-powered calendar optimization that saves you 4\+ hours every week/i)
+      ).toBeInTheDocument()
       expect(screen.getByText('professionals already saving time')).toBeInTheDocument()
     })
 
     it('shows primary CTA button', () => {
       renderLandingPage()
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
       expect(ctaButton).toBeInTheDocument()
       expect(ctaButton).toHaveClass('register-button--primary')
@@ -175,10 +181,11 @@ describe('LandingPage', () => {
 
     it('displays social proof elements', () => {
       renderLandingPage()
-      
-      expect(screen.getByText('12.847')).toBeInTheDocument()
+
+      // Use a flexible matcher since toLocaleString() varies by locale
+      expect(screen.getByText(/12[.,]847/)).toBeInTheDocument()
       expect(screen.getByText('professionals already saving time')).toBeInTheDocument()
-      
+
       // Company logos
       const logos = screen.getAllByRole('img')
       expect(logos.length).toBeGreaterThanOrEqual(4)
@@ -186,24 +193,26 @@ describe('LandingPage', () => {
 
     it('shows CTA disclaimer text', () => {
       renderLandingPage()
-      
-      expect(screen.getByText(/Free 14-day trial • No credit card required • 2-minute setup/i)).toBeInTheDocument()
+
+      expect(
+        screen.getByText(/Free 14-day trial • No credit card required • 2-minute setup/i)
+      ).toBeInTheDocument()
     })
   })
 
   describe('calendar demo widget', () => {
     it('shows calendar demo widget', () => {
       renderLandingPage()
-      
+
       expect(screen.getByTestId('calendar-demo-widget')).toBeInTheDocument()
     })
 
     it('starts demo animation after delay', async () => {
       renderLandingPage()
-      
+
       // Demo should not be shown initially
       expect(screen.queryByText('Demo Animation')).not.toBeInTheDocument()
-      
+
       // Fast forward 1.5 seconds
       vi.advanceTimersByTime(1500)
       await waitFor(() => {
@@ -214,19 +223,19 @@ describe('LandingPage', () => {
     it('handles demo completion', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       renderLandingPage()
-      
+
       vi.advanceTimersByTime(1500) // Start demo
       await waitFor(() => screen.getByText('Demo Animation'))
-      
+
       const completeBtn = screen.getByTestId('demo-complete-btn')
       await user.click(completeBtn)
-      
+
       // Should trigger CTA highlight animation after 500ms
       vi.advanceTimersByTime(500)
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
       expect(ctaButton).toHaveClass('pulse-highlight')
-      
+
       // Animation should end after 2 seconds
       vi.advanceTimersByTime(2000)
       expect(ctaButton).not.toHaveClass('pulse-highlight')
@@ -235,10 +244,10 @@ describe('LandingPage', () => {
     it('handles demo restart', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       renderLandingPage()
-      
+
       const restartBtn = screen.getByTestId('demo-restart-btn')
       await user.click(restartBtn)
-      
+
       // Should track demo restart (tested in analytics section)
     })
   })
@@ -246,17 +255,17 @@ describe('LandingPage', () => {
   describe('registration flow', () => {
     it('initiates registration when CTA clicked', () => {
       renderLandingPage()
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
       fireEvent.click(ctaButton)
-      
+
       expect(mockAuth.registerWithRedirect).toHaveBeenCalledWith('', 'landing_hero')
     })
 
     it('shows loading state during registration', () => {
       mockAuth.isLoading.value = true
       renderLandingPage()
-      
+
       const ctaButtons = screen.getAllByTestId('register-button')
       ctaButtons.forEach(button => {
         expect(button).toBeDisabled()
@@ -266,29 +275,29 @@ describe('LandingPage', () => {
     it('handles registration errors gracefully', async () => {
       // Mock console.error to prevent error output during test
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      
+
       mockAuth.registerWithRedirect.mockRejectedValue(new Error('Registration failed'))
-      
+
       renderLandingPage()
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
       await fireEvent.click(ctaButton)
-      
+
       // Verify registerWithRedirect was called (which means the registration was attempted)
       expect(mockAuth.registerWithRedirect).toHaveBeenCalledWith('', 'landing_hero')
-      
+
       // The page should still be functional after an error
       expect(ctaButton).toBeInTheDocument()
-      
+
       consoleSpy.mockRestore()
     })
 
     it('initiates registration from final CTA section', () => {
       renderLandingPage()
-      
+
       const finalCtaButton = screen.getByRole('button', { name: /Get Started Free/i })
       fireEvent.click(finalCtaButton)
-      
+
       expect(mockAuth.registerWithRedirect).toHaveBeenCalledWith('', 'landing_hero')
     })
   })
@@ -296,17 +305,21 @@ describe('LandingPage', () => {
   describe('value propositions section', () => {
     it('displays section header', () => {
       renderLandingPage()
-      
-      expect(screen.getByRole('heading', { name: /Why 12,000\+ Professionals Choose Vana/i })).toBeInTheDocument()
-      expect(screen.getByText(/Stop letting your calendar control your productivity/i)).toBeInTheDocument()
+
+      expect(
+        screen.getByRole('heading', { name: /Why 12,000\+ Professionals Choose Vana/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/Stop letting your calendar control your productivity/i)
+      ).toBeInTheDocument()
     })
 
     it('renders value proposition cards', () => {
       renderLandingPage()
-      
+
       const valuePropCards = screen.getAllByTestId('value-prop-card')
       expect(valuePropCards).toHaveLength(3)
-      
+
       // Check specific value props
       expect(screen.getByText('Save 4+ Hours Weekly')).toBeInTheDocument()
       expect(screen.getByText('Smart AI Assistant')).toBeInTheDocument()
@@ -317,14 +330,16 @@ describe('LandingPage', () => {
   describe('features showcase section', () => {
     it('displays features section header', () => {
       renderLandingPage()
-      
-      expect(screen.getByRole('heading', { name: /Intelligent Calendar Optimization/i })).toBeInTheDocument()
+
+      expect(
+        screen.getByRole('heading', { name: /Intelligent Calendar Optimization/i })
+      ).toBeInTheDocument()
       expect(screen.getByText(/See how Vana transforms your daily schedule/i)).toBeInTheDocument()
     })
 
     it('renders feature showcase components', () => {
       renderLandingPage()
-      
+
       expect(screen.getByTestId('feature-0')).toBeInTheDocument()
       expect(screen.getByTestId('feature-1')).toBeInTheDocument()
       expect(screen.getByTestId('feature-2')).toBeInTheDocument()
@@ -332,14 +347,14 @@ describe('LandingPage', () => {
 
     it('auto-cycles through features', async () => {
       renderLandingPage()
-      
+
       const feature0 = screen.getByTestId('feature-0')
       const feature1 = screen.getByTestId('feature-1')
-      
+
       // Initially first feature should be active
       expect(feature0).toHaveClass('active')
       expect(feature1).not.toHaveClass('active')
-      
+
       // After 5 seconds, should cycle to next feature
       vi.advanceTimersByTime(5000)
       await waitFor(() => {
@@ -350,11 +365,11 @@ describe('LandingPage', () => {
 
     it('handles manual feature selection', () => {
       renderLandingPage()
-      
+
       const feature1 = screen.getByTestId('feature-1')
       // Use a more direct approach to verify feature selection functionality
       expect(feature1).toBeInTheDocument()
-      
+
       // Test that clicking doesn't cause any errors
       expect(() => fireEvent.click(feature1)).not.toThrow()
     })
@@ -363,16 +378,18 @@ describe('LandingPage', () => {
   describe('testimonials section', () => {
     it('displays testimonials section header', () => {
       renderLandingPage()
-      
-      expect(screen.getByRole('heading', { name: /Loved by Professionals Worldwide/i })).toBeInTheDocument()
+
+      expect(
+        screen.getByRole('heading', { name: /Loved by Professionals Worldwide/i })
+      ).toBeInTheDocument()
       expect(screen.getByText(/Join thousands who've reclaimed their time/i)).toBeInTheDocument()
     })
 
     it('renders testimonial grid', () => {
       renderLandingPage()
-      
+
       expect(screen.getByTestId('testimonial-grid')).toBeInTheDocument()
-      
+
       // Check for specific testimonials
       expect(screen.getByText(/Sarah Chen - Stripe/)).toBeInTheDocument()
       expect(screen.getByText(/Marcus Johnson - Notion/)).toBeInTheDocument()
@@ -382,7 +399,7 @@ describe('LandingPage', () => {
 
     it('displays statistics row', () => {
       renderLandingPage()
-      
+
       expect(screen.getByText('4.2')).toBeInTheDocument()
       expect(screen.getByText('Hours saved weekly')).toBeInTheDocument()
       expect(screen.getAllByText('94%').length).toBeGreaterThanOrEqual(1)
@@ -397,31 +414,35 @@ describe('LandingPage', () => {
   describe('final CTA section', () => {
     it('displays final CTA content', () => {
       renderLandingPage()
-      
-      expect(screen.getByRole('heading', { name: /Ready to Save 4\+ Hours Every Week\?/i })).toBeInTheDocument()
-      expect(screen.getByText(/Join thousands of professionals who've transformed their productivity/i)).toBeInTheDocument()
+
+      expect(
+        screen.getByRole('heading', { name: /Ready to Save 4\+ Hours Every Week\?/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/Join thousands of professionals who've transformed their productivity/i)
+      ).toBeInTheDocument()
     })
 
     it('shows both primary and secondary CTAs', () => {
       renderLandingPage()
-      
+
       expect(screen.getByRole('button', { name: /Get Started Free/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /Watch Demo/i })).toBeInTheDocument()
     })
 
     it('handles watch demo button click', () => {
       renderLandingPage()
-      
+
       const watchDemoBtn = screen.getByRole('button', { name: /Watch Demo/i })
       fireEvent.click(watchDemoBtn)
-      
+
       // Should trigger demo visibility
       // In a real implementation, this might open a modal or scroll to demo
     })
 
     it('displays trust signals', () => {
       renderLandingPage()
-      
+
       expect(screen.getByText('Enterprise-grade security')).toBeInTheDocument()
       expect(screen.getByText('Setup in under 2 minutes')).toBeInTheDocument()
       expect(screen.getByText('14-day free trial')).toBeInTheDocument()
@@ -432,14 +453,14 @@ describe('LandingPage', () => {
     it('tracks registration start with correct source', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation()
       vi.stubEnv('DEV', true)
-      
+
       renderLandingPage()
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
       fireEvent.click(ctaButton)
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Registration started from:', 'landing_hero')
-      
+
       consoleSpy.mockRestore()
       vi.unstubAllEnvs()
     })
@@ -447,18 +468,18 @@ describe('LandingPage', () => {
     it('tracks demo completion', async () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation()
       vi.stubEnv('DEV', true)
-      
+
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       renderLandingPage()
-      
+
       vi.advanceTimersByTime(1500) // Start demo
       await waitFor(() => screen.getByText('Demo Animation'))
-      
+
       const completeBtn = screen.getByTestId('demo-complete-btn')
       await user.click(completeBtn)
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Demo completed')
-      
+
       consoleSpy.mockRestore()
       vi.unstubAllEnvs()
     })
@@ -466,15 +487,15 @@ describe('LandingPage', () => {
     it('tracks demo restart', async () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation()
       vi.stubEnv('DEV', true)
-      
+
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       renderLandingPage()
-      
+
       const restartBtn = screen.getByTestId('demo-restart-btn')
       await user.click(restartBtn)
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Demo restarted')
-      
+
       consoleSpy.mockRestore()
       vi.unstubAllEnvs()
     })
@@ -482,15 +503,15 @@ describe('LandingPage', () => {
     it('tracks feature views', async () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation()
       vi.stubEnv('DEV', true)
-      
+
       renderLandingPage()
-      
+
       const feature1 = screen.getByTestId('feature-1')
       // Simulate click directly on the element without user events to avoid timeout
       feature1.click()
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Feature viewed:', 'Smart Meeting Optimization')
-      
+
       consoleSpy.mockRestore()
       vi.unstubAllEnvs()
     })
@@ -498,11 +519,11 @@ describe('LandingPage', () => {
     it('tracks page view on mount', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation()
       vi.stubEnv('DEV', true)
-      
+
       renderLandingPage()
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Landing page viewed')
-      
+
       consoleSpy.mockRestore()
       vi.unstubAllEnvs()
     })
@@ -516,11 +537,13 @@ describe('LandingPage', () => {
         configurable: true,
         value: 375,
       })
-      
+
       renderLandingPage()
-      
+
       // Hero content should still be present
-      expect(screen.getByRole('heading', { name: /Transform Your Chaotic Calendar/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: /Transform Your Chaotic Calendar/i })
+      ).toBeInTheDocument()
       expect(screen.getByTestId('calendar-demo-widget')).toBeInTheDocument()
     })
 
@@ -530,9 +553,9 @@ describe('LandingPage', () => {
         configurable: true,
         value: 768,
       })
-      
+
       renderLandingPage()
-      
+
       // All content should remain accessible
       expect(screen.getAllByTestId('value-prop-card')).toHaveLength(3)
     })
@@ -541,17 +564,17 @@ describe('LandingPage', () => {
   describe('accessibility', () => {
     it('has proper heading hierarchy', () => {
       renderLandingPage()
-      
+
       const h1 = screen.getByRole('heading', { level: 1 })
       expect(h1).toBeInTheDocument()
-      
+
       const h2s = screen.getAllByRole('heading', { level: 2 })
       expect(h2s.length).toBeGreaterThanOrEqual(4) // Various section headings
     })
 
     it('provides alt text for images', () => {
       renderLandingPage()
-      
+
       const images = screen.getAllByRole('img')
       images.forEach(img => {
         expect(img).toHaveAttribute('alt')
@@ -561,13 +584,13 @@ describe('LandingPage', () => {
 
     it('supports keyboard navigation', () => {
       renderLandingPage()
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
       expect(ctaButton).toBeInTheDocument()
-      
+
       // Test that button is properly accessible - implicit button role
       expect(ctaButton.tagName).toBe('BUTTON')
-      
+
       // Test that keydown event doesn't cause errors
       expect(() => fireEvent.keyDown(ctaButton, { key: 'Enter' })).not.toThrow()
     })
@@ -576,32 +599,34 @@ describe('LandingPage', () => {
   describe('performance and lifecycle', () => {
     it('cleans up intervals on unmount', () => {
       const { unmount } = renderLandingPage()
-      
+
       // Spy on clearInterval
       const clearIntervalSpy = vi.spyOn(global, 'clearInterval')
-      
+
       unmount()
-      
+
       expect(clearIntervalSpy).toHaveBeenCalled()
       clearIntervalSpy.mockRestore()
     })
 
     it('sets proper SEO meta tags', () => {
       renderLandingPage()
-      
-      expect(document.title).toBe('Vana Calendar - Transform Your Chaotic Calendar Into Productive Focus Time')
+
+      expect(document.title).toBe(
+        'Vana Calendar - Transform Your Chaotic Calendar Into Productive Focus Time'
+      )
     })
 
     it('handles rapid user interactions', () => {
       renderLandingPage()
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
-      
+
       // Rapid clicks should not cause issues - simulate with direct clicks
       fireEvent.click(ctaButton)
       fireEvent.click(ctaButton)
       fireEvent.click(ctaButton)
-      
+
       expect(mockAuth.registerWithRedirect).toHaveBeenCalledTimes(3)
     })
   })
@@ -616,20 +641,20 @@ describe('LandingPage', () => {
     it('handles network errors during registration', async () => {
       // Mock console.error to prevent error output during test
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      
+
       mockAuth.registerWithRedirect.mockRejectedValue(new Error('Network error'))
-      
+
       renderLandingPage()
-      
+
       const ctaButton = screen.getByRole('button', { name: /Start Organizing My Calendar/i })
       await fireEvent.click(ctaButton)
-      
+
       // Verify registerWithRedirect was called (which means the registration was attempted)
       expect(mockAuth.registerWithRedirect).toHaveBeenCalledWith('', 'landing_hero')
-      
+
       // The page should still be functional after an error
       expect(ctaButton).toBeInTheDocument()
-      
+
       consoleSpy.mockRestore()
     })
   })
