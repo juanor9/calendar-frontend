@@ -103,14 +103,17 @@ describe('HeaderBar', () => {
 
       expect(wrapper.find('.header-bar__nav-links').exists()).toBe(true)
 
-      const navLinks = wrapper.findAll('.header-bar__nav-link')
-      expect(navLinks.length).toBe(2)
+      // Look specifically within the desktop nav-links container, not including mobile menu
+      const desktopNavLinks = wrapper
+        .find('.header-bar__nav-links')
+        .findAll('.header-bar__nav-link')
+      expect(desktopNavLinks.length).toBe(2)
 
       // Check for "Inicio" and "Acerca de" links
-      expect(navLinks[0].text()).toBe('Inicio')
-      expect(navLinks[0].attributes('href')).toBe('/')
-      expect(navLinks[1].text()).toBe('Acerca de')
-      expect(navLinks[1].attributes('href')).toBe('/about')
+      expect(desktopNavLinks[0].text()).toBe('Inicio')
+      expect(desktopNavLinks[0].attributes('href')).toBe('/')
+      expect(desktopNavLinks[1].text()).toBe('Acerca de')
+      expect(desktopNavLinks[1].attributes('href')).toBe('/about')
     })
 
     it('shows login button when user is not authenticated', () => {

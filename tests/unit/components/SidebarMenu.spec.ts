@@ -12,8 +12,8 @@ describe('SidebarMenu', () => {
       const wrapper = createWrapper()
 
       expect(wrapper.find('aside.sidebar-menu').exists()).toBe(true)
-      expect(wrapper.find('h2').exists()).toBe(true)
-      expect(wrapper.find('h2').text()).toBe('Sidebar')
+      expect(wrapper.find('h3').exists()).toBe(true)
+      expect(wrapper.find('h3').text()).toBe('Navigation')
     })
 
     it('has correct semantic structure', () => {
@@ -42,9 +42,9 @@ describe('SidebarMenu', () => {
     it('has proper heading structure', () => {
       const wrapper = createWrapper()
 
-      const heading = wrapper.find('h2')
+      const heading = wrapper.find('h3')
       expect(heading.exists()).toBe(true)
-      expect(heading.text()).toBe('Sidebar')
+      expect(heading.text()).toBe('Navigation')
     })
   })
 
@@ -62,8 +62,8 @@ describe('SidebarMenu', () => {
 
       // Vue adds scoped data attributes, so we check for the class and structure
       expect(wrapper.find('aside.sidebar-menu').exists()).toBe(true)
-      expect(wrapper.find('h2').exists()).toBe(true)
-      expect(wrapper.find('h2').text()).toBe('Sidebar')
+      expect(wrapper.find('h3').exists()).toBe(true)
+      expect(wrapper.find('h3').text()).toBe('Navigation')
       expect(wrapper.html()).toContain('</aside>')
     })
   })
