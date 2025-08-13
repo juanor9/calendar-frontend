@@ -188,7 +188,7 @@
     line-height: 1.4;
 
     &::before {
-      content: '⚠';
+      content: '⚠ ';
       font-size: 12px;
       flex-shrink: 0;
     }
@@ -337,6 +337,7 @@
   }
 
   // RESPONSIVE ADJUSTMENTS
+
   @include mixins.mobile-only {
     padding: tokens.$auth-card-padding-mobile;
     border-radius: tokens.$auth-radius-md;
@@ -360,7 +361,9 @@
   }
 
   // ACCESSIBILITY IMPROVEMENTS
+
   @media (prefers-reduced-motion: reduce) {
+
     &__cancel-button:hover,
     &__save-button:hover {
       transform: none;
@@ -376,6 +379,7 @@
   }
 
   // DARK MODE
+
   @media (prefers-color-scheme: dark) {
     background: tokens.$auth-dark-card-bg;
     border-color: tokens.$auth-dark-border;
@@ -442,7 +446,9 @@
 }
 
 // KEYFRAME ANIMATIONS
+
 @keyframes spin {
+
   0% {
     transform: translateY(-50%) rotate(0deg);
   }
@@ -453,6 +459,7 @@
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 100%;
