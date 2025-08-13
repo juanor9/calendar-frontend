@@ -7,6 +7,7 @@ import { render, fireEvent, screen } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { ref } from 'vue'
+import { mount } from '@vue/test-utils'
 import BaseInputText from '@/ui/BaseInputText/BaseInputText.vue'
 
 expect.extend({ toHaveNoViolations: () => ({ pass: true, message: () => '' }) })
@@ -22,9 +23,9 @@ describe('BaseInputText', () => {
   describe('Rendering', () => {
     it('muestra el label correctamente', () => {
       render(BaseInputText, {
-        props: { label: 'Nombre completo' }
+        props: { label: 'Nombre completo' },
       })
-      
+
       expect(screen.getByText('Nombre completo')).toBeInTheDocument()
     })
 
@@ -32,21 +33,21 @@ describe('BaseInputText', () => {
       render(BaseInputText, {
         props: {
           label: 'Email',
-          placeholder: 'tu@email.com'
-        }
+          placeholder: 'tu@email.com',
+        },
       })
-      
+
       expect(screen.getByPlaceholderText('tu@email.com')).toBeInTheDocument()
     })
 
     it('aplica las clases CSS correctas según size', () => {
       const sizes = ['small', 'medium', 'large'] as const
-      
+
       sizes.forEach(size => {
         const { container } = render(BaseInputText, {
-          props: { label: 'Test', size }
+          props: { label: 'Test', size },
         })
-        
+
         const inputContainer = container.querySelector('.input')
         expect(inputContainer).toHaveClass(`input--${size}`)
       })
@@ -54,12 +55,12 @@ describe('BaseInputText', () => {
 
     it('aplica las clases CSS correctas según variant', () => {
       const variants = ['default', 'floating'] as const
-      
+
       variants.forEach(variant => {
         const { container } = render(BaseInputText, {
-          props: { label: 'Test', variant }
+          props: { label: 'Test', variant },
         })
-        
+
         const inputContainer = container.querySelector('.input')
         expect(inputContainer).toHaveClass(`input--${variant}`)
       })
@@ -70,8 +71,8 @@ describe('BaseInputText', () => {
         props: {
           label: 'Búsqueda',
           leftIcon: 'fas fa-search',
-          rightIcon: 'fas fa-times'
-        }
+          rightIcon: 'fas fa-times',
+        },
       })
 
       expect(container.querySelector('.input__icon--left i')).toHaveClass('fas', 'fa-search')
@@ -82,8 +83,8 @@ describe('BaseInputText', () => {
       const { container } = render(BaseInputText, {
         props: {
           label: 'Email',
-          variant: 'floating'
-        }
+          variant: 'floating',
+        },
       })
 
       // En variante floating, el label debe estar dentro del wrapper
@@ -102,13 +103,13 @@ describe('BaseInputText', () => {
         props: {
           label: 'Nombre',
           modelValue: value.value,
-          'onUpdate:modelValue': (v: string) => (value.value = v)
-        }
+          'onUpdate:modelValue': (v: string) => (value.value = v),
+        },
       })
 
       const input = getByDisplayValue('Valor inicial')
       await fireEvent.update(input, 'Nuevo valor')
-      
+
       expect(value.value).toBe('Nuevo valor')
     })
 
@@ -118,8 +119,8 @@ describe('BaseInputText', () => {
         props: {
           label: 'Test',
           modelValue: value.value,
-          'onUpdate:modelValue': (v: string) => (value.value = v)
-        }
+          'onUpdate:modelValue': (v: string) => (value.value = v),
+        },
       })
 
       // Cambiar el valor externamente
@@ -127,7 +128,7 @@ describe('BaseInputText', () => {
       await rerender({
         label: 'Test',
         modelValue: value.value,
-        'onUpdate:modelValue': (v: string) => (value.value = v)
+        'onUpdate:modelValue': (v: string) => (value.value = v),
       })
 
       expect(getByDisplayValue('Cambiado externamente')).toBeInTheDocument()
@@ -135,19 +136,19 @@ describe('BaseInputText', () => {
 
     it('maneja diferentes tipos de input', () => {
       const inputTypes = ['text', 'email', 'password', 'search', 'url', 'tel'] as const
-      
+
       inputTypes.forEach(type => {
         const { container, unmount } = render(BaseInputText, {
           props: {
             label: `Input ${type}`,
-            type
-          }
+            type,
+          },
         })
-        
+
         // Use querySelector instead of getByRole for password inputs
         const input = container.querySelector('input')
         expect(input).toHaveAttribute('type', type)
-        
+
         // Clean up after each iteration to prevent DOM accumulation
         unmount()
       })
@@ -164,27 +165,27 @@ describe('BaseInputText', () => {
 
       const { getByRole } = render(BaseInputText, {
         props: {
-          label: 'Interactive Input'
+          label: 'Interactive Input',
         },
         attrs: {
           onFocus: mockFocus,
           onBlur: mockBlur,
           onInput: mockInput,
-          onChange: mockChange
-        }
+          onChange: mockChange,
+        },
       })
 
       const input = getByRole('textbox')
-      
+
       await fireEvent.focus(input)
       expect(mockFocus).toHaveBeenCalledWith(expect.any(FocusEvent))
-      
+
       await fireEvent.update(input, 'test')
       expect(mockInput).toHaveBeenCalledWith(expect.any(Event))
-      
+
       await fireEvent.change(input)
       expect(mockChange).toHaveBeenCalledWith(expect.any(Event))
-      
+
       await fireEvent.blur(input)
       expect(mockBlur).toHaveBeenCalledWith(expect.any(FocusEvent))
     })
@@ -194,16 +195,16 @@ describe('BaseInputText', () => {
       const { getByRole } = render(BaseInputText, {
         props: {
           label: 'Disabled Input',
-          disabled: true
+          disabled: true,
         },
         attrs: {
-          onInput: mockInput
-        }
+          onInput: mockInput,
+        },
       })
 
       const input = getByRole('textbox')
       expect(input).toBeDisabled()
-      
+
       // Intentar escribir usando userEvent (mejor práctica para disabled inputs)
       try {
         await user.type(input, 'test')
@@ -211,7 +212,7 @@ describe('BaseInputText', () => {
         // userEvent correctly throws when trying to type into disabled inputs
         // This is expected behavior
       }
-      
+
       // El evento no debe haberse llamado porque el input está disabled
       expect(mockInput).not.toHaveBeenCalled()
     })
@@ -221,8 +222,8 @@ describe('BaseInputText', () => {
         props: {
           label: 'Readonly Input',
           readonly: true,
-          modelValue: 'Valor readonly'
-        }
+          modelValue: 'Valor readonly',
+        },
       })
 
       const input = getByRole('textbox')
@@ -236,17 +237,17 @@ describe('BaseInputText', () => {
         props: {
           label: 'Icono clickeable',
           rightIcon: 'fas fa-eye',
-          rightIconClickable: true
+          rightIconClickable: true,
         },
         attrs: {
-          onRightIconClick: mockIconClick
-        }
+          onRightIconClick: mockIconClick,
+        },
       })
 
       const rightIcon = container.querySelector('.input__icon--right')
       expect(rightIcon).toHaveAttribute('role', 'button')
       expect(rightIcon).toHaveAttribute('tabindex', '0')
-      
+
       await fireEvent.click(rightIcon!)
       expect(mockIconClick).toHaveBeenCalledWith(expect.any(MouseEvent))
     })
@@ -257,19 +258,19 @@ describe('BaseInputText', () => {
         props: {
           label: 'Navegación teclado',
           rightIcon: 'fas fa-clear',
-          rightIconClickable: true
+          rightIconClickable: true,
         },
         attrs: {
-          onRightIconClick: mockIconClick
-        }
+          onRightIconClick: mockIconClick,
+        },
       })
 
       const rightIcon = container.querySelector('.input__icon--right') as HTMLElement
-      
+
       // Simular Enter
       await fireEvent.keyDown(rightIcon, { key: 'Enter' })
       expect(mockIconClick).toHaveBeenCalledTimes(1)
-      
+
       // Simular Space
       await fireEvent.keyDown(rightIcon, { key: ' ' })
       expect(mockIconClick).toHaveBeenCalledTimes(2)
@@ -282,8 +283,8 @@ describe('BaseInputText', () => {
       render(BaseInputText, {
         props: {
           label: 'Email',
-          errorMessage: 'Email inválido'
-        }
+          errorMessage: 'Email inválido',
+        },
       })
 
       const errorElement = screen.getByText('Email inválido')
@@ -295,8 +296,8 @@ describe('BaseInputText', () => {
       render(BaseInputText, {
         props: {
           label: 'Password',
-          successMessage: 'Contraseña válida'
-        }
+          successMessage: 'Contraseña válida',
+        },
       })
 
       const successElement = screen.getByText('Contraseña válida')
@@ -308,8 +309,8 @@ describe('BaseInputText', () => {
       render(BaseInputText, {
         props: {
           label: 'Username',
-          warningMessage: 'Este nombre puede estar en uso'
-        }
+          warningMessage: 'Este nombre puede estar en uso',
+        },
       })
 
       const warningElement = screen.getByText('Este nombre puede estar en uso')
@@ -321,8 +322,8 @@ describe('BaseInputText', () => {
       render(BaseInputText, {
         props: {
           label: 'Password',
-          helpText: 'Debe tener al menos 8 caracteres'
-        }
+          helpText: 'Debe tener al menos 8 caracteres',
+        },
       })
 
       expect(screen.getByText('Debe tener al menos 8 caracteres')).toBeInTheDocument()
@@ -332,15 +333,15 @@ describe('BaseInputText', () => {
       const validationStates = [
         { props: { errorMessage: 'Error' }, class: 'input--error' },
         { props: { warningMessage: 'Warning' }, class: 'input--warning' },
-        { props: { successMessage: 'Success' }, class: 'input--success' }
+        { props: { successMessage: 'Success' }, class: 'input--success' },
       ]
 
       validationStates.forEach(({ props, class: expectedClass }) => {
         const { container } = render(BaseInputText, {
           props: {
             label: 'Test',
-            ...props
-          }
+            ...props,
+          },
         })
 
         expect(container.querySelector('.input')).toHaveClass(expectedClass)
@@ -351,8 +352,8 @@ describe('BaseInputText', () => {
       const { getByRole } = render(BaseInputText, {
         props: {
           label: 'Email',
-          errorMessage: 'Email requerido'
-        }
+          errorMessage: 'Email requerido',
+        },
       })
 
       expect(getByRole('textbox')).toHaveAttribute('aria-invalid', 'true')
@@ -365,22 +366,22 @@ describe('BaseInputText', () => {
       const { container } = render(BaseInputText, {
         props: {
           label: 'Campo accesible',
-          helpText: 'Texto de ayuda'
-        }
+          helpText: 'Texto de ayuda',
+        },
       })
-      
+
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
 
     it('asocia label correctamente con input', () => {
       const { getByRole, getByText } = render(BaseInputText, {
-        props: { label: 'Nombre de usuario' }
+        props: { label: 'Nombre de usuario' },
       })
 
       const input = getByRole('textbox')
       const label = getByText('Nombre de usuario')
-      
+
       expect(label).toHaveAttribute('for', input.id)
       expect(input).toHaveAttribute('id')
     })
@@ -391,13 +392,13 @@ describe('BaseInputText', () => {
           label: 'Email',
           helpText: 'Ingresa tu email',
           errorMessage: 'Email inválido',
-          ariaDescribedBy: 'external-desc'
-        }
+          ariaDescribedBy: 'external-desc',
+        },
       })
 
       const input = getByRole('textbox')
       const describedBy = input.getAttribute('aria-describedby')
-      
+
       expect(describedBy).toContain('help')
       expect(describedBy).toContain('error')
       expect(describedBy).toContain('external-desc')
@@ -407,8 +408,8 @@ describe('BaseInputText', () => {
       const { getByRole } = render(BaseInputText, {
         props: {
           label: 'Campo requerido',
-          required: true
-        }
+          required: true,
+        },
       })
 
       expect(getByRole('textbox')).toHaveAttribute('required')
@@ -418,8 +419,8 @@ describe('BaseInputText', () => {
       const { container } = render(BaseInputText, {
         props: {
           label: 'Campo opcional',
-          optional: true
-        }
+          optional: true,
+        },
       })
 
       const label = container.querySelector('.input__label')
@@ -434,8 +435,8 @@ describe('BaseInputText', () => {
         props: {
           label: 'Limited input',
           maxlength: 100,
-          minlength: 5
-        }
+          minlength: 5,
+        },
       })
 
       const input = getByRole('textbox')
@@ -447,8 +448,8 @@ describe('BaseInputText', () => {
       const { getByRole } = render(BaseInputText, {
         props: {
           label: 'Pattern input',
-          pattern: '[0-9]{3}-[0-9]{3}-[0-9]{4}'
-        }
+          pattern: '[0-9]{3}-[0-9]{3}-[0-9]{4}',
+        },
       })
 
       expect(getByRole('textbox')).toHaveAttribute('pattern', '[0-9]{3}-[0-9]{3}-[0-9]{4}')
@@ -458,8 +459,8 @@ describe('BaseInputText', () => {
       const { getByRole } = render(BaseInputText, {
         props: {
           label: 'Autocomplete input',
-          autocomplete: 'email'
-        }
+          autocomplete: 'email',
+        },
       })
 
       expect(getByRole('textbox')).toHaveAttribute('autocomplete', 'email')
@@ -468,11 +469,11 @@ describe('BaseInputText', () => {
     it('expone métodos correctamente', () => {
       const TestComponent = {
         template: '<BaseInputText ref="inputRef" label="Test" />',
-        components: { BaseInputText }
+        components: { BaseInputText },
       }
 
       const { container } = render(TestComponent)
-      
+
       // Verificar que el componente se renderiza correctamente
       expect(container.querySelector('.input')).toBeInTheDocument()
     })
@@ -482,20 +483,20 @@ describe('BaseInputText', () => {
   describe('Performance', () => {
     it('no causa re-renders innecesarios con props estables', () => {
       const renderSpy = vi.fn()
-      
+
       const TestWrapper = {
         setup() {
           renderSpy()
           return {}
         },
         template: '<BaseInputText label="Performance test" />',
-        components: { BaseInputText }
+        components: { BaseInputText },
       }
 
       const { rerender } = render(TestWrapper)
-      
+
       expect(renderSpy).toHaveBeenCalledTimes(1)
-      
+
       // Re-render sin cambios
       rerender({})
       expect(renderSpy).toHaveBeenCalledTimes(1)
@@ -503,19 +504,62 @@ describe('BaseInputText', () => {
 
     it('computa IDs únicos eficientemente', () => {
       const { container: container1 } = render(BaseInputText, {
-        props: { label: 'Input 1' }
+        props: { label: 'Input 1' },
       })
-      
+
       const { container: container2 } = render(BaseInputText, {
-        props: { label: 'Input 2' }
+        props: { label: 'Input 2' },
       })
 
       const input1 = container1.querySelector('input')
       const input2 = container2.querySelector('input')
-      
+
       expect(input1?.id).toBeTruthy()
       expect(input2?.id).toBeTruthy()
       expect(input1?.id).not.toBe(input2?.id)
+    })
+  })
+
+  // 🎯 Tests de métodos expuestos
+  describe('Exposed Methods', () => {
+    it('método blur funciona correctamente', async () => {
+      const TestComponent = {
+        template: '<BaseInputText ref="inputRef" label="Test" />',
+        components: { BaseInputText },
+      }
+
+      const wrapper = mount(TestComponent)
+      const inputComponent = wrapper.findComponent(BaseInputText)
+      const inputElement = wrapper.find('input').element as HTMLInputElement
+
+      // Mock del blur
+      const blurSpy = vi.spyOn(inputElement, 'blur').mockImplementation(() => {})
+
+      // Llamar al método blur del componente
+      inputComponent.vm.blur()
+
+      expect(blurSpy).toHaveBeenCalled()
+      blurSpy.mockRestore()
+    })
+
+    it('método select funciona correctamente', async () => {
+      const TestComponent = {
+        template: '<BaseInputText ref="inputRef" label="Test" />',
+        components: { BaseInputText },
+      }
+
+      const wrapper = mount(TestComponent)
+      const inputComponent = wrapper.findComponent(BaseInputText)
+      const inputElement = wrapper.find('input').element as HTMLInputElement
+
+      // Mock del select
+      const selectSpy = vi.spyOn(inputElement, 'select').mockImplementation(() => {})
+
+      // Llamar al método select del componente
+      inputComponent.vm.select()
+
+      expect(selectSpy).toHaveBeenCalled()
+      selectSpy.mockRestore()
     })
   })
 })

@@ -9,7 +9,7 @@
 export { default as BaseButton } from './BaseButton/BaseButton.vue'
 export { default as RegisterButton } from './RegisterButton/RegisterButton.vue'
 export { default as BaseInputText } from './BaseInputText/BaseInputText.vue'
-export { default as DurationInput } from './DurationInput/DurationInput.vue'
+// export { default as DurationInput } from './DurationInput/DurationInput.vue' // TODO: Implement DurationInput
 
 // Componentes de layout
 export { default as BaseCard } from './BaseCard/BaseCard.vue'
@@ -25,16 +25,16 @@ export { default as SidebarMenu } from './SidebarMenu/SidebarMenu.vue'
 // Componentes especializados de páginas
 export { default as EmailVerificationPage } from './EmailVerificationPage/EmailVerificationPage.vue'
 
-// F002 Task Management Components
-export { default as TaskCard } from './TaskCard/TaskCard.vue'
-export { default as TaskList } from './TaskList/TaskList.vue'
-export { default as TaskFilters } from './TaskFilters/TaskFilters.vue'
-export { default as TaskSearch } from './TaskSearch/TaskSearch.vue'
-export { default as TaskQuickAdd } from './TaskQuickAdd/TaskQuickAdd.vue'
-export { default as TaskBulkActions } from './TaskBulkActions/TaskBulkActions.vue'
-export { default as TaskForm } from './TaskForm/TaskForm.vue'
-export { default as TaskStatusBadge } from './TaskStatusBadge/TaskStatusBadge.vue'
-export { default as PrioritySelector } from './PrioritySelector/PrioritySelector.vue'
+// F002 Task Management Components - TODO: Implement these components
+// export { default as TaskCard } from './TaskCard/TaskCard.vue'
+// export { default as TaskList } from './TaskList/TaskList.vue'
+// export { default as TaskFilters } from './TaskFilters/TaskFilters.vue'
+// export { default as TaskSearch } from './TaskSearch/TaskSearch.vue'
+// export { default as TaskQuickAdd } from './TaskQuickAdd/TaskQuickAdd.vue'
+// export { default as TaskBulkActions } from './TaskBulkActions/TaskBulkActions.vue'
+// export { default as TaskForm } from './TaskForm/TaskForm.vue'
+// export { default as TaskStatusBadge } from './TaskStatusBadge/TaskStatusBadge.vue'
+// export { default as PrioritySelector } from './PrioritySelector/PrioritySelector.vue'
 
 // Tipos TypeScript para los componentes
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline'

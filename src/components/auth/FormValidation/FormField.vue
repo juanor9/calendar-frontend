@@ -275,6 +275,7 @@
       cursor: pointer;
 
       &--required {
+
         .form-field__required {
           color: var(--color-error-500);
           margin-left: var(--spacing-xs);
@@ -321,6 +322,7 @@
     // Field states
 
     &--error {
+
       .form-field__input {
         border-color: var(--color-error-500);
 
@@ -332,6 +334,7 @@
     }
 
     &--warning {
+
       .form-field__input {
         border-color: var(--color-warning-500);
 
@@ -343,6 +346,7 @@
     }
 
     &--success {
+
       .form-field__input {
         border-color: var(--color-success-500);
 
@@ -454,9 +458,11 @@
 
   // Animations
   @keyframes spin {
+
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }

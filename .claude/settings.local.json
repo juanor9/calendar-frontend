@@ -18,7 +18,12 @@
       "Bash(git checkout:*)",
       "Bash(git stash:*)",
       "Bash(git rm:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(mv:*)",
+      "Bash(timeout 90 npm run test -- --run --no-coverage --reporter=json)"
     ],
     "deny": []
   }

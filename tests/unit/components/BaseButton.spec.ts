@@ -72,6 +72,36 @@ describe('BaseButton', () => {
       expect(button).toHaveClass('button--icon-only')
       expect(container.querySelector('.button__icon--only')).toBeInTheDocument()
     })
+
+    it('renderiza botón icon-only con rightIcon correctamente', () => {
+      const { container } = render(BaseButton, {
+        props: {
+          label: 'Menu',
+          iconOnly: true,
+          rightIcon: 'fas fa-chevron-down',
+        },
+      })
+
+      const button = container.querySelector('button')
+      expect(button).toHaveClass('button--icon-only')
+      expect(container.querySelector('.button__icon--only')).toBeInTheDocument()
+      expect(container.querySelector('.button__icon--only i')).toHaveClass('fas', 'fa-chevron-down')
+    })
+
+    it('no muestra icono único cuando está loading', () => {
+      const { container } = render(BaseButton, {
+        props: {
+          label: 'Loading',
+          iconOnly: true,
+          leftIcon: 'fas fa-plus',
+          loading: true,
+        },
+      })
+
+      expect(container.querySelector('.button__icon--only')).not.toBeInTheDocument()
+      // Check for loading class instead
+      expect(container.querySelector('button')).toHaveClass('button--loading')
+    })
   })
 
   // 🎯 Tests de interacción del usuario
@@ -300,7 +330,7 @@ describe('BaseButton', () => {
 
         const button = getByRole('button')
         expect(button).toHaveAttribute('type', type)
-        
+
         // Clean up after each iteration to prevent DOM accumulation
         unmount()
       })

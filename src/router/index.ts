@@ -2,11 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout/DefaultLayout.vue'
 import AuthCallback from '@/components/auth/AuthCallback/AuthCallback.vue'
-import {
-  adminGuard,
-  premiumGuard,
-  createPermissionGuard,
-} from '@/auth/auth-guard'
+import { adminGuard, premiumGuard, createPermissionGuard } from '@/auth/auth-guard'
 import {
   enhancedAuthGuard,
   enhancedGuestGuard,
@@ -257,30 +253,6 @@ const routes: RouteRecordRaw[] = [
           layout: 'default',
           requiresAuth: true,
           title: 'Calendario - Vana Calendar',
-        },
-      },
-      {
-        path: 'tasks',
-        name: 'Tasks',
-        component: () => import('@/pages/TasksPage/TasksPage.vue'),
-        beforeEnter: enhancedAuthGuard,
-        meta: {
-          layout: 'default',
-          requiresAuth: true,
-          requiresCompletedOnboarding: true,
-          title: 'Tareas - Vana Calendar',
-        },
-      },
-      {
-        path: 'tasks/:id',
-        name: 'TaskDetail',
-        component: () => import('@/pages/TaskDetailPage/TaskDetailPage.vue'),
-        beforeEnter: enhancedAuthGuard,
-        meta: {
-          layout: 'default',
-          requiresAuth: true,
-          requiresCompletedOnboarding: true,
-          title: 'Detalle de Tarea - Vana Calendar',
         },
       },
       // User routes

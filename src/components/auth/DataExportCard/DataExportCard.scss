@@ -560,6 +560,7 @@
 
   // ACCESSIBILITY IMPROVEMENTS
   @media (prefers-reduced-motion: reduce) {
+
     &__format-option,
     &__category {
       transition: none;
@@ -645,6 +646,7 @@
 
 // KEYFRAME ANIMATIONS
 @keyframes spin {
+
   0% {
     transform: translateY(-50%) rotate(0deg);
   }

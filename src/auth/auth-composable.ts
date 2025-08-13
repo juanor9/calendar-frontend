@@ -44,14 +44,16 @@ export const useAuth = () => {
 
       await auth0Client.loginWithRedirect({
         authorizationParams: {
-          redirect_uri: options?.redirect_uri || window.location.origin + '/auth/callback',
+          redirect_uri:
+            options?.redirect_uri ||
+            (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173') +
+              '/auth/callback',
         },
         appState: options?.appState,
       })
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed'
       authStore.setError(errorMessage)
-      console.error('Login error:', err)
       throw err
     } finally {
       authStore.setLoading(false)
@@ -66,13 +68,15 @@ export const useAuth = () => {
 
       await auth0Client.logout({
         logoutParams: {
-          returnTo: returnToUrl || window.location.origin + '/auth/logout',
+          returnTo:
+            returnToUrl ||
+            (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173') +
+              '/auth/logout',
         },
       })
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Logout failed'
       authStore.setError(errorMessage)
-      console.error('Logout error:', err)
       throw err
     }
   }
@@ -103,7 +107,6 @@ export const useAuth = () => {
       authStore.setToken(accessToken)
       return accessToken
     } catch (err) {
-      console.error('Error getting access token:', err)
       // If token refresh fails, might need to re-authenticate
       if (err instanceof Error && err.message.includes('consent_required')) {
         await login()
@@ -130,8 +133,8 @@ export const useAuth = () => {
               ? token
               : (token as { access_token?: string })?.access_token || token
           )
-        } catch (tokenError) {
-          console.warn('Could not get access token:', tokenError)
+        } catch {
+          // Silently handle token errors - user is still authenticated but may need to re-login for API calls
         }
       } else {
         authStore.clearAuth()
@@ -139,7 +142,6 @@ export const useAuth = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Authentication check failed'
       authStore.setError(errorMessage)
-      console.error('Auth check error:', err)
     } finally {
       authStore.setLoading(false)
     }
@@ -165,7 +167,6 @@ export const useAuth = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Callback handling failed'
       authStore.setError(errorMessage)
-      console.error('Callback error:', err)
       throw err
     } finally {
       authStore.setLoading(false)
