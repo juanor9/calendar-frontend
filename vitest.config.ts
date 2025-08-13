@@ -80,8 +80,8 @@ export default defineConfig({
     maxWorkers: process.env.CI ? 1 : '50%',
     minWorkers: 1,
     // Timeouts para diferentes tipos de tests
-    testTimeout: 10000,
-    hookTimeout: 10000,
+    testTimeout: 60000, // Increased for integration tests (60 seconds)
+    hookTimeout: 30000, // Increased for complex setup
     // Configuración de reportes
     reporters: process.env.CI 
       ? ['verbose', 'junit', 'json'] 

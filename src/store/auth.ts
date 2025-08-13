@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { User, AuthState, Role, Permission } from '@/auth/types'
+import type { User, AuthState, Role, Permission, SecurityEvent } from '@/auth/types'
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -158,6 +158,101 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  // Profile management state
+  const isUpdatingProfile = ref(false)
+  const profileError = ref<string | null>(null)
+
+  // GDPR state
+  const isExportingData = ref(false)
+  const isDeletingAccount = ref(false)
+  const gdprError = ref<string | null>(null)
+
+  // Security events state
+  const securityEvents = ref<SecurityEvent[]>([])
+  const isLoadingSecurityEvents = ref(false)
+
+  // Profile management actions
+  const updateProfile = async (profileData: Partial<User>): Promise<void> => {
+    if (!user.value) throw new Error('No user to update')
+    
+    try {
+      isUpdatingProfile.value = true
+      profileError.value = null
+
+      const updatedUser = { ...user.value, ...profileData }
+      setUser(updatedUser)
+    } catch (err) {
+      profileError.value = err instanceof Error ? err.message : 'Profile update failed'
+      throw err
+    } finally {
+      isUpdatingProfile.value = false
+    }
+  }
+
+  // GDPR actions
+  const requestDataExport = async (): Promise<void> => {
+    if (!user.value) throw new Error('No user authenticated')
+    
+    try {
+      isExportingData.value = true
+      gdprError.value = null
+      // API call will be handled by the component using backend endpoints
+    } catch (err) {
+      gdprError.value = err instanceof Error ? err.message : 'Data export failed'
+      throw err
+    } finally {
+      isExportingData.value = false
+    }
+  }
+
+  const requestAccountDeletion = async (): Promise<void> => {
+    if (!user.value) throw new Error('No user authenticated')
+    
+    try {
+      isDeletingAccount.value = true
+      gdprError.value = null
+      // API call will be handled by the component using backend endpoints
+    } catch (err) {
+      gdprError.value = err instanceof Error ? err.message : 'Account deletion failed'
+      throw err
+    } finally {
+      isDeletingAccount.value = false
+    }
+  }
+
+  // Security events actions
+  const loadSecurityEvents = async (): Promise<void> => {
+    if (!user.value) return
+    
+    try {
+      isLoadingSecurityEvents.value = true
+      // Mock data for now - real implementation would fetch from backend
+      securityEvents.value = [
+        {
+          id: '1',
+          type: 'login',
+          description: 'Successful login from Chrome on Windows',
+          timestamp: new Date().toISOString(),
+          ipAddress: '192.168.1.1',
+          userAgent: 'Chrome 120.0.0',
+          location: 'Madrid, Spain',
+        },
+      ]
+    } catch (err) {
+      console.error('Failed to load security events:', err)
+    } finally {
+      isLoadingSecurityEvents.value = false
+    }
+  }
+
+  const clearProfileError = (): void => {
+    profileError.value = null
+  }
+
+  const clearGdprError = (): void => {
+    gdprError.value = null
+  }
+
   // Get current state as plain object
   const getAuthState = (): AuthState => ({
     user: user.value,
@@ -174,6 +269,19 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading,
     error,
     token,
+
+    // Profile management state
+    isUpdatingProfile,
+    profileError,
+
+    // GDPR state
+    isExportingData,
+    isDeletingAccount,
+    gdprError,
+
+    // Security events state
+    securityEvents,
+    isLoadingSecurityEvents,
 
     // Computed
     userRoles,
@@ -201,5 +309,17 @@ export const useAuthStore = defineStore('auth', () => {
     updateUserProfile,
     updateUserMetadata,
     getAuthState,
+
+    // Profile management actions
+    updateProfile,
+    clearProfileError,
+
+    // GDPR actions
+    requestDataExport,
+    requestAccountDeletion,
+    clearGdprError,
+
+    // Security events actions
+    loadSecurityEvents,
   }
 })

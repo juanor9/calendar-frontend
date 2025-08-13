@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '@/styles/auth/auth-tokens';
+@use '@/styles/auth/auth-tokens' as *;
 
 .login-button {
   // Contenedor principal del botón de login
@@ -138,9 +138,7 @@
   }
 
   &--error {
-
     :deep(.base-button) {
-
       &.base-button--primary {
         background: linear-gradient(
           135deg,
@@ -167,7 +165,6 @@
   }
 
   &--loading {
-
     :deep(.base-button) {
       animation: auth-pulse 2s ease-in-out infinite;
     }
@@ -205,7 +202,6 @@
 
 // Animaciones
 @keyframes auth-spin {
-
   from {
     transform: translate(-50%, -50%) rotate(0deg);
   }
@@ -216,7 +212,6 @@
 }
 
 @keyframes auth-slide-in {
-
   from {
     opacity: 0%;
     transform: translateY(-8px);
@@ -229,7 +224,6 @@
 }
 
 @keyframes auth-pulse {
-
   0%,
   100% {
     opacity: 100%;
@@ -242,9 +236,7 @@
 
 // Dark mode
 @media (prefers-color-scheme: dark) {
-
   .login-button {
-
     &__error {
       background: rgba($auth-error, 0.1);
       border-color: rgba($auth-error-light, 0.3);
@@ -253,7 +245,6 @@
     }
 
     :deep(.base-button) {
-
       &.base-button--secondary {
         background: rgba($auth-login-secondary, 0.15);
         color: $text-primary-dark;
@@ -286,9 +277,7 @@
 
 // Responsive
 @media (width <= 768px) {
-
   .login-button {
-
     :deep(.base-button) {
       width: 100%;
       justify-content: center;
@@ -305,9 +294,7 @@
 
 // Accesibilidad
 @media (prefers-reduced-motion: reduce) {
-
   .login-button {
-
     :deep(.base-button) {
       transition: none;
 
@@ -317,7 +304,6 @@
     }
 
     &__icon {
-
       &.animate-spin {
         animation: none;
       }

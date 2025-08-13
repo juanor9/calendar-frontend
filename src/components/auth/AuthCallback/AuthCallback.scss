@@ -1,4 +1,4 @@
-@import '@/styles/auth/auth-tokens';
+@use '@/styles/auth/auth-tokens' as *;
 
 .auth-callback {
   // Full-screen callback layout con Vana branding

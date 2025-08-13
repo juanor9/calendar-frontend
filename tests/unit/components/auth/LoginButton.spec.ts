@@ -2,12 +2,12 @@
  * LoginButton Component Tests
  * Comprehensive tests for the LoginButton Vue component
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { screen, fireEvent, waitFor } from '@testing-library/vue'
+import { describe, it, expect, afterEach } from 'vitest'
+import { waitFor } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { mountWithAuth, cleanupAuthTests } from '../../../utils/auth-test-utils'
 import { a11yHelpers } from '../../../utils/auth-test-utils'
-import LoginButton from '@/components/auth/LoginButton.vue'
+import LoginButton from '@/components/auth/LoginButton/LoginButton.vue'
 import { createAuthError } from '../../../mocks/auth0'
 
 describe('LoginButton Component', () => {
@@ -46,7 +46,6 @@ describe('LoginButton Component', () => {
         }
       })
 
-      const button = wrapper.find('button')
       // Note: These classes would be applied by BaseButton component
       // We're testing that the props are passed correctly
       expect(wrapper.findComponent({ name: 'BaseButton' }).props()).toMatchObject({
@@ -387,12 +386,8 @@ describe('LoginButton Component', () => {
         authState: 'unauthenticated'
       })
 
-      const renderCount = (wrapper.vm as any).$?.renderTracked?.callCount || 0
-      
-      // Trigger some state changes
-      await wrapper.setProps({ text: 'New Text' })
-      
       // Component should handle updates efficiently
+      await wrapper.setProps({ text: 'New Text' })
       expect(wrapper.text()).toContain('New Text')
     })
   })

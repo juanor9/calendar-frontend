@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '@/styles/auth/auth-tokens';
+@use '@/styles/auth/auth-tokens' as *;
 
 .user-profile {
   /* CONTENEDOR PRINCIPAL */
@@ -288,7 +288,6 @@
   /* VARIANTES DE TAMAÑO */
 
   &--small {
-
     .user-profile__trigger {
       gap: $auth-spacing-sm;
       padding: $auth-spacing-xs $auth-spacing-sm;
@@ -314,7 +313,6 @@
   }
 
   &--large {
-
     .user-profile__trigger {
       gap: $auth-spacing-lg;
       padding: $auth-spacing-md $auth-spacing-lg;
@@ -342,7 +340,6 @@
 
 /* ANIMACIONES */
 @keyframes auth-status-pulse {
-
   0%,
   100% {
     box-shadow: 0 0 0 2px rgba($auth-avatar-status-online, 0.3);
@@ -354,7 +351,6 @@
 }
 
 @keyframes auth-dropdown-in {
-
   from {
     opacity: 0%;
     transform: translateY(-8px) scale(0.95);
@@ -368,11 +364,8 @@
 
 /* DARK MODE */
 @media (prefers-color-scheme: dark) {
-
   .user-profile {
-
     &__trigger {
-
       &:hover {
         background: rgba(color.adjust($brand-primary, $lightness: 10%), 0.08);
       }
@@ -459,9 +452,7 @@
 
 /* RESPONSIVE */
 @media (width <= 768px) {
-
   .user-profile {
-
     &__dropdown {
       left: 0;
       right: 0;
@@ -481,9 +472,7 @@
 
 /* ACCESIBILIDAD */
 @media (prefers-reduced-motion: reduce) {
-
   .user-profile {
-
     &__avatar,
     &__chevron,
     &__trigger,
@@ -508,9 +497,7 @@
 
 /* ALTO CONTRASTE */
 @media (prefers-contrast: high) {
-
   .user-profile {
-
     &__avatar {
       border-width: 3px;
     }

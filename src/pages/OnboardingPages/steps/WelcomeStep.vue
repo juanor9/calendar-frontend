@@ -235,7 +235,6 @@ Introduces users to Vana and sets expectations
       .brand-highlight {
         background: linear-gradient(135deg, #667eea, #764ba2);
         background-clip: text;
-        background-clip: text;
         -webkit-text-fill-color: transparent;
       }
 
@@ -284,7 +283,7 @@ Introduces users to Vana and sets expectations
       border: 1px solid #e2e8f0;
       text-align: left;
       transition: all 0.3s ease;
-      animation: slideInUp 0.6s ease forwards;
+      animation: slide-in-up 0.6s ease forwards;
       opacity: 0%;
       transform: translateY(20px);
 
@@ -446,7 +445,7 @@ Introduces users to Vana and sets expectations
     }
   }
 
-  @keyframes slideInUp {
+  @keyframes slide-in-up {
 
     to {
       opacity: 100%;

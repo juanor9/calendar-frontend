@@ -1,0 +1,427 @@
+@use '@/styles/auth/auth-tokens' as tokens;
+@use '@/styles/globals/mixins' as mixins;
+@use '@/styles/globals/variables' as vars;
+@use 'sass:color';
+
+.account-settings-page {
+  min-height: 100vh;
+  background: var(--color-background);
+  padding-bottom: 2rem;
+
+  @include mixins.mobile-only {
+    padding: 0;
+  }
+}
+
+.settings-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  @include mixins.mobile-only {
+    padding: 0;
+    max-width: 100%;
+  }
+}
+
+// Header
+
+.settings-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: tokens.$auth-heading-card;
+    font-weight: tokens.$auth-weight-heading;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+}
+
+.back-button {
+  @include tokens.auth-button-base;
+
+  background: transparent;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text-secondary);
+  }
+
+  &:hover {
+    background: var(--color-background-hover);
+    
+    .back-button__icon {
+      color: var(--color-text-primary);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid tokens.$auth-login-primary;
+    outline-offset: 2px;
+  }
+}
+
+// Tabs
+
+.settings-tabs {
+  display: flex;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include mixins.mobile-only {
+    padding: 0 1rem;
+  }
+}
+
+.settings-tab {
+  @include tokens.auth-button-base;
+
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  min-width: 120px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  @include mixins.mobile-only {
+    flex-direction: row;
+    min-width: auto;
+    padding: 0.75rem 1rem;
+  }
+
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text-secondary);
+    transition: color 0.2s ease;
+
+    @include mixins.mobile-only {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  &__label {
+    font-size: tokens.$auth-body-small;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    @include mixins.mobile-only {
+      font-size: tokens.$auth-body-primary;
+      font-weight: tokens.$auth-weight-body;
+      line-height: 1.5;
+    }
+  }
+
+  &:hover {
+    background: var(--color-background-hover);
+
+    .settings-tab__icon,
+    .settings-tab__label {
+      color: var(--color-text-primary);
+    }
+  }
+
+  &--active {
+    border-bottom-color: tokens.$auth-login-primary;
+
+    .settings-tab__icon,
+    .settings-tab__label {
+      color: tokens.$auth-login-primary;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid tokens.$auth-login-primary;
+    outline-offset: -2px;
+  }
+}
+
+// Content
+
+.settings-content {
+  padding: 2rem 1rem;
+
+  @include mixins.mobile-only {
+    padding: 1rem;
+  }
+}
+
+.settings-section {
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+// Privacy Section
+
+.privacy-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    font-size: tokens.$auth-heading-card;
+    font-weight: tokens.$auth-weight-heading;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem;
+  }
+
+  &__description {
+    font-size: tokens.$auth-body-primary;
+    font-weight: tokens.$auth-weight-body;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    max-width: 60ch;
+    margin: 0 auto;
+  }
+}
+
+// Danger Zone
+
+.danger-zone {
+  border: 1px solid tokens.$vana-gray-200;
+  border-radius: tokens.$auth-radius-lg;
+  box-shadow: tokens.$auth-shadow-card;
+  border-color: tokens.$auth-error;
+  background: rgba(tokens.$auth-error, 0.02);
+  padding: 1.5rem;
+  text-align: center;
+
+  &__title {
+    font-size: tokens.$auth-heading-subsection;
+    font-weight: tokens.$auth-weight-heading;
+    line-height: 1.25;
+    color: tokens.$auth-error;
+    margin: 0 0 0.5rem;
+  }
+
+  &__description {
+    font-size: tokens.$auth-body-primary;
+    font-weight: tokens.$auth-weight-body;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.5rem;
+    max-width: 50ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.danger-button {
+  @include tokens.auth-button-base;
+
+  background: tokens.$auth-error;
+  color: white;
+  
+  &:hover {
+    background: color.adjust(tokens.$auth-error, $lightness: -8%);
+  }
+
+  min-width: 140px;
+
+  @include mixins.mobile-only {
+    width: 100%;
+  }
+}
+
+// Deletion Modal
+
+.deletion-modal {
+
+  &__content {
+    text-align: center;
+    padding: 1rem 0 2rem;
+  }
+
+  &__message {
+    font-size: tokens.$auth-body-primary;
+    font-weight: tokens.$auth-weight-body;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 1rem 0 2rem;
+    max-width: 40ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &__input {
+    text-align: left;
+
+    label {
+      font-size: tokens.$auth-body-secondary;
+      font-weight: tokens.$auth-weight-label;
+      line-height: 1.4;
+      color: var(--color-text-primary);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+
+    @include mixins.mobile-only {
+      flex-direction: column-reverse;
+      gap: 0.75rem;
+    }
+  }
+}
+
+.warning-icon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  color: tokens.$auth-warning;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.confirmation-input {
+  width: 100%;
+  padding: tokens.$auth-button-padding-y tokens.$auth-button-padding-x;
+  font-size: tokens.$auth-input-text;
+  font-family: inherit;
+  border: 1px solid tokens.$vana-gray-300;
+  border-radius: tokens.$auth-radius-md;
+  background: tokens.$auth-page-card-bg;
+  color: var(--color-text-primary);
+  transition: tokens.$auth-input-transition;
+
+  &:focus {
+    outline: none;
+    border-color: tokens.$auth-trust-primary;
+    box-shadow: 0 0 0 3px rgba(tokens.$auth-trust-primary, 0.1);
+  }
+}
+
+.cancel-button {
+  @include tokens.auth-button-base;
+
+  background: transparent;
+  color: tokens.$auth-neutral;
+  
+  &:hover {
+    background: rgba(tokens.$auth-neutral, 0.1);
+  }
+
+  min-width: 120px;
+
+  @include mixins.mobile-only {
+    width: 100%;
+  }
+}
+
+// Success Toast
+
+.success-toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: tokens.$auth-success;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 15%);
+  z-index: 1000;
+  animation: slide-in-up 0.3s ease;
+
+  @include mixins.mobile-only {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  &__message {
+    font-size: tokens.$auth-body-primary;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+}
+
+@keyframes slide-in-up {
+
+  from {
+    opacity: 0%;
+    transform: translateY(1rem);
+  }
+
+  to {
+    opacity: 100%;
+    transform: translateY(0);
+  }
+}
+
+// Loading Spinner
+
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentcolor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+}

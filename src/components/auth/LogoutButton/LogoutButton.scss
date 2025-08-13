@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '@/styles/auth/auth-tokens';
+@use '@/styles/auth/auth-tokens' as *;
 
 .logout-button {
   position: relative;
@@ -154,16 +154,13 @@
   }
 
   &--loading {
-
     :deep(.base-button) {
       animation: auth-logout-pulse 2s ease-in-out infinite;
     }
   }
 
   &--error {
-
     :deep(.base-button) {
-
       &.base-button--ghost {
         border-color: $auth-error;
         color: $auth-error;
@@ -209,7 +206,6 @@
 /* Modal styles */
 
 :deep(.base-modal) {
-
   .modal__content {
     max-width: 400px;
     text-align: center;
@@ -235,7 +231,6 @@
 
 /* Animations */
 @keyframes auth-logout-spin {
-
   from {
     transform: translate(-50%, -50%) rotate(0deg);
   }
@@ -246,7 +241,6 @@
 }
 
 @keyframes auth-error-slide-in {
-
   from {
     opacity: 0%;
     transform: translateY(-8px);
@@ -259,7 +253,6 @@
 }
 
 @keyframes auth-logout-pulse {
-
   0%,
   100% {
     opacity: 100%;
@@ -272,9 +265,7 @@
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-
   .logout-button {
-
     &__confirm-text {
       color: rgba($text-primary-dark, 0.8);
     }
@@ -287,7 +278,6 @@
     }
 
     :deep(.base-button) {
-
       &.base-button--ghost {
         color: color.adjust($auth-error, $lightness: 10%);
 
@@ -319,7 +309,6 @@
   }
 
   :deep(.base-modal) {
-
     .modal__title {
       color: color.adjust($auth-error, $lightness: 15%);
     }
@@ -328,9 +317,7 @@
 
 /* Responsive */
 @media (width <= 768px) {
-
   .logout-button {
-
     :deep(.base-button) {
       min-height: 44px;
 
@@ -346,7 +333,6 @@
   }
 
   :deep(.base-modal) {
-
     .modal__content {
       margin: $auth-spacing-md;
       padding: $auth-spacing-lg;
@@ -364,9 +350,7 @@
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-
   .logout-button {
-
     :deep(.base-button) {
       transition: none;
 
@@ -380,7 +364,6 @@
     }
 
     &--loading {
-
       :deep(.base-button) {
         animation: none;
 
@@ -396,9 +379,7 @@
 
 /* High contrast */
 @media (prefers-contrast: high) {
-
   .logout-button {
-
     :deep(.base-button).base-button--ghost {
       border: 2px solid currentcolor;
     }

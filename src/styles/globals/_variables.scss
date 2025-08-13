@@ -7,6 +7,7 @@
 // SISTEMA DE ESPACIADO
 // Basado en una escala de 4px para consistencia y ritmo visual
 $spacing-base: 4px;
+$spacing-2xs: #{$spacing-base * 0.5}; // 2px
 $spacing-xs: #{$spacing-base}; // 4px
 $spacing-sm: #{$spacing-base * 2}; // 8px
 $spacing-md: #{$spacing-base * 4}; // 16px
@@ -34,6 +35,7 @@ $radius-xl: 16px;
 $radius-2xl: 20px;
 $radius-round: 50%; // Para avatares circulares
 $radius-pill: 999px; // Para pills y badges
+$radius-full: 9999px; // Para elementos completamente redondeados
 
 // SOMBRAS - Sutiles para no agredir visualmente
 $shadow-xs: 0 1px 2px rgba(0, 0, 0, 5%);
@@ -64,6 +66,7 @@ $z-sticky: 1020;
 $z-fixed: 1030;
 $z-modal-backdrop: 1040;
 $z-modal: 1050;
+$z-overlay: 1055;
 $z-popover: 1060;
 $z-tooltip: 1070;
 $z-toast: 1080;
@@ -82,6 +85,7 @@ $transition-easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
 // Transiciones comunes
 $transition-all: all $transition-duration-base $transition-easing-in-out;
+$transition-fast: all $transition-duration-fast $transition-easing-in-out;
 $transition-color: color $transition-duration-base $transition-easing-in-out;
 $transition-background: background-color $transition-duration-base $transition-easing-in-out;
 $transition-transform: transform $transition-duration-base $transition-easing-smooth;

@@ -9,7 +9,12 @@
       "Bash(npm run type-check:*)",
       "Bash(grep:*)",
       "Bash(mkdir:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npm run storybook:*)",
+      "Bash(npm install:*)",
+      "Bash(npx storybook dev:*)",
+      "Bash(find:*)",
+      "Bash(npm run typecheck:*)"
     ],
     "deny": []
   }

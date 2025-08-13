@@ -227,7 +227,7 @@ describe('Event Handler Types', () => {
       
       const input = wrapper.find('input')
       
-      await input.trigger('input', { target: { value: 'test' } })
+      await fireEvent.update(input.element, 'test')
       expect(mockInput).toHaveBeenCalledTimes(1)
       const inputEvent = mockInput.mock.calls[0][0]
       expect(inputEvent).toBeInstanceOf(Event)
@@ -264,13 +264,13 @@ describe('Event Handler Types', () => {
     it('should provide utility for keyboard-to-mouse event conversion', () => {
       // Utility function that might be used internally
       const convertKeyboardToMouseEvent = (keyboardEvent: KeyboardEvent): MouseEvent => {
-        const { key, target } = keyboardEvent
+        const { key } = keyboardEvent
         
         if (key === 'Enter' || key === ' ') {
           return new MouseEvent('click', {
             bubbles: true,
             cancelable: true,
-            view: window,
+            view: undefined,
             detail: 1,
             button: 0,
             buttons: 1
@@ -346,7 +346,7 @@ describe('Event Handler Types', () => {
     })
 
     it('should handle malformed event objects', () => {
-      const handlePotentiallyMalformedEvent = (event: any): boolean => {
+      const handlePotentiallyMalformedEvent = (event: unknown): boolean => {
         try {
           // Safe event handling
           if (!event || typeof event !== 'object') {
@@ -359,7 +359,7 @@ describe('Event Handler Types', () => {
           
           // Event appears valid
           return true
-        } catch (error) {
+        } catch {
           return false
         }
       }
@@ -397,12 +397,12 @@ describe('Event Handler Types', () => {
       
       // Test with malformed object
       const malformedEvent = { type: 'click' } // Missing preventDefault/stopPropagation
-      expect(() => safePreventDefault(malformedEvent as any)).not.toThrow()
-      expect(() => safeStopPropagation(malformedEvent as any)).not.toThrow()
+      expect(() => safePreventDefault(malformedEvent as Event)).not.toThrow()
+      expect(() => safeStopPropagation(malformedEvent as Event)).not.toThrow()
     })
   })
 
-  // 🔍 Integration Tests for Complex Event Scenarios
+  // 📊 Integration Tests for Complex Event Scenarios
   describe('Complex Event Integration Scenarios', () => {
     it('should handle mixed event types in single component', async () => {
       const eventLog: Array<{ type: string, eventType: string }> = []
@@ -433,14 +433,14 @@ describe('Event Handler Types', () => {
       
       // Trigger various events
       await input.trigger('focus')
-      await input.trigger('input', { target: { value: 'test' } })
+      await fireEvent.update(input.element, 'test')
       await rightIcon.trigger('click')
       await input.trigger('blur')
       
       // Verify event types
       expect(eventLog).toHaveLength(4)
       expect(eventLog[0]).toEqual({ type: 'focus', eventType: 'FocusEvent' })
-      expect(eventLog[1]).toEqual({ type: 'input', eventType: 'Event' })
+      expect(eventLog[1]).toEqual({ type: 'input', eventType: 'InputEvent' })
       expect(eventLog[2]).toEqual({ type: 'rightIconClick', eventType: 'MouseEvent' })
       expect(eventLog[3]).toEqual({ type: 'blur', eventType: 'FocusEvent' })
     })

@@ -35,7 +35,7 @@
   import { computed, ref } from 'vue'
   import { ArrowRightOnRectangleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
   import BaseButton from '@/ui/BaseButton/BaseButton.vue'
-  import { useAuth } from '@/auth/auth-composable'
+  import { useAuth } from '@/composables/useAuth'
   import type { LoginOptions } from '@/auth/types'
 
   // Props
@@ -67,7 +67,7 @@
   const emit = defineEmits<Emits>()
 
   // Auth composable
-  const { login, isLoading, error } = useAuth()
+  const { loginWithRedirect, isLoading, error } = useAuth()
 
   // Local state
   const localLoading = ref(false)
@@ -107,7 +107,7 @@
         options.appState = props.appState
       }
 
-      await login(options)
+      await loginWithRedirect(options)
       emit('loginSuccess')
     } catch (err) {
       console.error('Login failed:', err)

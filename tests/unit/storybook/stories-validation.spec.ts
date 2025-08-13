@@ -7,8 +7,119 @@
 
 import { describe, it, expect } from 'vitest'
 
+// Types for better type safety
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost'
+type ButtonSize = 'small' | 'medium' | 'large'
+type InputVariant = 'default' | 'floating'
+type InputType = 'text' | 'email' | 'password' | 'search'
+type BadgeVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'neutral'
+
+interface StoryArgs {
+  variant?: string
+  label?: string
+  size?: string
+  type?: string
+  disabled?: boolean
+  'aria-label'?: string
+  'aria-describedby'?: string
+}
+
+interface Story {
+  args: StoryArgs
+  parameters?: {
+    docs?: {
+      description?: {
+        story?: string
+      }
+    }
+  }
+  play?: (context: { canvasElement: HTMLElement; step: unknown }) => Promise<void>
+}
+
+interface StoryMeta {
+  title: string
+  component: string
+  parameters?: {
+    docs?: {
+      description?: {
+        component?: string
+      }
+    }
+  }
+  argTypes?: {
+    variant?: {
+      control: { type: string }
+      options: readonly string[]
+    }
+    size?: {
+      control: { type: string }
+      options: readonly string[]
+    }
+  }
+}
+
+interface ValidationResult {
+  valid: boolean
+  errors: string[]
+}
+
+interface AccessibilityValidationResult {
+  hasAccessibleLabel: boolean
+  hasProperDisabledHandling: boolean
+  isValid: boolean
+}
+
+interface DocumentationResult {
+  name: string
+  hasDescription: boolean
+  description: string | null
+}
+
+interface ComponentVariantDefinition {
+  props: {
+    variant: {
+      type: StringConstructor
+      validator: (value: string) => boolean
+    }
+  }
+}
+
+interface FormInput {
+  variant: string
+  type: string
+  label: string
+}
+
+interface FormButton {
+  variant: string
+  label: string
+}
+
+interface FormStoryArgs {
+  inputs: FormInput[]
+  submitButton: FormButton
+  cancelButton: FormButton
+}
+
+interface ControlsConfiguration {
+  variant: {
+    control: string
+    options: readonly string[]
+  }
+  size: {
+    control: string
+    options: readonly string[]
+  }
+  disabled: {
+    control: string
+  }
+  label: {
+    control: string
+  }
+}
+
 // Mock Storybook story structures based on existing BaseButton stories
-const mockBaseButtonStories = {
+const mockBaseButtonStories: Record<string, Story> = {
   Primary: {
     args: {
       variant: 'primary',
@@ -36,8 +147,8 @@ const mockBaseButtonStories = {
 }
 
 // Mock component variant definitions
-const VALID_BUTTON_VARIANTS = ['primary', 'secondary', 'outline', 'ghost'] as const
-const VALID_BUTTON_SIZES = ['small', 'medium', 'large'] as const
+const VALID_BUTTON_VARIANTS: readonly ButtonVariant[] = ['primary', 'secondary', 'outline', 'ghost'] as const
+const VALID_BUTTON_SIZES: readonly ButtonSize[] = ['small', 'medium', 'large'] as const
 
 describe('Storybook Stories Validation', () => {
   // 📚 Story Variant Validation Tests
@@ -51,7 +162,7 @@ describe('Storybook Stories Validation', () => {
       ]
       
       stories.forEach(story => {
-        expect(VALID_BUTTON_VARIANTS).toContain(story.args.variant as any)
+        expect(VALID_BUTTON_VARIANTS).toContain(story.args.variant as ButtonVariant)
       })
       
       // Verify specific variants
@@ -70,19 +181,19 @@ describe('Storybook Stories Validation', () => {
       ]
       
       invalidStoryVariants.forEach(invalidVariant => {
-        expect(VALID_BUTTON_VARIANTS).not.toContain(invalidVariant as any)
+        expect(VALID_BUTTON_VARIANTS).not.toContain(invalidVariant as ButtonVariant)
       })
     })
 
     it('should validate size variants in stories', () => {
-      const mockSizeStories = {
+      const mockSizeStories: Record<string, Story> = {
         SmallButton: { args: { variant: 'primary', size: 'small' } },
         MediumButton: { args: { variant: 'primary', size: 'medium' } },
         LargeButton: { args: { variant: 'primary', size: 'large' } }
       }
       
       Object.values(mockSizeStories).forEach(story => {
-        expect(VALID_BUTTON_SIZES).toContain(story.args.size as any)
+        expect(VALID_BUTTON_SIZES).toContain(story.args.size as ButtonSize)
       })
     })
   })
@@ -90,11 +201,12 @@ describe('Storybook Stories Validation', () => {
   // 🎨 Story Configuration Validation Tests
   describe('Story Configuration Validation', () => {
     it('should have proper story structure', () => {
-      const validateStoryStructure = (story: any) => {
+      const validateStoryStructure = (story: unknown): story is Story => {
         return (
-          story &&
+          story !== null &&
           typeof story === 'object' &&
-          story.args &&
+          'args' in story &&
+          story.args !== null &&
           typeof story.args === 'object'
         )
       }
@@ -110,13 +222,13 @@ describe('Storybook Stories Validation', () => {
       Object.values(mockBaseButtonStories).forEach(story => {
         requiredButtonArgs.forEach(arg => {
           expect(story.args).toHaveProperty(arg)
-          expect(story.args[arg]).toBeTruthy()
+          expect(story.args[arg as keyof StoryArgs]).toBeTruthy()
         })
       })
     })
 
     it('should validate story meta configuration', () => {
-      const mockMeta = {
+      const mockMeta: StoryMeta = {
         title: 'Components/UI/BaseButton',
         component: 'BaseButton',
         parameters: {
@@ -140,8 +252,8 @@ describe('Storybook Stories Validation', () => {
       
       expect(mockMeta.title).toContain('BaseButton')
       expect(mockMeta.component).toBe('BaseButton')
-      expect(mockMeta.argTypes.variant.options).toEqual(VALID_BUTTON_VARIANTS)
-      expect(mockMeta.argTypes.size.options).toEqual(VALID_BUTTON_SIZES)
+      expect(mockMeta.argTypes?.variant?.options).toEqual(VALID_BUTTON_VARIANTS)
+      expect(mockMeta.argTypes?.size?.options).toEqual(VALID_BUTTON_SIZES)
     })
   })
 
@@ -149,18 +261,18 @@ describe('Storybook Stories Validation', () => {
   describe('Story Variant Consistency', () => {
     it('should maintain consistency between component and story variants', () => {
       // Mock component definition
-      const componentVariantDefinition = {
+      const componentVariantDefinition: ComponentVariantDefinition = {
         props: {
           variant: {
             type: String,
-            validator: (value: string) => VALID_BUTTON_VARIANTS.includes(value as any)
+            validator: (value: string) => VALID_BUTTON_VARIANTS.includes(value as ButtonVariant)
           }
         }
       }
       
       // Test that story variants are valid according to component
       Object.values(mockBaseButtonStories).forEach(story => {
-        const isValid = componentVariantDefinition.props.variant.validator(story.args.variant)
+        const isValid = componentVariantDefinition.props.variant.validator(story.args.variant || '')
         expect(isValid).toBe(true)
       })
     })
@@ -168,6 +280,7 @@ describe('Storybook Stories Validation', () => {
     it('should cover all component variants in stories', () => {
       const storyVariants = Object.values(mockBaseButtonStories)
         .map(story => story.args.variant)
+        .filter((variant): variant is string => typeof variant === 'string')
       
       VALID_BUTTON_VARIANTS.forEach(variant => {
         expect(storyVariants).toContain(variant)
@@ -177,6 +290,7 @@ describe('Storybook Stories Validation', () => {
     it('should not have duplicate variant stories', () => {
       const storyVariants = Object.values(mockBaseButtonStories)
         .map(story => story.args.variant)
+        .filter((variant): variant is string => typeof variant === 'string')
       
       const uniqueVariants = [...new Set(storyVariants)]
       expect(storyVariants).toHaveLength(uniqueVariants.length)
@@ -186,10 +300,10 @@ describe('Storybook Stories Validation', () => {
   // 🧪 Story Testing Utilities
   describe('Story Testing Patterns', () => {
     it('should provide story validation utility', () => {
-      const validateStoryVariants = <T extends Record<string, any>>(
-        stories: Record<string, { args: T }>,
+      const validateStoryVariants = (
+        stories: Record<string, Story>,
         validVariants: readonly string[]
-      ): { valid: boolean; errors: string[] } => {
+      ): ValidationResult => {
         const errors: string[] = []
         
         Object.entries(stories).forEach(([storyName, story]) => {
@@ -215,7 +329,7 @@ describe('Storybook Stories Validation', () => {
       expect(validResult.errors).toHaveLength(0)
       
       // Test invalid stories
-      const invalidStories = {
+      const invalidStories: Record<string, Story> = {
         Invalid: { args: { variant: 'invalid-variant' } }
       }
       
@@ -226,7 +340,7 @@ describe('Storybook Stories Validation', () => {
     })
 
     it('should validate story accessibility configuration', () => {
-      const mockAccessibilityStories = {
+      const mockAccessibilityStories: Record<string, Story> = {
         AccessiblePrimary: {
           args: {
             variant: 'primary',
@@ -244,9 +358,9 @@ describe('Storybook Stories Validation', () => {
         }
       }
       
-      const validateAccessibilityArgs = (story: any) => {
-        const hasAccessibleLabel = story.args.label || story.args['aria-label']
-        const hasProperDisabledHandling = !story.args.disabled || story.args['aria-describedby']
+      const validateAccessibilityArgs = (story: Story): AccessibilityValidationResult => {
+        const hasAccessibleLabel = !!(story.args.label || story.args['aria-label'])
+        const hasProperDisabledHandling = !story.args.disabled || !!(story.args['aria-describedby'])
         
         return {
           hasAccessibleLabel,
@@ -262,7 +376,7 @@ describe('Storybook Stories Validation', () => {
     })
 
     it('should handle story documentation validation', () => {
-      const mockDocumentedStories = {
+      const mockDocumentedStories: Record<string, Story> = {
         DocumentedPrimary: {
           args: { variant: 'primary', label: 'Primary' },
           parameters: {
@@ -285,7 +399,7 @@ describe('Storybook Stories Validation', () => {
         }
       }
       
-      const validateStoryDocumentation = (stories: Record<string, any>) => {
+      const validateStoryDocumentation = (stories: Record<string, Story>): DocumentationResult[] => {
         return Object.entries(stories).map(([name, story]) => ({
           name,
           hasDescription: !!(
@@ -308,10 +422,10 @@ describe('Storybook Stories Validation', () => {
   // 🔄 Multi-component Story Validation
   describe('Multi-component Story Patterns', () => {
     it('should validate input component stories', () => {
-      const VALID_INPUT_VARIANTS = ['default', 'floating'] as const
-      const VALID_INPUT_TYPES = ['text', 'email', 'password', 'search'] as const
+      const VALID_INPUT_VARIANTS: readonly InputVariant[] = ['default', 'floating'] as const
+      const VALID_INPUT_TYPES: readonly InputType[] = ['text', 'email', 'password', 'search'] as const
       
-      const mockInputStories = {
+      const mockInputStories: Record<string, Story> = {
         DefaultText: {
           args: { 
             variant: 'default',
@@ -329,15 +443,15 @@ describe('Storybook Stories Validation', () => {
       }
       
       Object.values(mockInputStories).forEach(story => {
-        expect(VALID_INPUT_VARIANTS).toContain(story.args.variant as any)
-        expect(VALID_INPUT_TYPES).toContain(story.args.type as any)
+        expect(VALID_INPUT_VARIANTS).toContain(story.args.variant as InputVariant)
+        expect(VALID_INPUT_TYPES).toContain(story.args.type as InputType)
       })
     })
 
     it('should validate badge component stories', () => {
-      const VALID_BADGE_VARIANTS = ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'neutral'] as const
+      const VALID_BADGE_VARIANTS: readonly BadgeVariant[] = ['primary', 'secondary', 'success', 'warning', 'error', 'info', 'neutral'] as const
       
-      const mockBadgeStories = {
+      const mockBadgeStories: Record<string, Story> = {
         PrimaryBadge: { args: { variant: 'primary' } },
         SuccessBadge: { args: { variant: 'success' } },
         WarningBadge: { args: { variant: 'warning' } },
@@ -345,13 +459,13 @@ describe('Storybook Stories Validation', () => {
       }
       
       Object.values(mockBadgeStories).forEach(story => {
-        expect(VALID_BADGE_VARIANTS).toContain(story.args.variant as any)
+        expect(VALID_BADGE_VARIANTS).toContain(story.args.variant as BadgeVariant)
       })
     })
 
     it('should handle cross-component consistency', () => {
       // Ensure size variants are consistent across components
-      const commonSizes = ['small', 'medium', 'large'] as const
+      const commonSizes: readonly ButtonSize[] = ['small', 'medium', 'large'] as const
       
       const componentSizeDefinitions = {
         button: VALID_BUTTON_SIZES,
@@ -371,7 +485,7 @@ describe('Storybook Stories Validation', () => {
   // 🎯 Story Integration Tests
   describe('Story Integration Scenarios', () => {
     it('should validate form component story combinations', () => {
-      const mockFormStories = {
+      const mockFormStories: Record<string, { args: FormStoryArgs }> = {
         LoginForm: {
           args: {
             inputs: [
@@ -387,25 +501,25 @@ describe('Storybook Stories Validation', () => {
       const formStory = mockFormStories.LoginForm
       
       // Validate input variants
-      formStory.args.inputs.forEach((input: any) => {
+      formStory.args.inputs.forEach((input) => {
         expect(['default', 'floating']).toContain(input.variant)
         expect(['text', 'email', 'password', 'search']).toContain(input.type)
       })
       
       // Validate button variants
-      expect(VALID_BUTTON_VARIANTS).toContain(formStory.args.submitButton.variant as any)
-      expect(VALID_BUTTON_VARIANTS).toContain(formStory.args.cancelButton.variant as any)
+      expect(VALID_BUTTON_VARIANTS).toContain(formStory.args.submitButton.variant as ButtonVariant)
+      expect(VALID_BUTTON_VARIANTS).toContain(formStory.args.cancelButton.variant as ButtonVariant)
     })
 
     it('should validate interactive story scenarios', () => {
-      const mockInteractiveStories = {
+      const mockInteractiveStories: Record<string, Story> = {
         ButtonStates: {
           args: { variant: 'primary', label: 'Interactive Button' },
-          play: async ({ canvasElement, step }: any) => {
+          play: async ({ canvasElement, step }) => {
             // Mock play function validation
-            const expectedSteps = ['click', 'hover', 'focus']
             expect(step).toBeDefined()
             expect(canvasElement).toBeDefined()
+            expect(canvasElement).toBeInstanceOf(HTMLElement)
           }
         }
       }
@@ -416,7 +530,7 @@ describe('Storybook Stories Validation', () => {
     })
 
     it('should validate story controls configuration', () => {
-      const mockControlsConfiguration = {
+      const mockControlsConfiguration: ControlsConfiguration = {
         variant: {
           control: 'select',
           options: VALID_BUTTON_VARIANTS

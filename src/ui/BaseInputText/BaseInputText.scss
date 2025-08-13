@@ -5,6 +5,10 @@
 // Variantes: default, floating-label, with-icon
 // ==============================
 
+@use '../../styles/globals/variables' as *;
+@use '../../styles/globals/mixins' as *;
+@use '../../styles/globals/color' as *;
+
 .input {
   display: flex;
   flex-direction: column;

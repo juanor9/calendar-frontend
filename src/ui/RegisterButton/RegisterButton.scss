@@ -23,6 +23,7 @@
   );
 
   // Subtle pattern overlay for texture
+
   &::before {
     content: '';
     position: absolute;
@@ -34,6 +35,7 @@
   }
 
   // MAIN CONTAINER
+
   &__container {
     position: relative;
     z-index: 1;
@@ -46,6 +48,7 @@
   }
 
   // MAIN CARD
+
   &__card {
     background: $registration-page-card-bg;
     border-radius: $auth-radius-xl;
@@ -65,6 +68,7 @@
   }
 
   // HEADER SECTION
+
   &__header {
     margin-bottom: $spacing-2xl;
   }
@@ -107,6 +111,7 @@
   }
 
   // VALUE PROPOSITION SECTION
+
   &__value-props {
     margin: $spacing-xl 0;
     text-align: left;
@@ -149,6 +154,7 @@
   }
 
   // SOCIAL PROOF SECTION
+
   &__social-proof {
     margin: $spacing-xl 0;
     padding: $spacing-lg;
@@ -175,6 +181,7 @@
   }
 
   // TRUST INDICATORS
+
   &__trust-indicators {
     display: flex;
     justify-content: center;
@@ -203,6 +210,7 @@
   }
 
   // ACTION SECTION
+
   &__actions {
     margin: $spacing-2xl 0 $spacing-lg;
   }
@@ -227,6 +235,7 @@
   }
 
   // LEGAL SECTION
+
   &__legal {
     margin-top: $spacing-xl;
     padding-top: $spacing-lg;
@@ -249,6 +258,7 @@
   }
 
   // LOADING OVERLAY
+
   &--loading {
     pointer-events: none;
 
@@ -271,6 +281,7 @@
 
   // High contrast mode
   @media (prefers-contrast: high) {
+
     .register-page__card {
       border: 2px solid $text-primary;
     }
@@ -282,6 +293,7 @@
 
   // Reduced motion
   @media (prefers-reduced-motion: reduce) {
+
     .register-page__cta-button {
       transition: none;
 
@@ -313,6 +325,7 @@
     }
 
     .register-page__value-text {
+
       strong {
         color: $auth-dark-text;
       }
@@ -358,10 +371,12 @@
 
 // ANIMATION KEYFRAMES
 @keyframes fade-in-up {
+
   from {
     opacity: 0%;
     transform: translateY(30px);
   }
+
   to {
     opacity: 100%;
     transform: translateY(0);

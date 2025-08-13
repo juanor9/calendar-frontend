@@ -21,6 +21,7 @@ import type {
   RegistrationError,
   AppState,
 } from '@/types/registration.types'
+import type { SecurityEvent } from '@/auth/types'
 
 // Injection key for Auth0 client
 export const Auth0ClientKey = Symbol('Auth0Client')
@@ -38,6 +39,7 @@ export interface UseAuthReturn {
   canRetryRegistration: ComputedRef<boolean>
 
   // Methods - Core Auth
+  checkAuth: () => Promise<void>
   loginWithRedirect: (options?: LoginOptions) => Promise<void>
   registerWithRedirect: (email?: string, source?: string) => Promise<void>
   logout: (returnTo?: string) => Promise<void>
@@ -61,6 +63,25 @@ export interface UseAuthReturn {
   // Utilities
   getUserDisplayName: () => string | null
   getUserAvatar: () => string | null
+
+  // Profile management methods
+  updateProfile: (profileData: Partial<User>) => Promise<void>
+  clearProfileError: () => void
+
+  // GDPR methods
+  requestDataExport: () => Promise<void>
+  requestAccountDeletion: () => Promise<void>
+  clearGdprError: () => void
+
+  // Security events methods
+  loadSecurityEvents: () => Promise<void>
+
+  // Additional auth state
+  isExportingData: Ref<boolean>
+  isDeletingAccount: Ref<boolean>
+  gdprError: Ref<string | null>
+  securityEvents: Ref<SecurityEvent[]>
+  isLoadingSecurityEvents: Ref<boolean>
 }
 
 export const useAuth = (): UseAuthReturn => {
@@ -169,6 +190,24 @@ export const useAuth = (): UseAuthReturn => {
       }
     } catch (err) {
       console.warn('Failed to sync auth state:', err)
+    }
+  }
+
+  /**
+   * Check and refresh authentication state
+   */
+  const checkAuth = async (): Promise<void> => {
+    try {
+      if (auth0Client.isAuthenticated.value) {
+        await syncAuthState()
+        
+        // Update login timestamp
+        localStorage.setItem('last_login', Date.now().toString())
+      }
+    } catch (err) {
+      console.warn('Auth check failed:', err)
+      // Clear auth state on error
+      authStore.clearAuth()
     }
   }
 
@@ -446,6 +485,42 @@ export const useAuth = (): UseAuthReturn => {
     return authStore.userAvatar
   }
 
+  /**
+   * Profile Management Methods
+   */
+  
+  const updateProfile = async (profileData: Partial<User>): Promise<void> => {
+    return authStore.updateProfile(profileData)
+  }
+
+  const clearProfileError = (): void => {
+    authStore.clearProfileError()
+  }
+
+  /**
+   * GDPR Methods
+   */
+  
+  const requestDataExport = async (): Promise<void> => {
+    return authStore.requestDataExport()
+  }
+
+  const requestAccountDeletion = async (): Promise<void> => {
+    return authStore.requestAccountDeletion()
+  }
+
+  const clearGdprError = (): void => {
+    authStore.clearGdprError()
+  }
+
+  /**
+   * Security Events Methods
+   */
+  
+  const loadSecurityEvents = async (): Promise<void> => {
+    return authStore.loadSecurityEvents()
+  }
+
   // Load cached registration state on initialization
   const cachedState = RegistrationCache.load()
   if (cachedState && cachedState.status !== 'completed') {
@@ -465,6 +540,7 @@ export const useAuth = (): UseAuthReturn => {
     canRetryRegistration,
 
     // Core methods
+    checkAuth,
     loginWithRedirect,
     registerWithRedirect,
     logout,
@@ -488,5 +564,24 @@ export const useAuth = (): UseAuthReturn => {
     // Utilities
     getUserDisplayName,
     getUserAvatar,
+
+    // Profile management methods
+    updateProfile,
+    clearProfileError,
+
+    // GDPR methods
+    requestDataExport,
+    requestAccountDeletion,
+    clearGdprError,
+
+    // Security events methods
+    loadSecurityEvents,
+
+    // Additional auth state
+    isExportingData: computed(() => authStore.isExportingData),
+    isDeletingAccount: computed(() => authStore.isDeletingAccount),
+    gdprError: computed(() => authStore.gdprError),
+    securityEvents: computed(() => authStore.securityEvents),
+    isLoadingSecurityEvents: computed(() => authStore.isLoadingSecurityEvents),
   }
 }

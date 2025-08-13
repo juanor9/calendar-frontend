@@ -40,3 +40,4 @@ storybook-static
 #Linters
 .eslintcache
 .stylelintcache
+/.claude

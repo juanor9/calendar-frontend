@@ -1,6 +1,4 @@
 import type { StorybookConfig } from '@storybook/vue3-vite'
-import { mergeConfig, type Plugin, type UserConfig } from 'vite'
-import viteConfig from '../vite.config'
 
 /* Plugins que no queremos en Storybook */
 const BLOCKLIST = [
@@ -26,30 +24,27 @@ const config: StorybookConfig = {
     },
   },
 
-  core: { builder: '@storybook/builder-vite' },
+  core: {
+    builder: '@storybook/builder-vite',
+    disableTelemetry: true,
+  },
 
-  async viteFinal(stb: UserConfig) {
-    const merged = mergeConfig(stb, viteConfig as UserConfig)
-
-    /* 1. Filtra plugins conflictivos */
-    let plugins = (merged.plugins ?? []).filter((p: Plugin | [Plugin]) => {
-      const name = Array.isArray(p) ? p[0].name : (p as Plugin).name
-      return !BLOCKLIST.some(bad => name?.includes(bad))
+  async viteFinal(stb) {
+    const { mergeConfig } = await import('vite')
+    return mergeConfig(stb, {
+      resolve: {
+        alias: {
+          '@': new URL('../src', import.meta.url).pathname,
+        },
+      },
+      css: {
+        preprocessorOptions: {
+          scss: {
+            additionalData: `@use "@/styles/_tokens.scss" as *;\n`,
+          },
+        },
+      },
     })
-
-    /* 2. Elimina duplicados de `vite:vue` (deja solo la primera instancia) */
-    let seenVue = false
-    plugins = plugins.filter((p: Plugin | [Plugin]) => {
-      const name = Array.isArray(p) ? p[0].name : (p as Plugin).name
-      if (name === 'vite:vue') {
-        if (seenVue) return false // descarta duplicado
-        seenVue = true
-      }
-      return true
-    })
-
-    merged.plugins = plugins
-    return merged
   },
 }
 

@@ -3,12 +3,19 @@ import type { RouteRecordRaw } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout/DefaultLayout.vue'
 import AuthCallback from '@/components/auth/AuthCallback/AuthCallback.vue'
 import {
-  authGuard,
-  guestGuard,
   adminGuard,
   premiumGuard,
   createPermissionGuard,
 } from '@/auth/auth-guard'
+import {
+  enhancedAuthGuard,
+  enhancedGuestGuard,
+  emailVerificationGuard,
+  onboardingFlowGuard,
+  securityRouteGuard,
+  composeGuards,
+} from '@/auth/route-guards'
+import { installNavigationMiddleware } from '@/auth/navigation-middleware'
 
 const routes: RouteRecordRaw[] = [
   // Landing page (guest only)
@@ -16,7 +23,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'Landing',
     component: () => import('@/pages/LandingPage.vue'),
-    beforeEnter: guestGuard,
+    beforeEnter: enhancedGuestGuard,
     meta: {
       title: 'Vana Calendar - Transform Your Chaotic Calendar Into Productive Focus Time',
       requiresAuth: false,
@@ -31,7 +38,7 @@ const routes: RouteRecordRaw[] = [
         path: 'login',
         name: 'Login',
         component: () => import('@/pages/AuthPages/LoginPage.vue'),
-        beforeEnter: guestGuard,
+        beforeEnter: enhancedGuestGuard,
         meta: {
           title: 'Sign In - Vana Calendar',
           requiresAuth: false,
@@ -75,6 +82,62 @@ const routes: RouteRecordRaw[] = [
           requiresAuth: false,
         },
       },
+      {
+        path: 'forgot-password',
+        name: 'ForgotPassword',
+        component: () => import('@/pages/AuthPages/ForgotPasswordPage.vue'),
+        beforeEnter: enhancedGuestGuard,
+        meta: {
+          title: 'Reset Password - Vana Calendar',
+          requiresAuth: false,
+        },
+      },
+      {
+        path: 'reset-password',
+        name: 'ResetPassword',
+        component: () => import('@/pages/AuthPages/ResetPasswordPage.vue'),
+        beforeEnter: enhancedGuestGuard,
+        meta: {
+          title: 'Set New Password - Vana Calendar',
+          requiresAuth: false,
+        },
+      },
+      {
+        path: 'settings',
+        name: 'AccountSettings',
+        component: () => import('@/pages/AuthPages/AccountSettingsPage.vue'),
+        beforeEnter: composeGuards(enhancedAuthGuard, emailVerificationGuard, securityRouteGuard),
+        meta: {
+          title: 'Account Settings - Vana Calendar',
+          requiresAuth: true,
+          requiresCompletedOnboarding: true,
+          requiresEmailVerification: true,
+        },
+      },
+      {
+        path: 'privacy',
+        name: 'PrivacyControls',
+        component: () => import('@/pages/AuthPages/PrivacyControlsPage.vue'),
+        beforeEnter: composeGuards(enhancedAuthGuard, emailVerificationGuard, securityRouteGuard),
+        meta: {
+          title: 'Privacy Controls - Vana Calendar',
+          requiresAuth: true,
+          requiresCompletedOnboarding: true,
+          requiresEmailVerification: true,
+        },
+      },
+      {
+        path: 'security',
+        name: 'SecurityDashboard',
+        component: () => import('@/pages/AuthPages/SecurityDashboard.vue'),
+        beforeEnter: composeGuards(enhancedAuthGuard, emailVerificationGuard, securityRouteGuard),
+        meta: {
+          title: 'Security Dashboard - Vana Calendar',
+          requiresAuth: true,
+          requiresCompletedOnboarding: true,
+          requiresEmailVerification: true,
+        },
+      },
     ],
   },
 
@@ -83,7 +146,7 @@ const routes: RouteRecordRaw[] = [
     path: '/onboarding',
     name: 'Onboarding',
     component: () => import('@/pages/OnboardingPages/OnboardingWizard.vue'),
-    beforeEnter: authGuard,
+    beforeEnter: composeGuards(enhancedAuthGuard, onboardingFlowGuard),
     meta: {
       requiresAuth: true,
       requiresIncompleteOnboarding: true,
@@ -147,7 +210,7 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/pages/HomePage/HomePage.vue'),
-    beforeEnter: authGuard,
+    beforeEnter: enhancedAuthGuard,
     meta: {
       requiresAuth: true,
       requiresCompletedOnboarding: true,
@@ -158,7 +221,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/app',
     component: DefaultLayout,
-    beforeEnter: authGuard,
+    beforeEnter: enhancedAuthGuard,
     children: [
       {
         path: '',
@@ -189,7 +252,7 @@ const routes: RouteRecordRaw[] = [
         path: 'calendar',
         name: 'Calendar',
         component: () => import('@/pages/HomePage/HomePage.vue'), // TODO: Create CalendarPage
-        beforeEnter: authGuard,
+        beforeEnter: enhancedAuthGuard,
         meta: {
           layout: 'default',
           requiresAuth: true,
@@ -199,12 +262,25 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'tasks',
         name: 'Tasks',
-        component: () => import('@/pages/HomePage/HomePage.vue'), // TODO: Create TasksPage
-        beforeEnter: authGuard,
+        component: () => import('@/pages/TasksPage/TasksPage.vue'),
+        beforeEnter: enhancedAuthGuard,
         meta: {
           layout: 'default',
           requiresAuth: true,
+          requiresCompletedOnboarding: true,
           title: 'Tareas - Vana Calendar',
+        },
+      },
+      {
+        path: 'tasks/:id',
+        name: 'TaskDetail',
+        component: () => import('@/pages/TaskDetailPage/TaskDetailPage.vue'),
+        beforeEnter: enhancedAuthGuard,
+        meta: {
+          layout: 'default',
+          requiresAuth: true,
+          requiresCompletedOnboarding: true,
+          title: 'Detalle de Tarea - Vana Calendar',
         },
       },
       // User routes
@@ -212,7 +288,7 @@ const routes: RouteRecordRaw[] = [
         path: 'profile',
         name: 'Profile',
         component: () => import('@/pages/HomePage/HomePage.vue'), // TODO: Create ProfilePage
-        beforeEnter: authGuard,
+        beforeEnter: enhancedAuthGuard,
         meta: {
           layout: 'default',
           requiresAuth: true,
@@ -223,7 +299,7 @@ const routes: RouteRecordRaw[] = [
         path: 'settings',
         name: 'Settings',
         component: () => import('@/pages/HomePage/HomePage.vue'), // TODO: Create SettingsPage
-        beforeEnter: authGuard,
+        beforeEnter: enhancedAuthGuard,
         meta: {
           layout: 'default',
           requiresAuth: true,
@@ -234,7 +310,7 @@ const routes: RouteRecordRaw[] = [
         path: 'notifications',
         name: 'Notifications',
         component: () => import('@/pages/HomePage/HomePage.vue'), // TODO: Create NotificationsPage
-        beforeEnter: authGuard,
+        beforeEnter: enhancedAuthGuard,
         meta: {
           layout: 'default',
           requiresAuth: true,
@@ -333,58 +409,21 @@ const router = createRouter({
   routes,
 })
 
-// Global navigation guards
-router.beforeEach(async (to, from, next) => {
-  // Set document title
-  if (to.meta?.title) {
-    document.title = to.meta.title as string
-  }
+// Install navigation middleware
+installNavigationMiddleware(router, {
+  enableTokenRefresh: true,
+  enableSessionValidation: true,
+  enableActivityTracking: true,
+  sessionTimeoutMs: 24 * 60 * 60 * 1000, // 24 hours
+  tokenRefreshThresholdMs: 5 * 60 * 1000, // 5 minutes
+})
 
-  // Handle loading states
+// Additional router configuration (navigation middleware handles most global guards)
+router.beforeEach(async (to, from, next) => {
+  // Add page transition class
   const body = document.body
   body.classList.add('page-transitioning')
-
   next()
-})
-
-router.afterEach((to, from) => {
-  // Remove loading states
-  const body = document.body
-  body.classList.remove('page-transitioning')
-
-  // Scroll to top on route change (except for hash navigation)
-  if (to.path !== from.path && !to.hash) {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-  }
-
-  // Track route changes (for analytics if needed)
-  if (import.meta.env.DEV) {
-    console.log('Route changed:', {
-      from: from.fullPath,
-      to: to.fullPath,
-      meta: to.meta,
-    })
-  }
-})
-
-// Global error handler for navigation
-router.onError(error => {
-  console.error('Router error:', error)
-
-  // Handle specific error types
-  if (error.message.includes('Failed to fetch dynamically imported module')) {
-    // Handle chunk load errors (common in production)
-    window.location.reload()
-  } else {
-    // Redirect to error page for other errors
-    router.push({
-      name: 'Error',
-      query: {
-        message: error.message,
-        from: router.currentRoute.value.fullPath,
-      },
-    })
-  }
 })
 
 export default router
