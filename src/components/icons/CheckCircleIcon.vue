@@ -21,9 +21,4 @@
   }
 </script>
 
-<style scoped>
-  .check-circle-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-</style>
+<style lang="scss" src="./CheckCircleIcon.scss"></style>

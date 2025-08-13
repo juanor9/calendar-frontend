@@ -17,9 +17,4 @@
   }
 </script>
 
-<style scoped>
-  .check-icon {
-    width: 1rem;
-    height: 1rem;
-  }
-</style>
+<style lang="scss" src="./CheckIcon.scss"></style>

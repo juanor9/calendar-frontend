@@ -1,0 +1,97 @@
+// ==============================
+// VANA DESIGN SYSTEM - CLOCK ICON
+// Time and scheduling icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.clock-icon {
+  width: $spacing-lg; // 24px - following design tokens
+  height: $spacing-lg; // 24px
+  flex-shrink: 0;
+  transition: $transition-color;
+
+  // Responsive sizing
+
+  &--small {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: rotate(5deg);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations - semantic for time-related contexts
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--info {
+    color: $info-primary;
+  }
+
+  &--warning {
+    color: $warning-primary;
+  }
+
+  &--error {
+    color: $error-primary;
+  }
+
+  &--muted {
+    color: $neutral-primary;
+  }
+
+  // Spinning animation for loading states
+
+  &--spinning {
+    animation: spin-clock 2s linear infinite;
+  }
+
+  // Ticking animation for active schedules
+
+  &--ticking {
+    animation: tick-clock 1s ease-in-out infinite;
+  }
+}
+
+@keyframes spin-clock {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tick-clock {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}

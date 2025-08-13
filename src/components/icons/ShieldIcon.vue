@@ -21,9 +21,4 @@
   }
 </script>
 
-<style scoped>
-  .shield-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-</style>
+<style lang="scss" src="./ShieldIcon.scss"></style>

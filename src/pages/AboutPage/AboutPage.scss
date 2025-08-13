@@ -1,0 +1,60 @@
+// ==============================
+// VANA DESIGN SYSTEM - ABOUT PAGE
+// Simple about page following BEM methodology and design tokens
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.about-page {
+  @include container;
+  @include section-spacing($spacing-section-md, $spacing-section-md);
+
+  &__title {
+    font-family: $font-family-primary;
+    font-size: $font-size-h1;
+    font-weight: $font-weight-semibold;
+    line-height: $line-height-tight;
+    color: $text-primary;
+    margin-bottom: $spacing-lg;
+    text-align: center;
+
+    @include mobile-only {
+      font-size: $font-size-h1-mobile;
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  &__content {
+    max-width: $content-width-narrow;
+    margin: 0 auto;
+    color: $text-secondary;
+    line-height: 1.6;
+
+    p {
+      margin-bottom: $spacing-md;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Future expansion for more content sections
+
+  &__section {
+    margin-bottom: $spacing-section-sm;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__section-title {
+    font-family: $font-family-primary;
+    font-size: $font-size-h3;
+    font-weight: $font-weight-medium;
+    line-height: $line-height-base;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
+  }
+}

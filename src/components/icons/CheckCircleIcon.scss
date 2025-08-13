@@ -1,0 +1,81 @@
+// ==============================
+// VANA DESIGN SYSTEM - CHECK CIRCLE ICON
+// Success and completion icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.check-circle-icon {
+  width: $spacing-lg; // 24px - following design tokens
+  height: $spacing-lg; // 24px
+  flex-shrink: 0;
+  transition: $transition-color;
+
+  // Responsive sizing
+
+  &--small {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations - semantic for success/completion
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--success {
+    color: $success-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--info {
+    color: $info-primary;
+  }
+
+  &--warning {
+    color: $warning-primary;
+  }
+
+  &--error {
+    color: $error-primary;
+  }
+
+  // Pulse animation for active states
+
+  &--pulse {
+    animation: pulse-check 2s infinite;
+  }
+}
+
+@keyframes pulse-check {
+
+  0%,
+  100% {
+    opacity: 100%;
+  }
+
+  50% {
+    opacity: 70%;
+    transform: scale(1.05);
+  }
+}

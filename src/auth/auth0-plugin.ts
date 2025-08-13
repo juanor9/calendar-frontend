@@ -9,7 +9,11 @@ export const createAuth0Plugin = () => {
     install(app: App) {
       // Validate configuration before creating client
       if (!validateAuth0Config()) {
-        console.error('Auth0 configuration is invalid. Authentication will not work properly.')
+        console.warn('⚠️ Auth0 not configured - authentication features will not work')
+        console.warn('Please check your environment variables:')
+        console.warn('- VITE_AUTH0_DOMAIN')
+        console.warn('- VITE_AUTH0_CLIENT_ID')
+        console.warn('- VITE_AUTH0_AUDIENCE')
 
         // In development, show more helpful error
         if (import.meta.env.DEV) {
@@ -27,6 +31,17 @@ VITE_AUTH0_AUDIENCE=https://your-api.com
           `)
         }
 
+        // Provide mock auth client to prevent runtime errors
+        const mockAuth0Client = {
+          loginWithRedirect: () => Promise.reject(new Error('Auth0 not configured')),
+          logout: () => Promise.reject(new Error('Auth0 not configured')),
+          getUser: () => Promise.resolve(null),
+          isAuthenticated: () => Promise.resolve(false),
+          getAccessTokenSilently: () => Promise.reject(new Error('Auth0 not configured')),
+        }
+
+        app.config.globalProperties.$auth0 = mockAuth0Client
+        app.provide(Auth0ClientKey, mockAuth0Client)
         return
       }
 
