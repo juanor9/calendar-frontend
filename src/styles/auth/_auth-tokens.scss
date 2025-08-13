@@ -327,6 +327,77 @@ $verification-pending: $vana-registration-warning;
 $verification-complete: $vana-registration-accent;
 $verification-expired: $auth-error;
 
+// UI DESIGN SPECIFICATIONS EXTENSIONS
+// Extended design tokens for comprehensive auth component system
+
+// F001 UI SPECIFIC TOKENS
+// Trust-building color extensions
+$auth-trust-primary: #6366f1;        // Indigo 500 - Primary auth actions
+$auth-trust-primary-50: #eef2ff;     // Ultra light - Page backgrounds
+$auth-trust-primary-100: #e0e7ff;    // Very light - Card backgrounds
+$auth-trust-primary-200: #c7d2fe;    // Light - Disabled states
+$auth-trust-primary-500: #6366f1;    // Base - Active buttons
+$auth-trust-primary-600: #4f46e5;    // Dark - Hover states
+$auth-trust-primary-700: #4338ca;    // Darker - Active states
+$auth-trust-primary-900: #312e81;    // Darkest - Text on light backgrounds
+
+// Security State Colors
+$auth-security-safe: #10b981;        // Green 500 - Secure/verified states
+$auth-security-warning: #f59e0b;     // Amber 500 - Caution states
+$auth-security-danger: #ef4444;      // Red 500 - Error/insecure states
+$auth-security-info: #3b82f6;        // Blue 500 - Informational
+
+// Emotional State Colors (Password Recovery)
+$auth-relief-bg: #f0f9ff;           // Blue 50 - Calming background
+$auth-relief-border: #0ea5e9;       // Sky 500 - Reassuring borders
+$auth-relief-text: #0c4a6e;         // Sky 900 - Trustworthy text
+
+// Success Celebration Colors
+$auth-success-celebration: #22c55e;   // Green 500 - Achievement
+$auth-success-celebration-bg: #f0fdf4; // Green 50 - Success backgrounds
+$auth-success-sparkle: #fbbf24;      // Amber 400 - Celebration accents
+
+// Typography Extensions for Auth
+$auth-heading-hero: 32px;            // Main auth page titles
+$auth-heading-card: 24px;            // Card/modal titles
+$auth-heading-section: 20px;         // Section headers
+$auth-heading-subsection: 18px;      // Subsection headers
+$auth-body-primary: 16px;            // Primary form text
+$auth-body-secondary: 14px;          // Helper text, descriptions
+$auth-body-small: 12px;             // Fine print, legal text
+$auth-button-text: 16px;             // Button labels
+$auth-link-text: 14px;              // Links within flows
+$auth-input-text: 16px;             // Form inputs (minimum for mobile)
+
+// Font Weights for Auth
+$auth-weight-display: 700;          // Hero headings
+$auth-weight-heading: 600;          // Card titles
+$auth-weight-label: 500;            // Form labels
+$auth-weight-body: 400;             // Regular text
+$auth-weight-caption: 400;          // Helper text
+
+// Component-Specific Spacing
+$auth-form-field-gap: 20px;         // Between form fields
+$auth-form-label-gap: 8px;          // Label to input gap
+$auth-form-helper-gap: 6px;         // Input to helper text gap
+$auth-form-section-gap: 32px;       // Between form sections
+$auth-card-padding: 32px;           // Large screen card padding
+$auth-card-padding-mobile: 20px;    // Mobile card padding
+$auth-modal-padding: 40px;          // Modal inner padding
+$auth-modal-padding-mobile: 24px;   // Mobile modal padding
+$auth-button-padding-x: 24px;       // Horizontal button padding
+$auth-button-padding-y: 12px;       // Vertical button padding
+$auth-button-gap: 16px;             // Between buttons
+
+// Animation & Interaction
+$auth-loading-duration: 0.8s;       // Spinner rotation
+$auth-loading-delay: 0.2s;          // Delay before showing loading
+$auth-input-transition: 0.2s ease-out;  // Focus states
+$auth-button-transition: 0.15s ease-out; // Hover states
+$auth-modal-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Modal appearance
+$auth-confetti-duration: 2s;        // Celebration animation
+$auth-success-pulse: 1.5s;          // Success state pulse
+
 // VARIABLES CSS PERSONALIZADAS PARA COMPATIBILIDAD
 
 :root {
@@ -343,10 +414,26 @@ $verification-expired: $auth-error;
   --auth-color-warning: #{$auth-warning};
   --auth-color-error: #{$auth-error};
 
+  // F001 UI Extensions
+  --auth-trust-primary: #{$auth-trust-primary};
+  --auth-trust-primary-50: #{$auth-trust-primary-50};
+  --auth-trust-primary-100: #{$auth-trust-primary-100};
+  --auth-trust-primary-500: #{$auth-trust-primary-500};
+  --auth-trust-primary-600: #{$auth-trust-primary-600};
+  --auth-trust-primary-700: #{$auth-trust-primary-700};
+  --auth-trust-primary-900: #{$auth-trust-primary-900};
+  --auth-security-safe: #{$auth-security-safe};
+  --auth-security-warning: #{$auth-security-warning};
+  --auth-security-danger: #{$auth-security-danger};
+  --auth-security-info: #{$auth-security-info};
+
   // Auth spacing
   --auth-spacing-sm: #{$auth-spacing-sm};
   --auth-spacing-md: #{$auth-spacing-md};
   --auth-spacing-lg: #{$auth-spacing-lg};
+  --auth-form-field-gap: #{$auth-form-field-gap};
+  --auth-card-padding: #{$auth-card-padding};
+  --auth-card-padding-mobile: #{$auth-card-padding-mobile};
 
   // Auth dimensions
   --auth-avatar-md: #{$auth-avatar-md};
@@ -359,6 +446,13 @@ $verification-expired: $auth-error;
   // Auth shadows
   --auth-shadow-button: #{$auth-shadow-button};
   --auth-shadow-dropdown: #{$auth-shadow-dropdown};
+
+  // Auth typography
+  --auth-heading-hero: #{$auth-heading-hero};
+  --auth-heading-card: #{$auth-heading-card};
+  --auth-body-primary: #{$auth-body-primary};
+  --auth-button-text: #{$auth-button-text};
+  --auth-input-text: #{$auth-input-text};
 }
 
 // Dark mode CSS custom properties

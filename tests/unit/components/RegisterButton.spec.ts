@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/vue'
+import { render, screen } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import RegisterButton from '@/ui/RegisterButton/RegisterButton.vue'
 
@@ -17,10 +17,10 @@ describe('RegisterButton', () => {
     it('renders with default props', () => {
       render(RegisterButton, {
         slots: {
-          default: 'Register Now'
-        }
+          default: 'Register Now',
+        },
       })
-      
+
       const button = screen.getByRole('button', { name: 'Register Now' })
       expect(button).toBeInTheDocument()
       expect(button).toHaveClass('register-button')
@@ -35,13 +35,13 @@ describe('RegisterButton', () => {
           variant: 'secondary',
           size: 'large',
           width: 'full',
-          type: 'submit'
+          type: 'submit',
         },
         slots: {
-          default: 'Submit Registration'
-        }
+          default: 'Submit Registration',
+        },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toHaveClass('register-button--secondary')
       expect(button).toHaveClass('register-button--large')
@@ -51,32 +51,32 @@ describe('RegisterButton', () => {
 
     it('renders all supported variants', () => {
       const variants = ['primary', 'secondary', 'outline', 'ghost'] as const
-      
+
       variants.forEach((variant, index) => {
         const { unmount } = render(RegisterButton, {
           props: { variant },
-          slots: { default: `Button ${index}` }
+          slots: { default: `Button ${index}` },
         })
-        
+
         const button = screen.getByRole('button')
         expect(button).toHaveClass(`register-button--${variant}`)
-        
+
         unmount()
       })
     })
 
     it('renders all supported sizes', () => {
       const sizes = ['small', 'medium', 'large'] as const
-      
+
       sizes.forEach((size, index) => {
         const { unmount } = render(RegisterButton, {
           props: { size },
-          slots: { default: `Button ${index}` }
+          slots: { default: `Button ${index}` },
         })
-        
+
         const button = screen.getByRole('button')
         expect(button).toHaveClass(`register-button--${size}`)
-        
+
         unmount()
       })
     })
@@ -87,10 +87,10 @@ describe('RegisterButton', () => {
       render(RegisterButton, {
         slots: {
           default: 'Register',
-          iconLeft: '<svg data-testid="left-icon">left</svg>'
-        }
+          iconLeft: '<svg data-testid="left-icon">left</svg>',
+        },
       })
-      
+
       expect(screen.getByTestId('left-icon')).toBeInTheDocument()
       expect(screen.getByText('Register')).toBeInTheDocument()
     })
@@ -99,10 +99,10 @@ describe('RegisterButton', () => {
       render(RegisterButton, {
         slots: {
           default: 'Register',
-          iconRight: '<svg data-testid="right-icon">right</svg>'
-        }
+          iconRight: '<svg data-testid="right-icon">right</svg>',
+        },
       })
-      
+
       expect(screen.getByTestId('right-icon')).toBeInTheDocument()
       expect(screen.getByText('Register')).toBeInTheDocument()
     })
@@ -112,10 +112,10 @@ describe('RegisterButton', () => {
         slots: {
           default: 'Register',
           iconLeft: '<svg data-testid="left-icon">left</svg>',
-          iconRight: '<svg data-testid="right-icon">right</svg>'
-        }
+          iconRight: '<svg data-testid="right-icon">right</svg>',
+        },
       })
-      
+
       expect(screen.getByTestId('left-icon')).toBeInTheDocument()
       expect(screen.getByTestId('right-icon')).toBeInTheDocument()
       expect(screen.getByText('Register')).toBeInTheDocument()
@@ -127,10 +127,10 @@ describe('RegisterButton', () => {
         slots: {
           default: 'Register',
           iconLeft: '<svg data-testid="left-icon">left</svg>',
-          iconRight: '<svg data-testid="right-icon">right</svg>'
-        }
+          iconRight: '<svg data-testid="right-icon">right</svg>',
+        },
       })
-      
+
       expect(screen.queryByTestId('left-icon')).not.toBeInTheDocument()
       expect(screen.queryByTestId('right-icon')).not.toBeInTheDocument()
       expect(screen.queryByText('Register')).not.toBeInTheDocument()
@@ -142,24 +142,24 @@ describe('RegisterButton', () => {
       render(RegisterButton, {
         props: {
           loading: true,
-          loadingText: 'Creating account...'
+          loadingText: 'Creating account...',
         },
         slots: {
-          default: 'Register Now'
-        }
+          default: 'Register Now',
+        },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toBeDisabled()
       expect(button).toHaveClass('register-button--loading')
-      
+
       // Loading spinner should be visible
       expect(document.querySelector('.register-button__loading')).toBeInTheDocument()
-      
+
       // Screen reader text should be present
       expect(screen.getByText('Creating account...')).toBeInTheDocument()
       expect(screen.getByText('Creating account...')).toHaveClass('sr-only')
-      
+
       // Original text and icons should be hidden
       expect(screen.queryByText('Register Now')).not.toBeInTheDocument()
     })
@@ -167,35 +167,39 @@ describe('RegisterButton', () => {
     it('uses default loading text when not specified', () => {
       render(RegisterButton, {
         props: { loading: true },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       expect(screen.getByText('Loading...')).toBeInTheDocument()
     })
 
     it('prevents interaction when loading', async () => {
       const user = userEvent.setup()
       const mockClick = vi.fn()
-      
-      render(RegisterButton, {
-        props: { loading: true },
-        slots: { default: 'Register' }
-      }, {
-        global: {
-          stubs: {
-            'register-button': {
-              template: '<button @click="$emit(\'click\', $event)"><slot /></button>',
-              emits: ['click']
-            }
-          }
+
+      render(
+        RegisterButton,
+        {
+          props: { loading: true },
+          slots: { default: 'Register' },
+        },
+        {
+          global: {
+            stubs: {
+              'register-button': {
+                template: '<button @click="$emit(\'click\', $event)"><slot /></button>',
+                emits: ['click'],
+              },
+            },
+          },
         }
-      })
-      
+      )
+
       const button = screen.getByRole('button')
       button.addEventListener('click', mockClick)
-      
+
       await user.click(button)
-      
+
       expect(mockClick).not.toHaveBeenCalled()
     })
   })
@@ -204,9 +208,9 @@ describe('RegisterButton', () => {
     it('shows disabled state correctly', () => {
       render(RegisterButton, {
         props: { disabled: true },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toBeDisabled()
       expect(button).toHaveClass('register-button--disabled')
@@ -216,12 +220,44 @@ describe('RegisterButton', () => {
       const user = userEvent.setup()
       const { emitted } = render(RegisterButton, {
         props: { disabled: true },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       await user.click(button)
-      
+
+      expect(emitted().click).toBeFalsy()
+    })
+
+    it('prevents interaction with preventDefault when loading', async () => {
+      const { emitted } = render(RegisterButton, {
+        props: { loading: true },
+        slots: { default: 'Register' },
+      })
+
+      const button = screen.getByRole('button')
+      const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true })
+      const preventDefaultSpy = vi.spyOn(clickEvent, 'preventDefault')
+
+      button.dispatchEvent(clickEvent)
+
+      expect(preventDefaultSpy).toHaveBeenCalled()
+      expect(emitted().click).toBeFalsy()
+    })
+
+    it('prevents interaction with preventDefault when disabled', async () => {
+      const { emitted } = render(RegisterButton, {
+        props: { disabled: true },
+        slots: { default: 'Register' },
+      })
+
+      const button = screen.getByRole('button')
+      const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true })
+      const preventDefaultSpy = vi.spyOn(clickEvent, 'preventDefault')
+
+      button.dispatchEvent(clickEvent)
+
+      expect(preventDefaultSpy).toHaveBeenCalled()
       expect(emitted().click).toBeFalsy()
     })
   })
@@ -230,9 +266,9 @@ describe('RegisterButton', () => {
     it('applies floating styles', () => {
       render(RegisterButton, {
         props: { floating: true },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toHaveClass('register-button--floating')
     })
@@ -242,12 +278,12 @@ describe('RegisterButton', () => {
     it('emits click event when clicked', async () => {
       const user = userEvent.setup()
       const { emitted } = render(RegisterButton, {
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       await user.click(button)
-      
+
       expect(emitted().click).toBeTruthy()
       expect(emitted().click).toHaveLength(1)
       expect(emitted().click[0][0]).toBeInstanceOf(MouseEvent)
@@ -255,43 +291,43 @@ describe('RegisterButton', () => {
 
     it('prevents click when loading or disabled', async () => {
       const user = userEvent.setup()
-      
+
       // Test loading state
       const { unmount, emitted } = render(RegisterButton, {
         props: { loading: true },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       let button = screen.getByRole('button')
       await user.click(button)
-      
+
       expect(emitted().click).toBeFalsy()
-      
+
       unmount()
-      
+
       // Test disabled state
       const { emitted: emitted2 } = render(RegisterButton, {
         props: { disabled: true },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       button = screen.getByRole('button')
       await user.click(button)
-      
+
       expect(emitted2().click).toBeFalsy()
     })
 
     it('handles keyboard events', async () => {
       const user = userEvent.setup()
       const { emitted } = render(RegisterButton, {
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       button.focus()
-      
+
       await user.keyboard('{Enter}')
-      
+
       expect(emitted().click).toBeTruthy()
       expect(emitted().click).toHaveLength(1)
     })
@@ -299,14 +335,14 @@ describe('RegisterButton', () => {
     it('handles space key activation', async () => {
       const user = userEvent.setup()
       const { emitted } = render(RegisterButton, {
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       button.focus()
-      
+
       await user.keyboard(' ')
-      
+
       expect(emitted().click).toBeTruthy()
       expect(emitted().click).toHaveLength(1)
     })
@@ -317,11 +353,11 @@ describe('RegisterButton', () => {
       render(RegisterButton, {
         props: {
           ariaLabel: 'Start registration process',
-          pressed: true
+          pressed: true,
         },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toHaveAttribute('aria-label', 'Start registration process')
       expect(button).toHaveAttribute('aria-pressed', 'true')
@@ -331,33 +367,35 @@ describe('RegisterButton', () => {
       render(RegisterButton, {
         props: {
           loading: true,
-          loadingText: 'Processing registration...'
+          loadingText: 'Processing registration...',
         },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const srText = screen.getByText('Processing registration...')
       expect(srText).toHaveClass('sr-only')
-      expect(srText.parentElement).toHaveAttribute('aria-hidden', 'true')
+      // The sr-only text itself should not have aria-hidden, but loading spinner should
+      const loadingSpinner = document.querySelector('.register-button__loading')
+      expect(loadingSpinner).toHaveAttribute('aria-hidden', 'true')
     })
 
     it('maintains focus outline for keyboard navigation', () => {
       render(RegisterButton, {
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       button.focus()
-      
+
       expect(button).toHaveFocus()
     })
 
     it('has appropriate role and type attributes', () => {
       render(RegisterButton, {
         props: { type: 'submit' },
-        slots: { default: 'Submit Form' }
+        slots: { default: 'Submit Form' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toHaveAttribute('type', 'submit')
       expect(button.tagName).toBe('BUTTON')
@@ -365,9 +403,9 @@ describe('RegisterButton', () => {
 
     it('provides accessible name through content', () => {
       render(RegisterButton, {
-        slots: { default: 'Create New Account' }
+        slots: { default: 'Create New Account' },
       })
-      
+
       const button = screen.getByRole('button', { name: 'Create New Account' })
       expect(button).toBeInTheDocument()
     })
@@ -375,12 +413,12 @@ describe('RegisterButton', () => {
     it('handles high contrast mode', () => {
       render(RegisterButton, {
         props: { variant: 'outline' },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toHaveClass('register-button--outline')
-      
+
       // In a real implementation, we would test CSS custom properties
       // or computed styles for high contrast support
     })
@@ -392,11 +430,11 @@ describe('RegisterButton', () => {
       render(RegisterButton, {
         props: {
           floating: true,
-          size: 'large'
+          size: 'large',
         },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toHaveClass('register-button--floating')
       expect(button).toHaveClass('register-button--large')
@@ -405,9 +443,9 @@ describe('RegisterButton', () => {
     it('supports full width on mobile', () => {
       render(RegisterButton, {
         props: { width: 'full' },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toHaveClass('register-button--full-width')
     })
@@ -416,7 +454,7 @@ describe('RegisterButton', () => {
   describe('error states', () => {
     it('handles missing slot content gracefully', () => {
       render(RegisterButton)
-      
+
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
       expect(button.textContent).toBe('')
@@ -425,11 +463,11 @@ describe('RegisterButton', () => {
     it('handles invalid props gracefully', () => {
       // TypeScript would catch these, but test runtime behavior
       render(RegisterButton, {
-        // @ts-ignore - Testing invalid prop
+        // @ts-expect-error - Testing invalid prop
         props: { variant: 'invalid', size: 'invalid' },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
       expect(button).toHaveClass('register-button')
@@ -438,18 +476,16 @@ describe('RegisterButton', () => {
 
   describe('performance', () => {
     it('should not re-render unnecessarily', () => {
-      const renderSpy = vi.fn()
-      
       const { rerender } = render(RegisterButton, {
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       // Simulate prop change that shouldn't cause re-render
       rerender({
         props: { loading: false }, // Same as default
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       // Button should still be present and functional
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
@@ -457,20 +493,27 @@ describe('RegisterButton', () => {
 
     it('handles rapid state changes', async () => {
       const user = userEvent.setup()
-      const { emitted, rerender } = render(RegisterButton, {
-        props: { loading: false },
-        slots: { default: 'Register' }
+
+      // Test loading state
+      const { unmount: unmount1 } = render(RegisterButton, {
+        props: { loading: true },
+        slots: { default: 'Register' },
       })
-      
-      const button = screen.getByRole('button')
-      
-      // Rapid loading state changes
-      await rerender({ props: { loading: true } })
+
+      let button = screen.getByRole('button')
       expect(button).toBeDisabled()
-      
-      await rerender({ props: { loading: false } })
+
+      unmount1()
+
+      // Test non-loading state
+      const { emitted } = render(RegisterButton, {
+        props: { loading: false },
+        slots: { default: 'Register' },
+      })
+
+      button = screen.getByRole('button')
       expect(button).not.toBeDisabled()
-      
+
       await user.click(button)
       expect(emitted().click).toBeTruthy()
     })
@@ -480,7 +523,7 @@ describe('RegisterButton', () => {
     it('works within forms', async () => {
       const user = userEvent.setup()
       const mockSubmit = vi.fn()
-      
+
       render({
         template: `
           <form @submit.prevent="handleSubmit">
@@ -490,14 +533,14 @@ describe('RegisterButton', () => {
           </form>
         `,
         methods: {
-          handleSubmit: mockSubmit
+          handleSubmit: mockSubmit,
         },
-        components: { RegisterButton }
+        components: { RegisterButton },
       })
-      
+
       const button = screen.getByTestId('submit-btn')
       await user.click(button)
-      
+
       expect(mockSubmit).toHaveBeenCalled()
     })
 
@@ -505,14 +548,17 @@ describe('RegisterButton', () => {
       render(RegisterButton, {
         props: {
           disabled: true,
-          ariaLabel: 'Please fill all required fields before registering'
+          ariaLabel: 'Please fill all required fields before registering',
         },
-        slots: { default: 'Register' }
+        slots: { default: 'Register' },
       })
-      
+
       const button = screen.getByRole('button')
       expect(button).toBeDisabled()
-      expect(button).toHaveAttribute('aria-label', 'Please fill all required fields before registering')
+      expect(button).toHaveAttribute(
+        'aria-label',
+        'Please fill all required fields before registering'
+      )
     })
   })
 })

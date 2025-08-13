@@ -1,375 +1,384 @@
 // ==============================
-// VANA DESIGN SYSTEM - REGISTER BUTTON
-// Componente de botón especializado para registro siguiendo la identidad visual Vana
-// Extiende BaseButton con estilos específicos para registro y conversión
+// VANA REGISTER PAGE COMPONENT
+// Página intermedia pre-Auth0 redirect
+// Design: Professional, trustworthy, conversion-focused
+// Layout: Mobile-first, responsive, accessible
 // ==============================
 
 @use '../../styles/tokens' as *;
+@use 'sass:color';
 
-.register-button {
-  @include button-base;
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-lg;
 
-  // Estilos por defecto basados en botón primary
-  @include button-primary;
+  // Beautiful gradient background - Vana brand
+  background: linear-gradient(
+    135deg,
+    $registration-page-bg-start 0%,
+    $registration-page-bg-end 100%
+  );
 
-  // Mejoras específicas para conversión
-  font-weight: $font-weight-semibold;
-  letter-spacing: 0.025em;
-  position: relative;
-  overflow: hidden;
-
-  // Efecto de gradiente sutil
-  background: linear-gradient(135deg, $interactive-primary 0%, $interactive-primary-hover 100%);
-
-  // Animación de hover mejorada
-
-  &:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      $interactive-primary-hover 0%,
-      $interactive-primary-active 100%
-    );
-    transform: translateY(-2px);
-    box-shadow:
-      $shadow-button-hover,
-      0 8px 25px rgba($interactive-primary, 0.25);
-  }
-
-  // Efecto de presionado
-
-  &:active:not(:disabled) {
-    transform: translateY(-1px);
-  }
-
-  // VARIANTES DE ESTILO
-
-  &--primary {
-    background: linear-gradient(135deg, $interactive-primary 0%, $interactive-primary-hover 100%);
-
-    &:hover:not(:disabled) {
-      background: linear-gradient(
-        135deg,
-        $interactive-primary-hover 0%,
-        $interactive-primary-active 100%
-      );
-    }
-  }
-
-  &--secondary {
-    @include button-secondary;
-
-    background: linear-gradient(
-      135deg,
-      $background-secondary 0%,
-      rgba($background-secondary, 0.95) 100%
-    );
-    border: 2px solid $border-primary;
-
-    &:hover:not(:disabled) {
-      background: linear-gradient(
-        135deg,
-        $neutral-background 0%,
-        rgba($neutral-background, 0.95) 100%
-      );
-      border-color: $interactive-secondary;
-      color: $interactive-secondary;
-      transform: translateY(-2px);
-    }
-  }
-
-  &--outline {
-    @include button-base;
-
-    background: transparent;
-    color: $interactive-primary;
-    border: 2px solid $interactive-primary;
-
-    &:hover:not(:disabled) {
-      background: linear-gradient(135deg, $interactive-primary 0%, $interactive-primary-hover 100%);
-      color: $text-inverse;
-      border-color: transparent;
-      transform: translateY(-2px);
-      box-shadow: $shadow-button-hover;
-    }
-  }
-
-  &--ghost {
-    @include button-ghost;
-
-    &:hover:not(:disabled) {
-      background: rgba($interactive-primary, 0.12);
-      color: $interactive-primary-hover;
-      transform: translateY(-1px);
-    }
-  }
-
-  // VARIANTES DE TAMAÑO
-
-  &--small {
-    padding: $spacing-xs $spacing-sm;
-    font-size: $font-size-ui-sm;
-    min-height: $component-height-sm;
-  }
-
-  &--medium {
-    padding: $spacing-sm $spacing-md;
-    font-size: $font-size-ui;
-    min-height: $component-height-md;
-  }
-
-  &--large {
-    padding: $spacing-md $spacing-lg;
-    font-size: $font-size-ui-lg;
-    min-height: $component-height-lg;
-    font-weight: $font-weight-bold;
-  }
-
-  // VARIANTES DE ANCHO
-
-  &--full-width {
-    width: 100%;
-  }
-
-  &--auto-width {
-    width: auto;
-    min-width: fit-content;
-  }
-
-  // ESTADO FLOTANTE (FAB)
-
-  &--floating {
-    position: fixed;
-    bottom: $spacing-lg;
-    right: $spacing-lg;
-    z-index: $z-popover;
-    border-radius: $radius-round;
-    width: 56px;
-    height: 56px;
-    min-height: 56px;
-    padding: 0;
-    box-shadow: $shadow-xl;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow:
-        $shadow-2xl,
-        0 12px 30px rgba($interactive-primary, 0.35);
-    }
-
-    .register-button__text {
-      display: none;
-    }
-
-    .register-button__icon {
-      margin: 0;
-    }
-
-    @include mobile-only {
-      bottom: $spacing-md;
-      right: $spacing-md;
-      width: 48px;
-      height: 48px;
-      min-height: 48px;
-    }
-  }
-
-  // ESTADO DE CARGA
-
-  &--loading {
-    position: relative;
-    color: transparent;
-    pointer-events: none;
-
-    .register-button__text {
-      opacity: 0%;
-    }
-
-    .register-button__icon {
-      opacity: 0%;
-    }
-  }
-
-  &__loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border: 2px solid currentcolor;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    animation: vana-spin 0.8s linear infinite;
-  }
-
-  // ESTADO DISABLED
-
-  &--disabled {
-    opacity: $opacity-disabled;
-    cursor: not-allowed;
-    pointer-events: none;
-
-    &:hover {
-      transform: none;
-      box-shadow: none;
-    }
-  }
-
-  // ICONOS EN BOTONES
-
-  &__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.25em;
-    height: 1.25em;
-
-    &--left {
-      margin-right: $spacing-xs;
-    }
-
-    &--right {
-      margin-left: $spacing-xs;
-    }
-  }
-
-  &__text {
-    display: inline-block;
-    transition: $transition-opacity;
-  }
-
-  // EFECTOS ESPECIALES PARA CONVERSIÓN
-
-  // Efecto de brillo sutil
+  // Subtle pattern overlay for texture
 
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba($text-inverse, 0.2), transparent);
-    transition: left 0.5s ease;
+    inset: 0;
+    background-image: radial-gradient(circle at 25% 25%, rgba($white, 10%) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba($white, 10%) 1px, transparent 1px);
+    background-size: 50px 50px;
     pointer-events: none;
   }
 
-  &:hover:not(:disabled)::before {
-    left: 100%;
-  }
+  // MAIN CONTAINER
 
-  // Pulso sutil para atraer atención
+  &__container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
 
-  &--pulse {
-    animation: vana-pulse-subtle 3s ease-in-out infinite;
-  }
-
-  // ACCESIBILIDAD Y FOCUS
-  @include focus-visible;
-
-  // Mejoras para lectores de pantalla
-
-  &[aria-pressed='true'] {
-    background: $interactive-primary-active;
-
-    &.register-button--secondary {
-      background: $neutral-light;
-      border-color: $interactive-primary;
+    @include tablet-up {
+      max-width: 520px;
     }
   }
 
-  // ESTADOS DE ÉXITO PARA FEEDBACK
+  // MAIN CARD
 
-  &--success {
-    background: linear-gradient(135deg, $success-primary 0%, $success-light 100%);
+  &__card {
+    background: $registration-page-card-bg;
+    border-radius: $auth-radius-xl;
+    box-shadow: $registration-page-card-shadow;
+    padding: $spacing-2xl;
+    text-align: center;
+    animation: fade-in-up 0.6s ease-out;
 
-    &:hover:not(:disabled) {
-      background: linear-gradient(135deg, $success-light 0%, $success-primary 100%);
+    @include mobile-only {
+      padding: $spacing-xl;
+      border-radius: $auth-radius-lg;
+    }
+
+    &:focus {
+      outline: none;
     }
   }
 
-  // RESPONSIVE ADJUSTMENTS
-  @include mobile-only {
-    // En móvil, hacer los botones un poco más grandes para touch
-    min-height: calc(#{$component-height-md} + #{$spacing-xs});
+  // HEADER SECTION
 
-    &--small {
-      min-height: $component-height-md;
-    }
-  }
-}
-
-// VARIACIONES ESPECÍFICAS PARA DIFERENTES CONTEXTOS
-
-// Botón de registro en hero section
-
-.register-button--hero {
-  font-size: $font-size-body;
-  padding: $spacing-md $spacing-xl;
-  min-height: calc(#{$component-height-lg} + #{$spacing-xs});
-
-  // Más prominente visualmente
-  box-shadow:
-    $shadow-md,
-    0 4px 20px rgba($interactive-primary, 0.3);
-
-  &:hover:not(:disabled) {
-    box-shadow:
-      $shadow-lg,
-      0 8px 30px rgba($interactive-primary, 0.4);
+  &__header {
+    margin-bottom: $spacing-2xl;
   }
 
-  @include mobile-only {
-    font-size: $font-size-ui-lg;
-    padding: $spacing-md $spacing-lg;
-  }
-}
-
-// Botón de registro en formularios
-
-.register-button--form {
-  margin-top: $spacing-md;
-
-  // Espaciado adicional para separar del contenido del form
-
-  &:not(.register-button--full-width) {
-    margin-left: auto;
-    margin-right: auto;
+  &__logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto $spacing-lg;
     display: block;
+
+    @include mobile-only {
+      width: 56px;
+      height: 56px;
+    }
   }
-}
 
-// Grupo de botones de registro
+  &__title {
+    font-family: $font-family-primary;
+    font-size: $font-size-h1;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    line-height: $line-height-tight;
+    margin: 0 0 $spacing-md;
 
-.register-button-group {
-  display: flex;
-  gap: $spacing-sm;
-  align-items: center;
-  justify-content: center;
+    @include mobile-only {
+      font-size: $font-size-h1-mobile;
+    }
+  }
 
-  @include mobile-only {
-    flex-direction: column;
-    align-items: stretch;
+  &__subtitle {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-lg;
+    color: $text-secondary;
+    line-height: $line-height-base;
+    margin: 0;
 
-    .register-button {
-      width: 100%;
+    @include mobile-only {
+      font-size: $font-size-body;
+    }
+  }
+
+  // VALUE PROPOSITION SECTION
+
+  &__value-props {
+    margin: $spacing-xl 0;
+    text-align: left;
+  }
+
+  &__value-prop {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__value-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: $vana-registration-accent;
+    margin-top: 2px; // Optical alignment
+  }
+
+  &__value-text {
+    flex: 1;
+
+    strong {
+      display: block;
+      font-weight: $font-weight-medium;
+      color: $text-primary;
+      margin-bottom: 2px;
+    }
+
+    span {
+      font-size: $font-size-body-sm;
+      color: $text-secondary;
+      line-height: $line-height-base;
+    }
+  }
+
+  // SOCIAL PROOF SECTION
+
+  &__social-proof {
+    margin: $spacing-xl 0;
+    padding: $spacing-lg;
+    background: rgba($vana-registration-accent, 3%);
+    border-radius: $auth-radius-md;
+    border-left: 3px solid $vana-registration-accent;
+  }
+
+  &__testimonial {
+    font-style: italic;
+    color: $text-secondary;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-body-sm;
+  }
+
+  &__testimonial-author {
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    font-size: $font-size-ui-sm;
+
+    &::before {
+      content: '— ';
+    }
+  }
+
+  // TRUST INDICATORS
+
+  &__trust-indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-xl;
+    margin: $spacing-lg 0;
+    flex-wrap: wrap;
+
+    @include mobile-only {
+      gap: $spacing-lg;
+    }
+  }
+
+  &__trust-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    color: $text-tertiary;
+    font-size: $font-size-ui-sm;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: $vana-registration-accent;
+    }
+  }
+
+  // ACTION SECTION
+
+  &__actions {
+    margin: $spacing-2xl 0 $spacing-lg;
+  }
+
+  &__cta-button {
+    margin-bottom: $spacing-md;
+  }
+
+  &__alternative {
+    font-size: $font-size-ui-sm;
+    color: $text-tertiary;
+
+    a {
+      color: $vana-registration-primary;
+      text-decoration: none;
+      font-weight: $font-weight-medium;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // LEGAL SECTION
+
+  &__legal {
+    margin-top: $spacing-xl;
+    padding-top: $spacing-lg;
+    border-top: 1px solid $border-secondary;
+  }
+
+  &__terms {
+    font-size: $font-size-small;
+    color: $text-tertiary;
+    line-height: $line-height-loose;
+
+    a {
+      color: $vana-registration-primary;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // LOADING OVERLAY
+
+  &--loading {
+    pointer-events: none;
+
+    .register-page__card {
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba($white, 80%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $auth-radius-xl;
+        z-index: 10;
+      }
+    }
+  }
+
+  // High contrast mode
+  @media (prefers-contrast: high) {
+
+    .register-page__card {
+      border: 2px solid $text-primary;
+    }
+
+    .register-page__trust-item svg {
+      color: currentcolor;
+    }
+  }
+
+  // Reduced motion
+  @media (prefers-reduced-motion: reduce) {
+
+    .register-page__cta-button {
+      transition: none;
+
+      &:hover {
+        transform: none;
+      }
+    }
+
+    &__card {
+      animation: none;
+    }
+  }
+
+  // DARK MODE SUPPORT
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(135deg, $auth-dark-bg 0%, color.adjust($auth-dark-bg, $lightness: -5%) 100%);
+
+    .register-page__card {
+      background: $auth-dark-card-bg;
+      box-shadow: 0 25px 50px rgba($black, 30%);
+    }
+
+    .register-page__title {
+      color: $auth-dark-text;
+    }
+
+    .register-page__subtitle {
+      color: rgba($auth-dark-text, 80%);
+    }
+
+    .register-page__value-text {
+
+      strong {
+        color: $auth-dark-text;
+      }
+
+      span {
+        color: rgba($auth-dark-text, 70%);
+      }
+    }
+
+    .register-page__social-proof {
+      background: rgba($vana-registration-accent, 5%);
+    }
+
+    .register-page__testimonial {
+      color: rgba($auth-dark-text, 80%);
+    }
+
+    .register-page__testimonial-author {
+      color: $auth-dark-text;
+    }
+
+    .register-page__trust-item {
+      color: rgba($auth-dark-text, 60%);
+    }
+
+    .register-page__alternative {
+      color: rgba($auth-dark-text, 60%);
+    }
+
+    .register-page__terms {
+      color: rgba($auth-dark-text, 60%);
+    }
+
+    .register-page__legal {
+      border-top-color: rgba($auth-dark-text, 12%);
+    }
+
+    &--loading .register-page__card::after {
+      background: rgba($auth-dark-card-bg, 90%);
     }
   }
 }
 
-// ANIMACIONES ESPECÍFICAS
-@keyframes vana-pulse-subtle {
+// ANIMATION KEYFRAMES
+@keyframes fade-in-up {
 
-  0%,
-  100% {
-    box-shadow:
-      $shadow-button,
-      0 0 0 0 rgba($interactive-primary, 0.4);
+  from {
+    opacity: 0%;
+    transform: translateY(30px);
   }
 
-  50% {
-    box-shadow:
-      $shadow-button,
-      0 0 0 8px rgba($interactive-primary, 0);
+  to {
+    opacity: 100%;
+    transform: translateY(0);
   }
 }

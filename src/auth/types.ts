@@ -44,6 +44,9 @@ export interface User extends Auth0User {
       push_notifications?: boolean
       reminder_minutes?: number[]
     }
+    mfa_enabled?: boolean
+    beta_features?: string[]
+    last_password_update?: string
   }
 }
 
@@ -102,4 +105,16 @@ export interface GuardOptions {
   requiredRoles?: Role[]
   requiredPermissions?: Permission[]
   redirectTo?: string
+}
+
+// Security Event types
+export interface SecurityEvent {
+  id: string
+  type: 'login' | 'logout' | 'password_change' | 'profile_update' | 'failed_login' | 'token_refresh'
+  description: string
+  timestamp: string
+  ipAddress?: string
+  userAgent?: string
+  location?: string
+  metadata?: Record<string, unknown>
 }

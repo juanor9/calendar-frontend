@@ -1,6 +1,13 @@
 import type { StorybookConfig } from '@storybook/vue3-vite'
-import { fileURLToPath, URL } from 'node:url'
-import type { UserConfig } from 'vite'
+
+/* Plugins que no queremos en Storybook */
+const BLOCKLIST = [
+  'vite-plugin-vue-devtools',
+  'vite-plugin-vue-inspector',
+  'storybook:vue-docgen-plugin',
+  'storybook:vue-template-compilation',
+]
+
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
@@ -22,6 +29,17 @@ const config: StorybookConfig = {
     disableTelemetry: true,
   },
 
+
+  async viteFinal(stb) {
+    const { mergeConfig } = await import('vite')
+    return mergeConfig(stb, {
+      resolve: {
+        alias: {
+          '@': new URL('../src', import.meta.url).pathname,
+        },
+      },
+      css: {
+
   async viteFinal(config: UserConfig) {
     // Return minimal Vite configuration optimized for Storybook
     return {
@@ -42,21 +60,7 @@ const config: StorybookConfig = {
           },
         },
       },
-      define: {
-        ...config.define,
-        // Ensure process.env.STORYBOOK is available
-        'process.env.STORYBOOK': JSON.stringify('true'),
-      },
-    }
-  },
-
-  typescript: {
-    check: false,
-    reactDocgen: 'react-docgen-typescript',
-    reactDocgenTypescriptOptions: {
-      shouldExtractLiteralValuesFromEnum: true,
-      propFilter: prop => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
-    },
+    })
   },
 }
 

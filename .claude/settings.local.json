@@ -9,7 +9,21 @@
       "Bash(npm run type-check:*)",
       "Bash(grep:*)",
       "Bash(mkdir:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npm run storybook:*)",
+      "Bash(npm install:*)",
+      "Bash(npx storybook dev:*)",
+      "Bash(find:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(git rm:*)",
+      "Bash(rm:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(mv:*)",
+      "Bash(timeout 90 npm run test -- --run --no-coverage --reporter=json)"
     ],
     "deny": []
   }

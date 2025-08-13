@@ -1,0 +1,423 @@
+@use '@/styles/globals/_mixins' as mixins;
+@use '@/styles/globals/_variables' as vars;
+@use '@/styles/auth/_auth-tokens' as tokens;
+@use 'sass:color';
+
+.security-dashboard {
+  min-height: 100vh;
+  background: var(--color-background);
+  padding: 2rem 0;
+
+  @include mixins.mobile-only {
+    padding: 0;
+  }
+}
+
+.dashboard-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  @include mixins.mobile-only {
+    padding: 0;
+    max-width: 100%;
+  }
+}
+
+// Header
+
+.dashboard-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.5rem;
+  text-align: center;
+
+  @include mixins.mobile-only {
+    padding: 1rem;
+  }
+
+  &__title {
+    font-size: tokens.$auth-heading-card;
+    font-weight: tokens.$auth-weight-heading;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem;
+  }
+
+  &__subtitle {
+    font-size: tokens.$auth-body-primary;
+    font-weight: tokens.$auth-weight-body;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+}
+
+// Main content
+
+.dashboard-main {
+  padding: 2rem 1rem;
+
+  @include mixins.mobile-only {
+    padding: 1rem;
+  }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 768px;
+  margin: 0 auto;
+
+  @include mixins.mobile-only {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+// Security score section
+
+.security-score {
+  background: tokens.$auth-page-card-bg;
+  border: 1px solid tokens.$vana-gray-200;
+  border-radius: tokens.$auth-radius-lg;
+  box-shadow: tokens.$auth-shadow-card;
+  text-align: center;
+  padding: 2rem;
+
+  &__title {
+    font-size: tokens.$auth-heading-subsection;
+    font-weight: tokens.$auth-weight-heading;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+    margin: 0 0 1rem;
+  }
+
+  &__score {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0 0 0.5rem;
+
+    &--excellent { color: tokens.$auth-success; }
+    &--good { color: tokens.$auth-security-info; }
+    &--fair { color: tokens.$auth-warning; }
+    &--poor { color: tokens.$auth-error; }
+  }
+
+  &__label {
+    font-size: tokens.$auth-body-small;
+    font-weight: tokens.$auth-weight-caption;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__description {
+    font-size: tokens.$auth-body-primary;
+    font-weight: tokens.$auth-weight-body;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 1rem 0 0;
+  }
+}
+
+// 2FA section
+
+.two-factor {
+  background: tokens.$auth-page-card-bg;
+  border: 1px solid tokens.$vana-gray-200;
+  border-radius: tokens.$auth-radius-lg;
+  box-shadow: tokens.$auth-shadow-card;
+  padding: 2rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    @include mixins.mobile-only {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+
+  &__title {
+    font-size: tokens.$auth-heading-subsection;
+    font-weight: tokens.$auth-weight-heading;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  &__status {
+    font-size: tokens.$auth-body-small;
+    line-height: 1.4;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    &--enabled {
+      background: rgba(tokens.$auth-success, 0.1);
+      color: tokens.$auth-success;
+    }
+
+    &--disabled {
+      background: rgba(tokens.$auth-warning, 0.1);
+      color: tokens.$auth-warning;
+    }
+  }
+
+  &__description {
+    font-size: tokens.$auth-body-primary;
+    font-weight: tokens.$auth-weight-body;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.5rem;
+  }
+
+  &__qr-code {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin: 1rem 0;
+    border: 1px solid var(--color-border);
+
+    img {
+      max-width: 200px;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__backup-codes {
+    margin: 1.5rem 0;
+    
+    &-title {
+      font-size: tokens.$auth-body-secondary;
+      font-weight: tokens.$auth-weight-label;
+      line-height: 1.4;
+      color: var(--color-text-primary);
+      margin: 0 0 0.5rem;
+    }
+
+    &-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      font-family: var(--font-mono, 'SF Mono', 'Monaco', 'Consolas', monospace);
+      font-size: 0.875rem;
+      background: var(--color-background);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-border);
+
+      @include mixins.mobile-only {
+        grid-template-columns: 1fr;
+      }
+
+      &-item {
+        padding: 0.5rem;
+        background: var(--color-surface);
+        border-radius: 0.25rem;
+        text-align: center;
+        color: var(--color-text-primary);
+        border: 1px solid var(--color-border);
+      }
+    }
+  }
+}
+
+// Sessions section
+
+.active-sessions {
+  grid-column: 1 / -1;
+  background: tokens.$auth-page-card-bg;
+  border: 1px solid tokens.$vana-gray-200;
+  border-radius: tokens.$auth-radius-lg;
+  box-shadow: tokens.$auth-shadow-card;
+  padding: 2rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+
+    @include mixins.mobile-only {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+
+  &__title {
+    font-size: tokens.$auth-heading-subsection;
+    font-weight: tokens.$auth-weight-heading;
+    line-height: 1.25;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-background);
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+
+  @include mixins.mobile-only {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  &__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: tokens.$auth-login-primary;
+    color: white;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  &__details {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__device {
+    font-size: tokens.$auth-body-primary;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  &__location {
+    font-size: tokens.$auth-body-small;
+    font-weight: tokens.$auth-weight-caption;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    margin: 0.25rem 0 0;
+  }
+
+  &__status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+
+    @include mixins.mobile-only {
+      align-items: flex-start;
+    }
+  }
+
+  &__current {
+    font-size: tokens.$auth-body-small;
+    line-height: 1.4;
+    background: rgba(tokens.$auth-success, 0.1);
+    color: tokens.$auth-success;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+  }
+
+  &__last-active {
+    font-size: tokens.$auth-body-small;
+    font-weight: tokens.$auth-weight-caption;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+
+    @include mixins.mobile-only {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+}
+
+// Buttons
+
+.action-button {
+  @include tokens.auth-button-base;
+
+  background: transparent;
+  color: tokens.$auth-neutral;
+  
+  &:hover {
+    background: rgba(tokens.$auth-neutral, 0.1);
+  }
+
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+
+  &--danger {
+    color: tokens.$auth-error;
+
+    &:hover {
+      background: rgba(tokens.$auth-error, 0.1);
+    }
+  }
+}
+
+.setup-button {
+  @include tokens.auth-button-base;
+
+  background: tokens.$auth-login-primary;
+  color: white;
+  
+  &:hover {
+    background: tokens.$auth-login-primary-hover;
+  }
+}
+
+.disable-button {
+  @include tokens.auth-button-base;
+
+  background: transparent;
+  color: tokens.$auth-warning;
+
+  &:hover {
+    background: rgba(tokens.$auth-warning, 0.1);
+  }
+}
+
+.terminate-all-button {
+  @include tokens.auth-button-base;
+
+  background: tokens.$auth-error;
+  color: white;
+  
+  &:hover {
+    background: color.adjust(tokens.$auth-error, $lightness: -8%);
+  }
+}

@@ -5,6 +5,10 @@
 // Estados: default, hover, active, disabled, loading
 // ==============================
 
+@use '../../styles/globals/variables' as *;
+@use '../../styles/globals/mixins' as *;
+@use '../../styles/globals/color' as *;
+
 .button {
   @include button-base;
 

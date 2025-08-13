@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '@/styles/auth/auth-tokens';
+@use '@/styles/auth/auth-tokens' as *;
 
 .login-button {
   // Contenedor principal del botón de login

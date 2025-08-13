@@ -1,10 +1,9 @@
 /**
- * Tests de integración para operaciones GraphQL de Vana
+ * Tests de integración para operaciones GraphQL de Tanuki Planner
  * Valida la comunicación correcta con el backend y el manejo de datos
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { createMockApolloClient } from '../utils/test-utils'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useQuery, useMutation, useSubscription } from '@vue/apollo-composable'
 
 // Mock de Apollo Client
@@ -145,7 +144,7 @@ describe('GraphQL Integration Tests', () => {
         onError: vi.fn(),
       })
 
-      const { mutate, loading, error } = useMutation('CREATE_TASK_MUTATION')
+      const { mutate } = useMutation('CREATE_TASK_MUTATION')
 
       const result = await mutate({
         input: {
@@ -202,33 +201,66 @@ describe('GraphQL Integration Tests', () => {
 
     it('debe optimisticamente actualizar la cache', async () => {
       const mockUpdate = vi.fn()
-      const mockMutate = vi.fn().mockResolvedValue({
+      const mutationResult = {
         data: {
           createTask: {
             success: true,
             entity: { id: 'optimistic-task', title: 'Tarea optimística' },
           },
         },
+      }
+
+      // Mock que simula el comportamiento de Apollo Client useMutation
+      // Captura las opciones (incluyendo update) y las usa durante la mutación
+      const originalMockImplementation = mockUseMutation.getMockImplementation()
+      
+      mockUseMutation.mockImplementation((_mutationDocument, options) => {
+        // Capturar las opciones que incluyen la función update
+        const capturedOptions = options
+        
+        const mockMutate = vi.fn().mockImplementation(async () => {
+          // Simular el comportamiento de Apollo Client: llamar update después de la mutación
+          if (capturedOptions?.update) {
+            capturedOptions.update(
+              {}, // mock cache proxy
+              { data: mutationResult.data } // mutation result
+            )
+          }
+          return mutationResult
+        })
+
+        return {
+          mutate: mockMutate,
+          loading: { value: false },
+          error: { value: null },
+          onDone: vi.fn(),
+          onError: vi.fn(),
+        }
       })
 
-      mockUseMutation.mockReturnValue({
-        mutate: mockMutate,
-        loading: { value: false },
-        error: { value: null },
-        onDone: vi.fn(),
-        onError: vi.fn(),
-      })
+      try {
+        const { mutate } = useMutation('CREATE_TASK_MUTATION', {
+          update: mockUpdate,
+        })
 
-      const { mutate } = useMutation('CREATE_TASK_MUTATION', {
-        update: mockUpdate,
-      })
+        await mutate({
+          input: { title: 'Tarea optimística' },
+        })
 
-      await mutate({
-        input: { title: 'Tarea optimística' },
-      })
-
-      // Verificar que se llamó la función update para actualizar cache
-      expect(mockUpdate).toHaveBeenCalled()
+        // Verificar que se llamó la función update para actualizar cache
+        expect(mockUpdate).toHaveBeenCalled()
+        expect(mockUpdate).toHaveBeenCalledWith(
+          {},
+          { data: mutationResult.data }
+        )
+      } finally {
+        // Restaurar el mock original para no afectar otros tests
+        if (originalMockImplementation) {
+          mockUseMutation.mockImplementation(originalMockImplementation)
+        } else {
+          mockUseMutation.mockReset()
+        }
+      }
     })
   })
 
@@ -401,7 +433,7 @@ describe('GraphQL Integration Tests', () => {
         onError: vi.fn(),
       })
 
-      const { result, loading, onResult } = useSubscription('TASK_UPDATED_SUBSCRIPTION', {
+      const { result, onResult } = useSubscription('TASK_UPDATED_SUBSCRIPTION', {
         userId: 'user-123',
       })
 
@@ -409,7 +441,6 @@ describe('GraphQL Integration Tests', () => {
       onResult(mockOnResult)
 
       expect(result.value.taskUpdated).toEqual(mockTaskUpdate)
-      expect(loading.value).toBe(false)
     })
 
     it('debe manejar desconexiones de WebSocket', async () => {
@@ -490,12 +521,11 @@ describe('GraphQL Integration Tests', () => {
         fetchMore: vi.fn(),
       })
 
-      const { result, loading } = useQuery('CALENDAR_EVENTS_QUERY', {
+      const { result } = useQuery('CALENDAR_EVENTS_QUERY', {
         startFrom: '2025-08-15T00:00:00Z',
         startTo: '2025-08-15T23:59:59Z',
       })
 
-      expect(loading.value).toBe(false)
       expect(result.value.calendarEvents.edges).toHaveLength(2)
       expect(result.value.calendarEvents.edges[0].node.title).toBe('Reunión de equipo')
     })

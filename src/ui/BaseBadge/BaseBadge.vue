@@ -12,6 +12,7 @@
       dot?: boolean
       pulse?: boolean
       disabled?: boolean
+      clickable?: boolean
     }>(),
     {
       variant: 'neutral',
@@ -22,6 +23,7 @@
       dot: false,
       pulse: false,
       disabled: false,
+      clickable: false,
     }
   )
 
@@ -46,7 +48,7 @@
         'badge--dot': props.dot,
         'badge--pulse': props.pulse,
         'badge--disabled': props.disabled,
-        'badge--clickable': !!(attrs.onClick || attrs.onMousedown),
+        'badge--clickable': props.clickable || !!(attrs.onClick || attrs.onMousedown || attrs.onmousedown),
       },
     ]
   })

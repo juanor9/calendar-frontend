@@ -57,6 +57,7 @@
   import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline'
   import BaseButton from '@/ui/BaseButton/BaseButton.vue'
   import { useAuth } from '@/auth/auth-composable'
+  import { useAuthErrorHandler } from '@/composables/useAuthErrorHandler'
 
   // Router
   const router = useRouter()
@@ -64,6 +65,9 @@
 
   // Auth composable
   const { handleRedirectCallback, isAuthenticated, user } = useAuth()
+
+  // Auth error handler
+  const { handleCallbackError } = useAuthErrorHandler()
 
   // Local state
   const isLoading = ref(true)
@@ -139,6 +143,10 @@
     } catch (err) {
       console.error('Auth callback error:', err)
       error.value = err instanceof Error ? err : new Error('Unknown error occurred')
+
+      // Use the auth error handler for better error handling
+      handleCallbackError(err as Record<string, unknown>)
+
       isSuccess.value = false
     } finally {
       isLoading.value = false

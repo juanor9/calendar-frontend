@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '@/styles/auth/auth-tokens';
+@use '@/styles/auth/auth-tokens' as *;
 
 .user-profile {
   /* CONTENEDOR PRINCIPAL */
@@ -341,6 +341,7 @@
 }
 
 /* ANIMACIONES */
+
 @keyframes auth-status-pulse {
 
   0%,
@@ -367,6 +368,7 @@
 }
 
 /* DARK MODE */
+
 @media (prefers-color-scheme: dark) {
 
   .user-profile {
@@ -458,6 +460,7 @@
 }
 
 /* RESPONSIVE */
+
 @media (width <= 768px) {
 
   .user-profile {
@@ -480,6 +483,7 @@
 }
 
 /* ACCESIBILIDAD */
+
 @media (prefers-reduced-motion: reduce) {
 
   .user-profile {
@@ -507,6 +511,7 @@
 }
 
 /* ALTO CONTRASTE */
+
 @media (prefers-contrast: high) {
 
   .user-profile {

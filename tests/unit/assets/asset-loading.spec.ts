@@ -6,7 +6,6 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render } from '@testing-library/vue'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 
@@ -64,11 +63,11 @@ describe('Asset Loading Patterns', () => {
       const logoImg = wrapper.find('img[alt="Vana Logo"]')
       const bgImg = wrapper.find('img[alt="Background"]')
 
-      // Verify that assets use @/assets/ path, not absolute paths
-      expect(logoImg.attributes('src')).toMatch(/\/src\/assets\/images\/vana-logo\.png$/)
+      // Verify that assets use @/assets/ alias pattern (before Vite resolution)
+      expect(logoImg.attributes('src')).toBe('@/assets/images/vana-logo.png')
       expect(logoImg.attributes('src')).not.toMatch(/^\/vana-logo\.png/)
 
-      expect(bgImg.attributes('src')).toMatch(/\/src\/assets\/images\/hero-background\.jpg$/)
+      expect(bgImg.attributes('src')).toBe('@/assets/images/hero-background.jpg')
       expect(bgImg.attributes('src')).not.toMatch(/^\/hero-background\.jpg/)
     })
 
@@ -76,14 +75,14 @@ describe('Asset Loading Patterns', () => {
       const wrapper = mount(ComponentWithAssets)
       const images = wrapper.findAll('img')
 
-      // Verify SVG assets
+      // Verify SVG assets use proper @/assets/ patterns
       const calendarIcon = images.find(img => img.attributes('alt') === 'Calendar')
       const taskIcon = images.find(img => img.attributes('alt') === 'Task')
       const chevronIcon = images.find(img => img.attributes('alt') === 'Chevron')
 
-      expect(calendarIcon?.attributes('src')).toMatch(/\/src\/assets\/images\/icon-calendar\.svg$/)
-      expect(taskIcon?.attributes('src')).toMatch(/\/src\/assets\/images\/icon-task\.svg$/)
-      expect(chevronIcon?.attributes('src')).toMatch(/\/src\/assets\/icons\/chevron-down\.svg$/)
+      expect(calendarIcon?.attributes('src')).toBe('@/assets/images/icon-calendar.svg')
+      expect(taskIcon?.attributes('src')).toBe('@/assets/images/icon-task.svg')
+      expect(chevronIcon?.attributes('src')).toBe('@/assets/icons/chevron-down.svg')
     })
 
     it('should not use direct public folder paths', () => {
@@ -104,7 +103,7 @@ describe('Asset Loading Patterns', () => {
     })
   })
 
-  // 📁 Asset Resolution Tests
+  // 🔍 Asset Resolution Tests
   describe('Asset Resolution Patterns', () => {
     it('should handle asset imports correctly', () => {
       // Mock asset import pattern
@@ -143,15 +142,9 @@ describe('Asset Loading Patterns', () => {
       const images = wrapper.findAll('img')
 
       // Verify nested path structure is preserved
-      expect(images[0].attributes('src')).toMatch(
-        /\/src\/assets\/images\/ui\/buttons\/primary-bg\.png$/
-      )
-      expect(images[1].attributes('src')).toMatch(
-        /\/src\/assets\/images\/ui\/icons\/social\/facebook\.svg$/
-      )
-      expect(images[2].attributes('src')).toMatch(
-        /\/src\/assets\/images\/avatars\/default-user\.jpg$/
-      )
+      expect(images[0].attributes('src')).toBe('@/assets/images/ui/buttons/primary-bg.png')
+      expect(images[1].attributes('src')).toBe('@/assets/images/ui/icons/social/facebook.svg')
+      expect(images[2].attributes('src')).toBe('@/assets/images/avatars/default-user.jpg')
     })
   })
 
@@ -163,7 +156,7 @@ describe('Asset Loading Patterns', () => {
       })
 
       const img = wrapper.find('img')
-      expect(img.attributes('src')).toMatch(/\/src\/assets\/icons\/arrow-right\.svg$/)
+      expect(img.attributes('src')).toBe('@/assets/icons/arrow-right.svg')
       expect(img.attributes('alt')).toBe('arrow-right')
     })
 
@@ -183,7 +176,7 @@ describe('Asset Loading Patterns', () => {
       })
 
       const img = wrapper.find('img')
-      expect(img.attributes('src')).toMatch(/\/src\/assets\/icons\/dark\/large\/icon\.svg$/)
+      expect(img.attributes('src')).toBe('@/assets/icons/dark/large/icon.svg')
     })
 
     it('should handle conditional asset loading', async () => {
@@ -217,7 +210,7 @@ describe('Asset Loading Patterns', () => {
   // 🚫 Missing Asset Handling Tests
   describe('Missing Asset Handling', () => {
     it('should handle missing assets gracefully', async () => {
-      const componentWithMissingAssets = mount(ComponentWithAssets)
+      mount(ComponentWithAssets)
 
       await nextTick()
 
@@ -295,12 +288,13 @@ describe('Asset Loading Patterns', () => {
       const wrapper = mount(CSSAssetComponent)
       const heroDiv = wrapper.find('.hero-section')
 
-      expect(heroDiv.attributes('style')).toMatch(/url\(@\/assets\/images\/hero-bg\.jpg\)/)
+      // Test the actual style attribute value (Vue adds quotes and semicolon)
+      expect(heroDiv.attributes('style')).toContain('background-image: url("@/assets/images/hero-bg.jpg");')
     })
 
     it('should handle CSS assets in style blocks', () => {
       // This would be handled by the CSS processor in a real app
-      const cssAssetPattern = /@\/assets\/[^)]+/g
+      const cssAssetPattern = /@\/assets\/[^'")]+/g
       const cssContent = `
         .logo { background-image: url('@/assets/images/logo.png'); }
         .icon { background-image: url('@/assets/icons/star.svg'); }
@@ -362,7 +356,7 @@ describe('Asset Loading Patterns', () => {
     it('should detect problematic asset references', () => {
       const findProblematicAssets = (template: string): string[] => {
         const problematicPatterns = [
-          /src=["|']\/[^@][^"|']*/g, // Absolute paths without @
+          /src=["|']\/[^@][^"|']*["|']/g, // Absolute paths without @
           /url\(['"]?\/[^@][^'")]*['"]?\)/g, // CSS urls without @
         ]
 

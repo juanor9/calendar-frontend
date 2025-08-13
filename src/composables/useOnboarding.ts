@@ -49,6 +49,10 @@ export interface UseOnboardingReturn {
   saveProgress: () => Promise<void>
   loadSavedProgress: () => Promise<void>
   resetOnboarding: () => void
+
+  // Status checking
+  isOnboardingComplete: ComputedRef<boolean>
+  checkOnboardingStatus: () => Promise<void>
 }
 
 const STEP_ORDER: OnboardingStep[] = [
@@ -418,6 +422,25 @@ export const useOnboarding = (): UseOnboardingReturn => {
   }
 
   /**
+   * Status checking methods
+   */
+  const isOnboardingComplete = computed(() => {
+    return onboardingStore.isComplete
+  })
+
+  const checkOnboardingStatus = async (): Promise<void> => {
+    try {
+      // Use existing store methods to check status
+      if (onboardingStore.completedSteps.length >= STEP_ORDER.length) {
+        // Mark as complete using the store's complete method
+        onboardingStore.completeOnboarding()
+      }
+    } catch (err) {
+      console.warn('Failed to check onboarding status:', err)
+    }
+  }
+
+  /**
    * Utility Functions
    */
 
@@ -504,5 +527,9 @@ export const useOnboarding = (): UseOnboardingReturn => {
     saveProgress,
     loadSavedProgress,
     resetOnboarding,
+
+    // Status checking
+    isOnboardingComplete,
+    checkOnboardingStatus,
   }
 }

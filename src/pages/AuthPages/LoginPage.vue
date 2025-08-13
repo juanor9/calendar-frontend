@@ -223,7 +223,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/styles/auth/auth-tokens';
+  @use '@/styles/auth/auth-tokens' as *;
 
   .login-page {
     // Full viewport hero layout con gradiente Vana

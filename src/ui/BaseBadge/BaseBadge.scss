@@ -5,6 +5,9 @@
 // Estados: default, hover, focus, disabled, pulse
 // ==============================
 
+@use '../../styles/globals/variables' as *;
+@use '../../styles/globals/color' as *;
+
 .badge {
   display: inline-flex;
   align-items: center;

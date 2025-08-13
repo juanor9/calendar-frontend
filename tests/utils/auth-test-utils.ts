@@ -15,7 +15,7 @@ import {
   createMockLocalStorage,
   createMockLocation,
   mockEnvVars,
-  type authTestScenarios
+  authTestScenarios
 } from '../mocks/auth0'
 import type { User as AppUser } from '@/auth/types'
 
@@ -344,7 +344,7 @@ export const performanceHelpers = {
 // Integration Test Helpers
 export const integrationHelpers = {
   // Test Apollo integration
-  setupApolloIntegration(context: AuthTestContext) {
+  setupApolloIntegration() {
     // Mock Apollo client with auth link
     const mockApolloClient = {
       query: vi.fn(),

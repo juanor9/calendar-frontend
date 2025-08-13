@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '@/styles/auth/auth-tokens';
+@use '@/styles/auth/auth-tokens' as *;
 
 .logout-button {
   position: relative;

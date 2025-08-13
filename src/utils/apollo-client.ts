@@ -63,6 +63,25 @@ export const apolloClient = new ApolloClient({
           },
         },
       },
+      TaskConnection: {
+        fields: {
+          edges: {
+            merge: (existing = [], incoming = []) => {
+              // For task connections, we want to replace completely
+              // unless we're doing pagination (append mode)
+              const existingIds = new Set(existing.map((edge: { node: { id: string } }) => edge.node.id))
+              const newEdges = incoming.filter((edge: { node: { id: string } }) => !existingIds.has(edge.node.id))
+              return [...existing, ...newEdges]
+            },
+          },
+          pageInfo: {
+            merge: true,
+          },
+        },
+      },
+      TaskStats: {
+        merge: true,
+      },
     },
   }),
   defaultOptions: {

@@ -51,6 +51,8 @@ $background-primary: $surface-neutral;
 $background-secondary: $white;
 $background-elevated: $white;
 $background-overlay: rgba($brand-primary, 5%);
+$surface-primary: $surface-neutral;
+$surface-secondary: $white;
 
 // Texto
 $text-primary-token: $text-primary;
@@ -111,6 +113,23 @@ $neutral-primary: #6b7280;
 $neutral-light: #9ca3af;
 $neutral-lighter: #d1d5db;
 $neutral-background: #f9fafb;
+
+// Priority colors for task management
+$priority-low: #10b981; // Green for low priority
+$priority-medium: #f59e0b; // Amber for medium priority  
+$priority-high: #f97316; // Orange for high priority
+$priority-critical: #ef4444; // Red for critical priority
+
+// Status colors for feedback
+$status-success: $success-primary;
+$status-warning: $warning-primary;
+$status-danger: $error-primary;
+$status-info: $info-primary;
+
+// Input colors
+$input-bg: $background-secondary;
+$border-tertiary: rgba($text-primary, 6%);
+$interactive-hover: rgba($interactive-primary, 10%);
 
 // TOKENS SEMÁNTICOS - MODO OSCURO
 $dark-background-primary: $surface-neutral-dark;
