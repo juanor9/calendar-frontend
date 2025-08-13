@@ -7,22 +7,32 @@ import { expect, beforeEach, afterEach, vi } from 'vitest'
 import { config } from '@vue/test-utils'
 import '@testing-library/jest-dom'
 
-// ⚙️ Configuración global de Vue Test Utils  
+// ⚙️ Configuración global de Vue Test Utils
 config.global.plugins = []
 
 // Skip complex asset path transformation for now - focus on other patterns first
 
 // Global provide for Auth0
 config.global.provide = {
-  // Mock Auth0 client injection key (Symbol can't be imported in tests, so use string key)
+  // Mock Auth0 client injection key - Complete Auth0VueClient interface implementation
   Auth0ClientKey: {
-    isAuthenticated: vi.fn().mockResolvedValue(false),
-    isLoading: vi.fn().mockReturnValue(false),
-    user: vi.fn().mockReturnValue(null),
+    // Computed refs (these need to be reactive-like objects)
+    isAuthenticated: { value: false },
+    isLoading: { value: false },
+    user: { value: null },
+    error: { value: null },
+    idTokenClaims: { value: null },
+
+    // Auth methods
+    loginWithRedirect: vi.fn().mockResolvedValue(undefined),
+    loginWithPopup: vi.fn().mockResolvedValue(undefined),
+    logout: vi.fn().mockResolvedValue(undefined),
     getAccessTokenSilently: vi.fn().mockResolvedValue('mock-token'),
-    logout: vi.fn(),
-    loginWithRedirect: vi.fn(),
-  }
+    getAccessTokenWithPopup: vi.fn().mockResolvedValue('mock-token'),
+    getIdTokenClaims: vi.fn().mockResolvedValue(null),
+    handleRedirectCallback: vi.fn().mockResolvedValue(undefined),
+    checkSession: vi.fn().mockResolvedValue(undefined),
+  },
 }
 
 // 🎯 Mock de módulos que requieren configuración especial
@@ -37,17 +47,17 @@ Object.assign(vi, {
     if (fn && typeof fn === 'function' && (fn as Record<string, unknown>)._isMockFunction) {
       return fn
     }
-    
+
     // Create a new mock function with all vitest mock methods
     const mockFn = vi.fn()
-    
+
     // Preserve any existing implementation if it's a function
     if (typeof fn === 'function') {
       mockFn.mockImplementation(fn)
     }
-    
+
     return mockFn
-  }
+  },
 })
 
 // 🔍 Mock auth composable (CRITICAL: Para tests de componentes que usan auth)
@@ -58,14 +68,14 @@ vi.mock('@/auth/auth-composable', () => ({
     isLoading: { value: false },
     user: { value: null },
     error: { value: null },
-    
+
     // Auth actions
     login: vi.fn().mockResolvedValue(undefined),
     logout: vi.fn().mockResolvedValue(undefined),
     checkSession: vi.fn().mockResolvedValue(false),
     checkAuth: vi.fn().mockResolvedValue(false),
     handleRedirectCallback: vi.fn().mockResolvedValue(undefined),
-    
+
     // Role/permission checks (return primitive values, not refs)
     isPremium: vi.fn().mockReturnValue(false),
     isAdmin: vi.fn().mockReturnValue(false),
@@ -73,16 +83,16 @@ vi.mock('@/auth/auth-composable', () => ({
     hasPermission: vi.fn().mockReturnValue(false),
     hasAnyRole: vi.fn().mockReturnValue(false),
     hasAnyPermission: vi.fn().mockReturnValue(false),
-    
+
     // Token management
     getAccessToken: vi.fn().mockResolvedValue('mock-token'),
     refreshToken: vi.fn().mockResolvedValue('mock-refreshed-token'),
-    
+
     // User info functions (required by UserProfile component) - Return primitive strings
     getUserDisplayName: vi.fn().mockReturnValue('Test User'),
     getUserAvatar: vi.fn().mockReturnValue('https://example.com/avatar.jpg'),
     getUserRoles: vi.fn().mockReturnValue(['user']),
-    
+
     // Text content getters for button states - CRITICAL: These should return strings, not refs
     getLogoutButtonText: vi.fn().mockReturnValue('Cerrar Sesión'),
     getLogoutLoadingText: vi.fn().mockReturnValue('Cerrando sesión...'),
@@ -123,30 +133,30 @@ const defaultUseQuery = vi.fn(() => ({
   result: { value: null },
   loading: { value: false },
   error: { value: null },
-  refetch: vi.fn().mockResolvedValue({ data: {} })
+  refetch: vi.fn().mockResolvedValue({ data: {} }),
 }))
 
 const defaultUseMutation = vi.fn(() => ({
   mutate: vi.fn().mockResolvedValue({ data: {} }),
   loading: { value: false },
-  error: { value: null }
+  error: { value: null },
 }))
 
 const defaultUseSubscription = vi.fn(() => ({
   result: { value: null },
   loading: { value: false },
   error: { value: null },
-  restart: vi.fn()
+  restart: vi.fn(),
 }))
 
 vi.mock('@vue/apollo-composable', () => ({
   useQuery: defaultUseQuery,
-  useMutation: defaultUseMutation, 
+  useMutation: defaultUseMutation,
   useSubscription: defaultUseSubscription,
   useApolloClient: vi.fn(() => ({
     query: vi.fn(),
     mutate: vi.fn(),
-    resetStore: vi.fn()
+    resetStore: vi.fn(),
   })),
 }))
 
@@ -243,20 +253,20 @@ vi.mock('@/store/auth', () => ({
     isLoading: false,
     error: null,
     token: null,
-    
+
     // Profile management state
     isUpdatingProfile: false,
     profileError: null,
-    
+
     // GDPR state
     isExportingData: false,
     isDeletingAccount: false,
     gdprError: null,
-    
+
     // Security events state
     securityEvents: [],
     isLoadingSecurityEvents: false,
-    
+
     // Computed getters
     userRoles: [],
     userPermissions: [],
@@ -265,7 +275,7 @@ vi.mock('@/store/auth', () => ({
     userAvatar: 'https://example.com/avatar.jpg',
     isAdmin: false,
     isPremium: false,
-    
+
     // Actions
     setUser: vi.fn(),
     setToken: vi.fn(),
@@ -274,7 +284,7 @@ vi.mock('@/store/auth', () => ({
     clearError: vi.fn(),
     initializeFromStorage: vi.fn(),
     clearAuth: vi.fn(),
-    
+
     // Permission/role checking methods
     hasRole: vi.fn().mockReturnValue(false),
     hasPermission: vi.fn().mockReturnValue(false),
@@ -282,21 +292,21 @@ vi.mock('@/store/auth', () => ({
     hasAnyPermission: vi.fn().mockReturnValue(false),
     hasAllRoles: vi.fn().mockReturnValue(false),
     hasAllPermissions: vi.fn().mockReturnValue(false),
-    
+
     // Profile management
     updateUserProfile: vi.fn(),
     updateUserMetadata: vi.fn(),
     updateProfile: vi.fn().mockResolvedValue(undefined),
     clearProfileError: vi.fn(),
-    
+
     // GDPR methods
     requestDataExport: vi.fn().mockResolvedValue(undefined),
     requestAccountDeletion: vi.fn().mockResolvedValue(undefined),
     clearGdprError: vi.fn(),
-    
+
     // Security events methods
     loadSecurityEvents: vi.fn().mockResolvedValue(undefined),
-    
+
     // Utility methods
     getAuthState: vi.fn().mockReturnValue({
       user: null,
@@ -305,7 +315,7 @@ vi.mock('@/store/auth', () => ({
       error: null,
       token: null,
     }),
-    
+
     // Legacy methods for compatibility
     login: vi.fn(),
     logout: vi.fn(),
@@ -337,7 +347,7 @@ vi.mock('@/store/registration', () => ({
       step: null,
       error: null,
       retryCount: 0,
-      retryable: true
+      retryable: true,
     },
     startRegistration: vi.fn(),
     updateRegistrationState: vi.fn(),
@@ -346,7 +356,7 @@ vi.mock('@/store/registration', () => ({
     retryRegistration: vi.fn(),
     sendVerificationEmail: vi.fn(),
     markEmailVerified: vi.fn(),
-    $patch: vi.fn()
+    $patch: vi.fn(),
   })),
 }))
 
@@ -366,7 +376,7 @@ vi.mock('@/composables/useAuth', () => ({
     checkEmailVerification: vi.fn().mockResolvedValue(false),
     // Token methods
     getAccessToken: vi.fn().mockResolvedValue('mock-token'),
-    refreshToken: vi.fn().mockResolvedValue('mock-refreshed-token')
+    refreshToken: vi.fn().mockResolvedValue('mock-refreshed-token'),
   })),
 }))
 
@@ -378,7 +388,7 @@ vi.mock('@/composables/useOnboarding', () => ({
     nextStep: vi.fn(),
     previousStep: vi.fn(),
     completeStep: vi.fn(),
-    resetOnboarding: vi.fn()
+    resetOnboarding: vi.fn(),
   })),
 }))
 
@@ -388,8 +398,8 @@ vi.mock('@/services/api/registration', () => ({
     startRegistration: vi.fn(),
     updateRegistration: vi.fn(),
     sendVerificationEmail: vi.fn(),
-    validateEmail: vi.fn()
-  }
+    validateEmail: vi.fn(),
+  },
 }))
 
 vi.mock('@/utils/registration-cache', () => ({
@@ -397,8 +407,8 @@ vi.mock('@/utils/registration-cache', () => ({
     get: vi.fn(),
     set: vi.fn(),
     clear: vi.fn(),
-    has: vi.fn()
-  }
+    has: vi.fn(),
+  },
 }))
 
 // 🖱️ Mock de drag and drop
@@ -426,49 +436,52 @@ vi.mock('@heroicons/vue/24/outline', () => {
     name: 'MockIcon',
     render: () => null,
   }
-  
+
   // Create a proxy that returns mockIcon for any property access
-  return new Proxy({
-    // Define common icons explicitly for better debugging
-    CalendarIcon: mockIcon,
-    RocketLaunchIcon: mockIcon,
-    PlayIcon: mockIcon,
-    ShieldCheckIcon: mockIcon,
-    ClockIcon: mockIcon,
-    CurrencyDollarIcon: mockIcon,
-    QuestionMarkCircleIcon: mockIcon,
-    CheckIcon: mockIcon,
-    CheckCircleIcon: mockIcon,
-    SparklesIcon: mockIcon,
-    PuzzlePieceIcon: mockIcon,
-    ExclamationCircleIcon: mockIcon,
-    InformationCircleIcon: mockIcon,
-    ExclamationTriangleIcon: mockIcon,
-    ArrowPathIcon: mockIcon,
-    ChatBubbleLeftIcon: mockIcon,
-    XMarkIcon: mockIcon,
-    ChevronDownIcon: mockIcon,
-    ChevronUpIcon: mockIcon,
-    ChevronLeftIcon: mockIcon,
-    ChevronRightIcon: mockIcon,
-    PlusIcon: mockIcon,
-    MinusIcon: mockIcon,
-    EyeIcon: mockIcon,
-    EyeSlashIcon: mockIcon,
-    ArrowRightIcon: mockIcon,
-    ArrowLeftIcon: mockIcon,
-    HomeIcon: mockIcon,
-    Cog6ToothIcon: mockIcon,
-    UserIcon: mockIcon,
-    BellIcon: mockIcon,
-    EnvelopeIcon: mockIcon,
-    default: mockIcon
-  }, {
-    get(target, prop) {
-      // Return defined property or fallback to mockIcon
-      return target[prop as keyof typeof target] || mockIcon
+  return new Proxy(
+    {
+      // Define common icons explicitly for better debugging
+      CalendarIcon: mockIcon,
+      RocketLaunchIcon: mockIcon,
+      PlayIcon: mockIcon,
+      ShieldCheckIcon: mockIcon,
+      ClockIcon: mockIcon,
+      CurrencyDollarIcon: mockIcon,
+      QuestionMarkCircleIcon: mockIcon,
+      CheckIcon: mockIcon,
+      CheckCircleIcon: mockIcon,
+      SparklesIcon: mockIcon,
+      PuzzlePieceIcon: mockIcon,
+      ExclamationCircleIcon: mockIcon,
+      InformationCircleIcon: mockIcon,
+      ExclamationTriangleIcon: mockIcon,
+      ArrowPathIcon: mockIcon,
+      ChatBubbleLeftIcon: mockIcon,
+      XMarkIcon: mockIcon,
+      ChevronDownIcon: mockIcon,
+      ChevronUpIcon: mockIcon,
+      ChevronLeftIcon: mockIcon,
+      ChevronRightIcon: mockIcon,
+      PlusIcon: mockIcon,
+      MinusIcon: mockIcon,
+      EyeIcon: mockIcon,
+      EyeSlashIcon: mockIcon,
+      ArrowRightIcon: mockIcon,
+      ArrowLeftIcon: mockIcon,
+      HomeIcon: mockIcon,
+      Cog6ToothIcon: mockIcon,
+      UserIcon: mockIcon,
+      BellIcon: mockIcon,
+      EnvelopeIcon: mockIcon,
+      default: mockIcon,
+    },
+    {
+      get(target, prop) {
+        // Return defined property or fallback to mockIcon
+        return target[prop as keyof typeof target] || mockIcon
+      },
     }
-  })
+  )
 })
 
 // 🎨 Mock de CSS y SCSS modules
@@ -486,33 +499,33 @@ vi.mock('*.webp', () => ({ default: '/src/assets/images/mock-image.webp' }))
 
 // Mock specific assets mentioned in error patterns (CRITICAL: Match exact paths expected in tests)
 vi.mock('@/assets/images/vana-logo.png', () => ({
-  default: '/src/assets/images/vana-logo.png'
+  default: '/src/assets/images/vana-logo.png',
 }))
 vi.mock('@/assets/images/hero-background.jpg', () => ({
-  default: '/src/assets/images/hero-background.jpg'  
+  default: '/src/assets/images/hero-background.jpg',
 }))
 vi.mock('@/assets/icons/menu.svg', () => ({
-  default: '/src/assets/icons/menu.svg'
+  default: '/src/assets/icons/menu.svg',
 }))
 vi.mock('@/assets/images/icon-calendar.svg', () => ({
-  default: '/src/assets/images/icon-calendar.svg'
+  default: '/src/assets/images/icon-calendar.svg',
 }))
 vi.mock('@/assets/images/icon-task.svg', () => ({
-  default: '/src/assets/images/icon-task.svg'
+  default: '/src/assets/images/icon-task.svg',
 }))
 vi.mock('@/assets/icons/chevron-down.svg', () => ({
-  default: '/src/assets/icons/chevron-down.svg'
+  default: '/src/assets/icons/chevron-down.svg',
 }))
 
 // Mock additional assets for dynamic loading tests
 vi.mock('@/assets/icons/arrow-right.svg', () => ({
-  default: '/src/assets/icons/arrow-right.svg'
+  default: '/src/assets/icons/arrow-right.svg',
 }))
 vi.mock('@/assets/icons/dark/large/icon.svg', () => ({
-  default: '/src/assets/icons/dark/large/icon.svg'
+  default: '/src/assets/icons/dark/large/icon.svg',
 }))
 vi.mock('@/assets/images/ui/buttons/primary-bg.jpg', () => ({
-  default: '/src/assets/images/ui/buttons/primary-bg.jpg'
+  default: '/src/assets/images/ui/buttons/primary-bg.jpg',
 }))
 
 // 📊 Configuración de Intersection Observer Mock
@@ -576,7 +589,7 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
         fillRect: vi.fn(),
         clearRect: vi.fn(),
         getImageData: vi.fn(() => ({
-          data: new Array(4).fill(0)
+          data: new Array(4).fill(0),
         })),
         putImageData: vi.fn(),
         createImageData: vi.fn(() => ({ data: new Array(4).fill(0) })),
@@ -660,7 +673,7 @@ vi.mock('vue', async () => {
     useId: vi.fn(() => {
       idCounter += 1
       return `v-${idCounter}`
-    })
+    }),
     // REMOVED: Don't override Vue's core reactivity functions, let them work normally
     // The original Vue implementation should handle computed, ref, reactive properly
   }
@@ -670,8 +683,8 @@ vi.mock('vue', async () => {
 Object.assign(vi, {
   ref: vi.fn((initialValue: unknown) => ({
     value: initialValue,
-    _isRef: true
-  }))
+    _isRef: true,
+  })),
 })
 
 // Make resetIdCounter available globally for cleanup
@@ -693,7 +706,7 @@ afterEach(() => {
   mockStorage.setItem.mockClear()
   mockStorage.removeItem.mockClear()
   mockStorage.clear.mockClear()
-  
+
   // Reset unique ID counter for consistent testing
   globalThis.resetIdCounter?.()
 })
@@ -725,17 +738,17 @@ expect.extend({
   toHaveNoViolations(received: { violations?: Array<{ id: string; description: string }> }) {
     const violations = received?.violations || []
     const pass = violations.length === 0
-    
+
     if (pass) {
       return {
         message: () => `Expected accessibility violations, but found none`,
         pass: true,
       }
     } else {
-      const violationMessages = violations.map((violation) => 
-        `${violation.id}: ${violation.description}`
-      ).join('\n')
-      
+      const violationMessages = violations
+        .map(violation => `${violation.id}: ${violation.description}`)
+        .join('\n')
+
       return {
         message: () => `Expected no accessibility violations, but found:\n${violationMessages}`,
         pass: false,
@@ -744,7 +757,8 @@ expect.extend({
   },
   toBeAccessible: (received: { element?: Element } | Element) => {
     // Custom matcher para verificar accesibilidad básica
-    const element = received instanceof Element ? received : (received as { element?: Element }).element
+    const element =
+      received instanceof Element ? received : (received as { element?: Element }).element
     if (!element) {
       return {
         pass: false,
