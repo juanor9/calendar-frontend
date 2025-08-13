@@ -4,9 +4,4 @@
   </div>
 </template>
 
-<style scoped>
-  .about-page__title {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-</style>
+<style lang="scss" src="./AboutPage.scss"></style>

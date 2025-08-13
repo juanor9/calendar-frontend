@@ -1,0 +1,153 @@
+// ==============================
+// VANA DESIGN SYSTEM - SHIELD ICON
+// Security and protection icon component following BEM methodology
+// ==============================
+
+@use '../../styles/tokens' as *;
+
+.shield-icon {
+  width: $spacing-lg; // 24px - following design tokens
+  height: $spacing-lg; // 24px
+  flex-shrink: 0;
+  transition: $transition-color;
+
+  // Responsive sizing
+
+  &--small {
+    width: $spacing-md; // 16px
+    height: $spacing-md;
+  }
+
+  &--large {
+    width: $spacing-xl; // 32px
+    height: $spacing-xl;
+  }
+
+  // State variations
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+      transition: $transition-transform;
+    }
+  }
+
+  // Color variations - semantic for security states
+
+  &--primary {
+    color: $interactive-primary;
+  }
+
+  &--success {
+    color: $success-primary;
+  }
+
+  &--warning {
+    color: $warning-primary;
+  }
+
+  &--error {
+    color: $error-primary;
+  }
+
+  &--info {
+    color: $info-primary;
+  }
+
+  &--secondary {
+    color: $text-secondary;
+  }
+
+  &--secure {
+    color: $success-primary;
+  }
+
+  &--vulnerable {
+    color: $error-primary;
+  }
+
+  &--checking {
+    color: $warning-primary;
+  }
+
+  // Security-specific animations
+
+  &--protected {
+    animation: shield-glow 2s ease-in-out infinite;
+  }
+
+  &--scanning {
+    animation: security-scan 1.5s linear infinite;
+  }
+
+  &--pulse {
+    animation: security-pulse 2s ease-in-out infinite;
+  }
+
+  &--verified {
+    animation: verified-check 1s ease-out;
+  }
+}
+
+@keyframes shield-glow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px currentcolor);
+    opacity: 100%;
+  }
+
+  50% {
+    filter: drop-shadow(0 0 8px currentcolor);
+    opacity: 80%;
+  }
+}
+
+@keyframes security-scan {
+
+  0% {
+    transform: rotateY(0deg);
+  }
+
+  50% {
+    transform: rotateY(180deg);
+  }
+
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes security-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 100%;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 70%;
+  }
+}
+
+@keyframes verified-check {
+
+  0% {
+    transform: scale(0.8);
+    opacity: 50%;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 80%;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 100%;
+  }
+}
