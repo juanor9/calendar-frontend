@@ -1,5 +1,6 @@
 import { createAuth0 } from '@auth0/auth0-vue'
 import type { App } from 'vue'
+import { ref } from 'vue'
 import { auth0ClientConfig, validateAuth0Config } from './auth0-config'
 import { Auth0ClientKey } from './auth-composable'
 
@@ -31,13 +32,24 @@ VITE_AUTH0_AUDIENCE=https://your-api.com
           `)
         }
 
-        // Provide mock auth client to prevent runtime errors
+        // Provide mock auth client to prevent runtime errors (complete Auth0VueClient implementation)
         const mockAuth0Client = {
+          // Computed refs (reactive properties using proper Vue refs)
+          isAuthenticated: ref(false),
+          isLoading: ref(false),
+          user: ref(undefined),
+          error: ref(undefined),
+          idTokenClaims: ref(undefined),
+
+          // Auth methods
           loginWithRedirect: () => Promise.reject(new Error('Auth0 not configured')),
+          loginWithPopup: () => Promise.reject(new Error('Auth0 not configured')),
           logout: () => Promise.reject(new Error('Auth0 not configured')),
-          getUser: () => Promise.resolve(null),
-          isAuthenticated: () => Promise.resolve(false),
           getAccessTokenSilently: () => Promise.reject(new Error('Auth0 not configured')),
+          getAccessTokenWithPopup: () => Promise.reject(new Error('Auth0 not configured')),
+          getIdTokenClaims: () => Promise.resolve(undefined),
+          handleRedirectCallback: () => Promise.reject(new Error('Auth0 not configured')),
+          checkSession: () => Promise.reject(new Error('Auth0 not configured')),
         }
 
         app.config.globalProperties.$auth0 = mockAuth0Client
