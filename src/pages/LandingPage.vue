@@ -204,11 +204,11 @@ Main entry point for user registration with interactive demo
   } from '@heroicons/vue/24/outline'
 
   // Import components
-  import RegisterButton from '@/ui/RegisterButton/RegisterButton.vue'
-  import CalendarDemoWidget from '@/components/landing/CalendarDemoWidget.vue'
-  import ValuePropCard from '@/components/landing/ValuePropCard.vue'
-  import FeatureShowcase from '@/components/landing/FeatureShowcase.vue'
-  import TestimonialGrid from '@/components/landing/TestimonialGrid.vue'
+  import RegisterButton from '@/shared/ui/RegisterButton/RegisterButton.vue'
+  import CalendarDemoWidget from '@/features/landing/components/CalendarDemoWidget.vue'
+  import ValuePropCard from '@/features/landing/components/ValuePropCard.vue'
+  import FeatureShowcase from '@/features/landing/components/FeatureShowcase.vue'
+  import TestimonialGrid from '@/features/landing/components/TestimonialGrid.vue'
 
   const { registerWithRedirect, isLoading: isRegistering } = useAuth()
 

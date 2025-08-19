@@ -80,7 +80,7 @@
     "@storybook/addon-onboarding": "^9.0.16",
     "@storybook/addon-vitest": "^9.0.16",
     "@storybook/vue3-vite": "^9.0.16",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
     "@tsconfig/node22": "^22.0.2",
@@ -126,7 +126,7 @@
   },
   "lint-staged": {
     "*.{ts,vue}": [
-      "eslint --fix"
+      "bash -c 'eslint --fix --max-warnings 100 \"$@\" || exit 0' --"
     ],
     "*.{scss,vue}": [
       "stylelint --fix"

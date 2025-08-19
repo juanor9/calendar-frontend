@@ -2,9 +2,10 @@
  * Auth0 Mocks for Testing
  * Provides comprehensive mocks for Auth0 SDK and related functionality
  */
-import { vi, type MockedFunction } from 'vitest'
+import { vi } from 'vitest'
+// import type { MockedFunction } from 'vitest' // Currently unused
 import type { User } from '@auth0/auth0-spa-js'
-import type { User as AppUser, AuthState } from '@/auth/types'
+import type { User as AppUser, AuthState } from '@/features/authentication/types/auth.types'
 
 // Mock Auth0 User Data
 export const mockAuth0User: User = {
@@ -110,7 +111,7 @@ export const createMockAuth0Client = (
     error: { value: error },
 
     // Methods
-    loginWithRedirect: vi.fn().mockImplementation(async (opts?: any) => {
+    loginWithRedirect: vi.fn().mockImplementation(async (_opts?: unknown) => {
       if (shouldThrow) {
         throw new Error('Login failed')
       }
@@ -118,14 +119,14 @@ export const createMockAuth0Client = (
       return Promise.resolve()
     }),
 
-    logout: vi.fn().mockImplementation(async (opts?: any) => {
+    logout: vi.fn().mockImplementation(async (_opts?: unknown) => {
       if (shouldThrow) {
         throw new Error('Logout failed')
       }
       return Promise.resolve()
     }),
 
-    getAccessTokenSilently: vi.fn().mockImplementation(async (opts?: any) => {
+    getAccessTokenSilently: vi.fn().mockImplementation(async (_opts?: unknown) => {
       if (shouldThrow) {
         throw new Error('Token retrieval failed')
       }
@@ -228,7 +229,7 @@ export const mockEnvVars = {
 export const createAuthError = (message: string, code?: string) => {
   const error = new Error(message)
   if (code) {
-    ;(error as any).code = code
+    ;(error as Error & {code?: string}).code = code
   }
   return error
 }
@@ -313,7 +314,7 @@ export const createMockApolloClient = () => ({
 
 // Test Utilities
 export const waitForAuthState = (
-  client: any,
+  client: ReturnType<typeof createMockAuth0Client>,
   expectedState: 'authenticated' | 'unauthenticated'
 ) => {
   return new Promise<void>(resolve => {

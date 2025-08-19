@@ -437,51 +437,68 @@ vi.mock('@heroicons/vue/24/outline', () => {
     render: () => null,
   }
 
+  // Define all icons explicitly to ensure they're properly mocked
+  const iconMap = {
+    CalendarIcon: mockIcon,
+    RocketLaunchIcon: mockIcon,
+    PlayIcon: mockIcon,
+    ShieldCheckIcon: mockIcon,
+    ClockIcon: mockIcon,
+    CurrencyDollarIcon: mockIcon,
+    QuestionMarkCircleIcon: mockIcon,
+    CheckIcon: mockIcon,
+    CheckCircleIcon: mockIcon,
+    SparklesIcon: mockIcon,
+    PuzzlePieceIcon: mockIcon,
+    ExclamationCircleIcon: mockIcon,
+    InformationCircleIcon: mockIcon,
+    ExclamationTriangleIcon: mockIcon,
+    ArrowPathIcon: mockIcon,
+    ChatBubbleLeftIcon: mockIcon,
+    XMarkIcon: mockIcon,
+    ChevronDownIcon: mockIcon,
+    ChevronUpIcon: mockIcon,
+    ChevronLeftIcon: mockIcon,
+    ChevronRightIcon: mockIcon,
+    PlusIcon: mockIcon,
+    MinusIcon: mockIcon,
+    EyeIcon: mockIcon,
+    EyeSlashIcon: mockIcon,
+    ArrowRightIcon: mockIcon,
+    ArrowLeftIcon: mockIcon,
+    HomeIcon: mockIcon,
+    Cog6ToothIcon: mockIcon,
+    UserIcon: mockIcon,
+    BellIcon: mockIcon,
+    EnvelopeIcon: mockIcon,
+    default: mockIcon,
+  }
+
   // Create a proxy that returns mockIcon for any property access
-  return new Proxy(
-    {
-      // Define common icons explicitly for better debugging
-      CalendarIcon: mockIcon,
-      RocketLaunchIcon: mockIcon,
-      PlayIcon: mockIcon,
-      ShieldCheckIcon: mockIcon,
-      ClockIcon: mockIcon,
-      CurrencyDollarIcon: mockIcon,
-      QuestionMarkCircleIcon: mockIcon,
-      CheckIcon: mockIcon,
-      CheckCircleIcon: mockIcon,
-      SparklesIcon: mockIcon,
-      PuzzlePieceIcon: mockIcon,
-      ExclamationCircleIcon: mockIcon,
-      InformationCircleIcon: mockIcon,
-      ExclamationTriangleIcon: mockIcon,
-      ArrowPathIcon: mockIcon,
-      ChatBubbleLeftIcon: mockIcon,
-      XMarkIcon: mockIcon,
-      ChevronDownIcon: mockIcon,
-      ChevronUpIcon: mockIcon,
-      ChevronLeftIcon: mockIcon,
-      ChevronRightIcon: mockIcon,
-      PlusIcon: mockIcon,
-      MinusIcon: mockIcon,
-      EyeIcon: mockIcon,
-      EyeSlashIcon: mockIcon,
-      ArrowRightIcon: mockIcon,
-      ArrowLeftIcon: mockIcon,
-      HomeIcon: mockIcon,
-      Cog6ToothIcon: mockIcon,
-      UserIcon: mockIcon,
-      BellIcon: mockIcon,
-      EnvelopeIcon: mockIcon,
-      default: mockIcon,
+  return new Proxy(iconMap, {
+    get(target, prop) {
+      // Always return mockIcon regardless of property name
+      if (typeof prop === 'string') {
+        return mockIcon
+      }
+      return target[prop as keyof typeof target] || mockIcon
     },
-    {
-      get(target, prop) {
-        // Return defined property or fallback to mockIcon
-        return target[prop as keyof typeof target] || mockIcon
-      },
+    has() {
+      // Always return true so destructuring works
+      return true
+    },
+    ownKeys() {
+      // Return all icon names so Object.keys() works
+      return Object.keys(iconMap)
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      return {
+        enumerable: true,
+        configurable: true,
+        value: mockIcon
+      }
     }
-  )
+  })
 })
 
 // 🎨 Mock de CSS y SCSS modules
@@ -674,8 +691,6 @@ vi.mock('vue', async () => {
       idCounter += 1
       return `v-${idCounter}`
     }),
-    // REMOVED: Don't override Vue's core reactivity functions, let them work normally
-    // The original Vue implementation should handle computed, ref, reactive properly
   }
 })
 

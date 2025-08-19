@@ -1,8 +1,8 @@
 import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '@/auth/auth-composable'
-import { useErrorHandler } from '@/composables/useErrorHandler'
-import type { AuthError, ErrorRecoveryAction } from '@/types/error.types'
+import { useAuth } from '@/features/authentication/composables/useAuth'
+import { useErrorHandler } from '@/shared/composables/useErrorHandler'
+import type { AuthError, ErrorRecoveryAction } from '@/shared/types/error.types'
 
 // Auth-specific error handling with trust-building patterns
 export const useAuthErrorHandler = () => {

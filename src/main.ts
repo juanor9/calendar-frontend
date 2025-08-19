@@ -1,13 +1,13 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import router from '@/router'
+import router from '@/core/router'
 import { createHead } from '@vueuse/head'
 import { DefaultApolloClient } from '@vue/apollo-composable'
-import { auth0Plugin, isAuth0Configured } from '@/auth'
-import { useAuthStore } from '@/store/auth'
-import apolloClient from '@/utils/apollo-client'
-import { RegistrationCache } from '@/utils/registration-cache'
+import { auth0Plugin, isAuth0Configured } from '@/features/authentication/services'
+import { useAuthStore } from '@/features/authentication/stores/auth'
+import apolloClient from '@/shared/utils/apollo-client'
+import { RegistrationCache } from '@/shared/utils/registration-cache'
 import '@/styles/global.scss'
 
 // Create app instance

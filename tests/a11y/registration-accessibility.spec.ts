@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/vue'
+import { render, screen } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { axe, toHaveNoViolations } from 'vitest-axe'
 import { createRouter, createMemoryHistory } from 'vue-router'
@@ -12,7 +12,7 @@ import { createPinia, setActivePinia } from 'pinia'
 
 // Import components to test
 import LandingPage from '@/pages/LandingPage.vue'
-import RegisterButton from '@/ui/RegisterButton/RegisterButton.vue'
+import RegisterButton from '@/shared/ui/RegisterButton/RegisterButton.vue'
 import EmailVerificationPage from '@/pages/AuthPages/EmailVerificationPage.vue'
 
 // Mock dependencies
@@ -47,10 +47,10 @@ vi.mock('@/components/landing/ValuePropCard.vue', () => ({
     name: 'ValuePropCard',
     template: `
       <article 
-        :aria-labelledby="'card-title-' + title.replace(/\s+/g, '-').toLowerCase()"
+        :aria-labelledby="'card-title-' + title.replace(/\\s+/g, '-').toLowerCase()"
         class="value-prop-card"
       >
-        <h3 :id="'card-title-' + title.replace(/\s+/g, '-').toLowerCase()">{{ title }}</h3>
+        <h3 :id="'card-title-' + title.replace(/\\s+/g, '-').toLowerCase()">{{ title }}</h3>
         <p>{{ description }}</p>
         <div aria-label="Statistics">{{ stat }}</div>
       </article>
@@ -59,7 +59,7 @@ vi.mock('@/components/landing/ValuePropCard.vue', () => ({
   },
 }))
 
-vi.mock('@/ui/BaseButton/BaseButton.vue', () => ({
+vi.mock('@/shared/ui/BaseButton/BaseButton.vue', () => ({
   default: {
     name: 'BaseButton',
     template: `
@@ -95,8 +95,8 @@ vi.mock('@heroicons/vue/24/outline', () => ({
 expect.extend(toHaveNoViolations)
 
 describe('Registration Flow Accessibility', () => {
-  let router: any
-  let pinia: any
+  let router: ReturnType<typeof createRouter>
+  let pinia: ReturnType<typeof createPinia>
 
   beforeEach(() => {
     pinia = createPinia()
@@ -119,7 +119,7 @@ describe('Registration Flow Accessibility', () => {
     vi.useRealTimers()
   })
 
-  const renderWithA11y = async (component: any, props = {}) => {
+  const renderWithA11y = async (component: unknown, props = {}) => {
     const result = render(component, {
       props,
       global: {
@@ -514,7 +514,7 @@ describe('Registration Flow Accessibility', () => {
 
         // Each step should be identifiable
         const steps = progressSteps.querySelectorAll('[class*="step"]')
-        steps.forEach((step, index) => {
+        steps.forEach((step) => {
           const stepLabel = step.querySelector('[class*="label"]')
           expect(stepLabel?.textContent).toBeTruthy()
 
@@ -661,7 +661,7 @@ describe('Registration Flow Accessibility', () => {
   })
 
   describe('Color contrast compliance', () => {
-    const testColorContrast = async (component: any, props = {}) => {
+    const testColorContrast = async (component: unknown, props = {}) => {
       const { container } = await renderWithA11y(component, props)
 
       const results = await axe(container, {
@@ -789,7 +789,6 @@ describe('Registration Flow Accessibility', () => {
       expect(focusableElements.length).toBeGreaterThan(0)
 
       // Tab through all elements
-      let focusedIndex = 0
       for (let i = 0; i < Math.min(5, focusableElements.length); i++) {
         await user.tab()
 

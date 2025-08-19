@@ -82,12 +82,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onErrorCaptured } from 'vue'
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
-import ShieldIcon from '@/components/icons/ShieldIcon.vue'
-import BaseButton from '@/ui/BaseButton/BaseButton.vue'
-import SupportIcon from '@/components/icons/SupportIcon.vue'
+import ShieldIcon from '@/shared/icons/ShieldIcon.vue'
+import BaseButton from '@/shared/ui/BaseButton/BaseButton.vue'
+import SupportIcon from '@/shared/icons/SupportIcon.vue'
 import ErrorToast from './ErrorToast.vue'
-import { useErrorHandler } from '@/composables/useErrorHandler'
-import type { ErrorRecoveryAction } from '@/types/error.types'
+import { useErrorHandler } from '@/shared/composables/useErrorHandler'
+import type { ErrorRecoveryAction } from '@/shared/types/error.types'
 
 interface Props {
   fallbackComponent?: string
@@ -314,24 +314,24 @@ onMounted(() => {
     }
   }
 
-  &__content {
-    @include design-token('color', 'text-primary');
-  }
+  // &__content {
+  //   @include design-token('color', 'text-primary');
+  // }
 
   &__title {
-    @include design-token('typography', 'heading-lg');
+    // @include design-token('typography', 'heading-lg');
 
     margin-bottom: var(--spacing-md);
 
-    @include design-token('color', 'text-primary');
+    // @include design-token('color', 'text-primary');
   }
 
   &__message {
-    @include design-token('typography', 'body-lg');
+    // @include design-token('typography', 'body-lg');
 
     margin-bottom: var(--spacing-lg);
 
-    @include design-token('color', 'text-secondary');
+    // @include design-token('color', 'text-secondary');
 
     line-height: 1.6;
   }
@@ -347,8 +347,8 @@ onMounted(() => {
     border: 1px solid var(--color-success-200);
     border-radius: var(--border-radius-md);
 
-    @include design-token('color', 'success-700');
-    @include design-token('typography', 'body-sm');
+    // @include design-token('color', 'success-700');
+    // @include design-token('typography', 'body-sm');
   }
 
   &__shield-icon {
@@ -381,16 +381,16 @@ onMounted(() => {
     summary {
       cursor: pointer;
 
-      @include design-token('typography', 'body-sm');
-      @include design-token('color', 'text-secondary');
+      // @include design-token('typography', 'body-sm');
+      // @include design-token('color', 'text-secondary');
 
       margin-bottom: var(--spacing-sm);
     }
   }
 
   &__error-code {
-    @include design-token('typography', 'mono-sm');
-    @include design-token('color', 'text-primary');
+    // @include design-token('typography', 'mono-sm');
+    // @include design-token('color', 'text-primary');
 
     background: var(--color-background-tertiary);
     border: 1px solid var(--color-border-tertiary);

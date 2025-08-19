@@ -8,8 +8,8 @@
 import { describe, it, expect } from 'vitest'
 import type { RenderOptions } from '@testing-library/vue'
 import { render } from '@testing-library/vue'
-import BaseButton from '@/ui/BaseButton/BaseButton.vue'
-import BaseInputText from '@/ui/BaseInputText/BaseInputText.vue'
+import BaseButton from '@/shared/ui/BaseButton/BaseButton.vue'
+import BaseInputText from '@/shared/ui/BaseInputText/BaseInputText.vue'
 
 describe('TypeScript Generic Type Handling', () => {
   // 🔧 RenderOptions Generic Tests
@@ -55,7 +55,7 @@ describe('TypeScript Generic Type Handling', () => {
 
     it('should enforce type safety with generic constraints', () => {
       // This test ensures TypeScript properly validates generic constraints
-      type ValidRenderOptions<T extends Record<string, any>> = RenderOptions<any> & {
+      type ValidRenderOptions<T extends Record<string, unknown>> = RenderOptions<unknown> & {
         customProps?: T
       }
       
@@ -148,9 +148,9 @@ describe('TypeScript Generic Type Handling', () => {
   // 🔄 Generic Component Testing Patterns
   describe('Generic Component Testing Utilities', () => {
     it('should create generic render helper', () => {
-      function renderComponent<T extends Record<string, any>>(
-        component: any,
-        options?: RenderOptions<any> & { testConfig?: T }
+      function renderComponent<T extends Record<string, unknown>>(
+        component: unknown,
+        options?: RenderOptions<unknown> & { testConfig?: T }
       ) {
         const defaultOptions = {
           props: {},
@@ -238,7 +238,7 @@ describe('TypeScript Generic Type Handling', () => {
       expect(numberValidator.validate(-1)).toBe(false)
       
       expect(booleanValidator.validate(true)).toBe(true)
-      expect(booleanValidator.validate('not-boolean' as any)).toBe(false)
+      expect(booleanValidator.validate('not-boolean' as unknown as boolean)).toBe(false)
     })
   })
 
@@ -323,7 +323,7 @@ describe('TypeScript Generic Type Handling', () => {
 
     it('should handle component composition with generics', () => {
       type ComponentConfig<T> = {
-        component: any
+        component: unknown
         props: T
         testId: string
       }
@@ -381,7 +381,7 @@ describe('TypeScript Generic Type Handling', () => {
         expect(typeof info.message).toBe('string')
       }
       
-      const typeErrorHandler: ErrorHandler<TypeError> = (error, info) => {
+      const typeErrorHandler: ErrorHandler<TypeError> = (error, _info) => {
         expect(error).toBeInstanceOf(TypeError)
         expect(error.name).toBe('TypeError')
       }
@@ -410,7 +410,7 @@ describe('TypeScript Generic Type Handling', () => {
       interface UserState {
         id: number
         name: string
-        preferences: Record<string, any>
+        preferences: Record<string, unknown>
       }
       
       interface TasksState {

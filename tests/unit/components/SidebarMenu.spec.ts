@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import SidebarMenu from '@/ui/SidebarMenu/SidebarMenu.vue'
+import SidebarMenu from '@/shared/ui/SidebarMenu/SidebarMenu.vue'
 
 describe('SidebarMenu', () => {
   const createWrapper = () => {

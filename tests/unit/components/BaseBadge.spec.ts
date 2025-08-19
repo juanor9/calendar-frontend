@@ -9,7 +9,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/vue'
 import { axe } from 'vitest-axe'
 import { mount } from '@vue/test-utils'
-import BaseBadge from '@/ui/BaseBadge/BaseBadge.vue'
+import BaseBadge from '@/shared/ui/BaseBadge/BaseBadge.vue'
 
 expect.extend({ toHaveNoViolations: () => ({ pass: true, message: () => '' }) })
 

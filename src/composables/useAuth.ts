@@ -5,10 +5,10 @@
 
 import { ref, computed, inject, watch, type Ref, type ComputedRef } from 'vue'
 import type { Auth0VueClient } from '@auth0/auth0-vue'
-import { useAuthStore } from '@/store/auth'
-import { useRegistrationStore } from '@/store/registration'
-import { RegistrationAPI } from '@/services/api/registration'
-import { RegistrationCache } from '@/utils/registration-cache'
+import { useAuthStore } from '@/features/authentication/stores/auth'
+import { useRegistrationStore } from '@/features/authentication/stores/registration'
+import { RegistrationAPI } from '@/features/authentication/services/api/registration'
+import { RegistrationCache } from '@/shared/utils/registration-cache'
 import type {
   User,
   LoginOptions,
@@ -20,8 +20,8 @@ import type {
   RegistrationState,
   RegistrationError,
   AppState,
-} from '@/types/registration.types'
-import type { SecurityEvent } from '@/auth/types'
+} from '@/features/authentication/types/registration.types'
+import type { SecurityEvent } from '@/features/authentication/types/auth.types'
 
 // Injection key for Auth0 client
 export const Auth0ClientKey = Symbol('Auth0Client')
@@ -478,11 +478,11 @@ export const useAuth = (): UseAuthReturn => {
    */
 
   const getUserDisplayName = (): string | null => {
-    return authStore.userDisplayName
+    return authStore.userDisplayName as string | null
   }
 
   const getUserAvatar = (): string | null => {
-    return authStore.userAvatar
+    return authStore.userAvatar as string | null
   }
 
   /**

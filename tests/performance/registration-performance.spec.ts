@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type */
 /**
  * Performance tests for registration flow
  * Testing load times, Core Web Vitals, and resource efficiency
@@ -12,7 +13,7 @@ import { createPinia, setActivePinia } from 'pinia'
 // Import components to test
 import LandingPage from '@/pages/LandingPage.vue'
 import EmailVerificationPage from '@/pages/AuthPages/EmailVerificationPage.vue'
-import RegisterButton from '@/ui/RegisterButton/RegisterButton.vue'
+import RegisterButton from '@/shared/ui/RegisterButton/RegisterButton.vue'
 
 // Performance monitoring utilities
 import { measurePerformance, mockWebVitals } from '../utils/performance-utils'

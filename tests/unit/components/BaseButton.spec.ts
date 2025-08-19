@@ -6,7 +6,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, fireEvent } from '@testing-library/vue'
 import { axe } from 'vitest-axe'
 import { nextTick } from 'vue'
-import BaseButton from '@/ui/BaseButton/BaseButton.vue'
+import BaseButton from '@/shared/ui/BaseButton/BaseButton.vue'
 
 expect.extend({ toHaveNoViolations: () => ({ pass: true, message: () => '' }) })
 

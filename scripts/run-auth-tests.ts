@@ -7,7 +7,7 @@
 
 import { execSync } from 'child_process'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
-import path from 'path'
+// import path from 'path' // Currently unused
 import chalk from 'chalk'
 
 interface TestSuite {
@@ -138,10 +138,10 @@ class AuthTestRunner {
 
       passed = true
       console.log(chalk.green(`   ✅ Passed`))
-    } catch (err: any) {
+    } catch (err: unknown) {
       passed = false
-      error = err.message
-      output = err.stdout || err.output?.join('') || ''
+      error = err instanceof Error ? err.message : String(err)
+      output = (err as {stdout?: string; output?: string[]}).stdout || (err as {output?: string[]}).output?.join('') || ''
 
       if (suite.optional) {
         console.log(chalk.yellow(`   ⚠️  Failed (optional)`))
@@ -199,7 +199,8 @@ class AuthTestRunner {
     try {
       const coveragePath = 'coverage/coverage-summary.json'
       if (existsSync(coveragePath)) {
-        const coverage = JSON.parse(require('fs').readFileSync(coveragePath, 'utf-8'))
+        const fs = await import('fs')
+        const coverage = JSON.parse(fs.readFileSync(coveragePath, 'utf-8'))
         const authCoverage = coverage.total // Simplified - would filter for auth files
 
         console.log(chalk.blue.bold('\n📈 Coverage Summary'))
@@ -209,7 +210,7 @@ class AuthTestRunner {
         console.log(`${chalk.green('Functions:')} ${authCoverage.functions?.pct || 0}%`)
         console.log(`${chalk.green('Lines:')} ${authCoverage.lines?.pct || 0}%`)
       }
-    } catch (error) {
+    } catch {
       // Coverage file might not exist
     }
   }
@@ -241,7 +242,7 @@ class AuthTestRunner {
     console.log(chalk.green('   ✅ Reports generated in ./reports/auth/'))
   }
 
-  private generateHtmlReport(jsonReport: any): void {
+  private generateHtmlReport(jsonReport: {timestamp: string, results: TestResult[], summary: {passed: number, failed: number, total: number, duration: number}}): void {
     const html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -306,7 +307,7 @@ class AuthTestRunner {
             <tbody>
                 ${jsonReport.results
                   .map(
-                    (result: any) => `
+                    (result: TestResult) => `
                     <tr>
                         <td><strong>${result.name}</strong></td>
                         <td class="${result.passed ? 'status-pass' : 'status-fail'}">

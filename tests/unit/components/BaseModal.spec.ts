@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import BaseModal from '@/ui/BaseModal/BaseModal.vue'
+import BaseModal from '@/shared/ui/BaseModal/BaseModal.vue'
 
 // Mock Teleport to prevent DOM issues in tests
 const TeleportMock = {
