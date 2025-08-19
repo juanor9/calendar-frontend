@@ -12,24 +12,12 @@ import { nextTick, ref } from 'vue'
 import { flushPromises } from '@vue/test-utils'
 import type { Router } from 'vue-router'
 import type { Pinia } from 'pinia'
-import EmailVerificationPage from '@/pages/AuthPages/EmailVerificationPage.vue'
-import { useAuth } from '@/composables/useAuth'
-
-// Types for mocked auth
-interface MockAuthComposable {
-  isAuthenticated: ReturnType<typeof ref<boolean>>
-  isLoading: ReturnType<typeof ref<boolean>>
-  user: ReturnType<typeof ref<unknown>>
-  error: ReturnType<typeof ref<string | null>>
-  login: ReturnType<typeof vi.fn>
-  logout: ReturnType<typeof vi.fn>
-  registerWithRedirect: ReturnType<typeof vi.fn>
-  checkAuth: ReturnType<typeof vi.fn>
-  resendVerificationEmail: ReturnType<typeof vi.fn>
-  checkEmailVerification: ReturnType<typeof vi.fn>
-  getAccessToken: ReturnType<typeof vi.fn>
-  refreshToken: ReturnType<typeof vi.fn>
-}
+import EmailVerificationPage from '@/features/authentication/pages/EmailVerificationPage.vue'
+import { useAuth } from '@/features/authentication/composables/useAuth'
+import {
+  createCompleteAuthComposableMock,
+  type CompleteAuthComposableMock
+} from '../../mocks/auth-store-mock'
 
 // Note: useAuth is globally mocked in vitest-setup.ts, we'll override specific methods in tests
 vi.mock('@heroicons/vue/24/outline', () => ({
@@ -45,7 +33,7 @@ vi.mock('@heroicons/vue/24/outline', () => ({
 }))
 
 // Mock BaseButton component
-vi.mock('@/ui/BaseButton/BaseButton.vue', () => ({
+vi.mock('@/shared/ui/BaseButton/BaseButton.vue', () => ({
   default: {
     name: 'BaseButton',
     template: `
@@ -66,7 +54,7 @@ vi.mock('@/ui/BaseButton/BaseButton.vue', () => ({
 }))
 
 describe('EmailVerificationPage', () => {
-  let mockAuth: MockAuthComposable
+  let mockAuth: CompleteAuthComposableMock
   let router: Router
   let pinia: Pinia
 
@@ -97,27 +85,19 @@ describe('EmailVerificationPage', () => {
       ],
     })
 
-    // Create fresh mock functions for auth with debug logging
-    mockAuth = {
-      isAuthenticated: ref(false),
-      isLoading: ref(false),
-      user: ref(null),
-      error: ref(null),
-      login: vi.fn().mockResolvedValue(undefined),
-      logout: vi.fn().mockResolvedValue(undefined),
-      registerWithRedirect: vi.fn().mockResolvedValue(undefined),
-      checkAuth: vi.fn().mockResolvedValue(false),
-      resendVerificationEmail: vi.fn().mockImplementation(async (email: string) => {
-        console.log('Mock resendVerificationEmail called with:', email)
-        return Promise.resolve()
-      }),
-      checkEmailVerification: vi.fn().mockImplementation(async (auth0Id: string) => {
-        console.log('Mock checkEmailVerification called with:', auth0Id)
-        return Promise.resolve(false)
-      }),
-      getAccessToken: vi.fn().mockResolvedValue('mock-token'),
-      refreshToken: vi.fn().mockResolvedValue('mock-refreshed-token'),
-    }
+    // Create complete auth mock with ALL methods
+    mockAuth = createCompleteAuthComposableMock()
+    
+    // Add debug logging for specific methods
+    mockAuth.resendVerificationEmail.mockImplementation(async (email: string) => {
+      console.log('Mock resendVerificationEmail called with:', email)
+      return Promise.resolve()
+    })
+    
+    mockAuth.checkEmailVerification.mockImplementation(async (auth0Id: string) => {
+      console.log('Mock checkEmailVerification called with:', auth0Id)
+      return Promise.resolve(false)
+    })
 
     // Override the global useAuth mock with our test-specific mock
     vi.mocked(useAuth).mockReturnValue(mockAuth)

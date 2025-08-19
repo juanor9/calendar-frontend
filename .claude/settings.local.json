@@ -23,8 +23,12 @@
       "Bash(npm run:*)",
       "Bash(npm test:*)",
       "Bash(mv:*)",
-      "Bash(timeout 90 npm run test -- --run --no-coverage --reporter=json)"
+      "Bash(timeout 90 npm run test -- --run --no-coverage --reporter=json)",
+      "Bash(rg:*)",
+      "Bash(pre-commit run:*)",
+      "Bash(npx lint-staged:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

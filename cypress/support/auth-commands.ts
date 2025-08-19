@@ -78,7 +78,7 @@ Cypress.Commands.add('loginWithIncompleteProfile', () => {
 })
 
 // Login with custom metadata
-Cypress.Commands.add('loginWithMetadata', (metadata: any) => {
+Cypress.Commands.add('loginWithMetadata', (metadata: Record<string, unknown>) => {
   const userWithMetadata = {
     ...mockAppUser,
     'https://vana.app/user_metadata': {
@@ -265,8 +265,8 @@ Cypress.Commands.add('checkA11y', (context?: string) => {
 })
 
 // Tab navigation testing
-Cypress.Commands.add('tab', { prevSubject: 'optional' }, (subject?: any) => {
-  const focusableElements =
+Cypress.Commands.add('tab', { prevSubject: 'optional' }, (subject?: unknown) => {
+  // const focusableElements =
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
   if (subject) {
@@ -303,8 +303,8 @@ Cypress.Commands.add('measurePerformance', (actionCallback: () => void) => {
 Cypress.Commands.add('checkMemoryLeaks', () => {
   cy.window().then(win => {
     // Check for common memory leak indicators
-    const eventListeners = (win as any)._eventListeners || []
-    const timers = (win as any)._timers || []
+    const eventListeners = (win as Record<string, unknown>)._eventListeners || []
+    const timers = (win as Record<string, unknown>)._timers || []
 
     expect(eventListeners.length).to.be.lessThan(100, 'Too many event listeners')
     expect(timers.length).to.be.lessThan(10, 'Too many active timers')
@@ -314,8 +314,8 @@ Cypress.Commands.add('checkMemoryLeaks', () => {
 // Mock Auth0 Lock (if used)
 Cypress.Commands.add('mockAuth0Lock', () => {
   cy.window().then(win => {
-    ;(win as any).Auth0Lock = class MockAuth0Lock {
-      constructor(clientId: string, domain: string, options: any) {
+    ;(win as Record<string, unknown>).Auth0Lock = class MockAuth0Lock {
+      constructor(clientId: string, domain: string, options: Record<string, unknown>) {
         this.clientId = clientId
         this.domain = domain
         this.options = options
@@ -324,9 +324,11 @@ Cypress.Commands.add('mockAuth0Lock', () => {
       show() {
         // Simulate successful authentication
         setTimeout(() => {
-          this.options.auth?.responseType === 'code'
-            ? this.emit('authorization_error', new Error('Mock login'))
-            : this.emit('authenticated', { accessToken: mockAccessToken })
+          if (this.options.auth?.responseType === 'code') {
+            this.emit('authorization_error', new Error('Mock login'))
+          } else {
+            this.emit('authenticated', { accessToken: mockAccessToken })
+          }
         }, 100)
       }
 
@@ -334,25 +336,27 @@ Cypress.Commands.add('mockAuth0Lock', () => {
         // Mock hide
       }
 
-      on(event: string, callback: Function) {
-        ;(this as any)[`_${event}`] = callback
+      on(event: string, callback: (...args: unknown[]) => unknown) {
+        ;(this as Record<string, unknown>)[`_${event}`] = callback
       }
 
-      emit(event: string, data: any) {
-        const callback = (this as any)[`_${event}`]
+      emit(event: string, data: unknown) {
+        const callback = (this as Record<string, unknown>)[`_${event}`] as ((...args: unknown[]) => unknown) | undefined
         if (callback) callback(data)
       }
     }
   })
 })
 
-// Extend Cypress types
+// Extend Cypress types using module augmentation
+export {}
+
 declare global {
   namespace Cypress {
     interface Chainable {
       login(role?: 'user' | 'admin' | 'premium'): Chainable<void>
       loginWithIncompleteProfile(): Chainable<void>
-      loginWithMetadata(metadata: any): Chainable<void>
+      loginWithMetadata(metadata: Record<string, unknown>): Chainable<void>
       handleAuth0Callback(): Chainable<void>
       logout(): Chainable<void>
       waitForAuth(expectedState?: 'authenticated' | 'unauthenticated'): Chainable<void>

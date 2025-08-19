@@ -8,7 +8,7 @@ import {
   auth0ClientConfig,
   validateAuth0Config,
   auth0Config,
-} from '@/auth/auth0-config'
+} from '@/features/authentication/services/auth0-config'
 import { cleanupAuthMocks } from '../../mocks/auth0'
 
 // Types for better type safety

@@ -1,0 +1,300 @@
+// ==============================
+// VANA DESIGN SYSTEM - BASE INPUT TEXT
+// Componente de input de texto siguiendo la identidad visual Vana
+// Estados: default, focus, disabled, error, success, warning
+// Variantes: default, floating-label, with-icon
+// ==============================
+
+@use '../../../styles/globals/variables' as *;
+@use '../../../styles/globals/mixins' as *;
+@use '../../../styles/globals/color' as *;
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  position: relative;
+
+  &__label {
+    font-family: $font-family-ui;
+    font-size: $font-size-ui-sm;
+    font-weight: $font-weight-medium;
+    color: $text-secondary;
+    margin-bottom: $spacing-xs;
+    transition: $transition-color;
+
+    &--required::after {
+      content: ' *';
+      color: $error-primary;
+    }
+
+    &--optional::after {
+      content: ' (opcional)';
+      font-weight: $font-weight-regular;
+      color: $text-tertiary;
+    }
+  }
+
+  &__wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__field {
+    @include input-base;
+    @include feedback-state(null);
+
+    &::placeholder {
+      color: $text-tertiary;
+      font-style: italic;
+    }
+
+    &:hover:not(:disabled, :focus) {
+      border-color: $border-secondary;
+    }
+  }
+
+  &__help-text {
+    font-family: $font-family-primary;
+    font-size: $font-size-small;
+    color: $text-tertiary;
+    margin-top: $spacing-xs;
+  }
+
+  &__error {
+    font-family: $font-family-primary;
+    font-size: $font-size-small;
+    color: $error-primary;
+    margin-top: $spacing-xs;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    &::before {
+      content: '⚠';
+      font-size: 12px;
+    }
+  }
+
+  &__success {
+    font-family: $font-family-primary;
+    font-size: $font-size-small;
+    color: $success-primary;
+    margin-top: $spacing-xs;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    &::before {
+      content: '✓';
+      font-size: 12px;
+    }
+  }
+
+  &__warning {
+    font-family: $font-family-primary;
+    font-size: $font-size-small;
+    color: $warning-primary;
+    margin-top: $spacing-xs;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    &::before {
+      content: '⚠';
+      font-size: 12px;
+    }
+  }
+
+  // VARIANTE CON ICONOS
+
+  &--with-left-icon {
+    position: relative;
+
+    .input__field {
+      padding-left: calc(#{$spacing-md} + #{$spacing-lg} + #{$spacing-xs});
+    }
+  }
+
+  &--with-right-icon {
+    position: relative;
+
+    .input__field {
+      padding-right: calc(#{$spacing-md} + #{$spacing-lg} + #{$spacing-xs});
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: $spacing-lg;
+    height: $spacing-lg;
+    color: $text-tertiary;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: $transition-color;
+
+    &--left {
+      left: $spacing-md;
+    }
+
+    &--right {
+      right: $spacing-md;
+
+      &.input__icon--clickable {
+        pointer-events: auto;
+        cursor: pointer;
+
+        &:hover {
+          color: $text-secondary;
+        }
+      }
+    }
+  }
+
+  // VARIANTE FLOATING LABEL
+
+  &--floating {
+    position: relative;
+
+    .input__label {
+      position: absolute;
+      left: $spacing-md;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: $background-secondary;
+      padding: 0 $spacing-xs;
+      margin-bottom: 0;
+      pointer-events: none;
+      transition: all $transition-duration-base $transition-easing-smooth;
+      z-index: 1;
+    }
+
+    .input__field {
+
+      &:focus + .input__label,
+      &:not(:placeholder-shown) + .input__label {
+        top: 0;
+        transform: translateY(-50%);
+        font-size: $font-size-xs;
+        color: $interactive-secondary;
+      }
+
+      &::placeholder {
+        opacity: 0%;
+        transition: $transition-opacity;
+      }
+
+      &:focus::placeholder {
+        opacity: 100%;
+      }
+    }
+  }
+
+  // ESTADOS DE VALIDACIÓN
+
+  &--success {
+
+    .input__field {
+      border-color: $success-primary;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($success-primary, 0.2);
+      }
+    }
+
+    .input__label {
+      color: $success-primary;
+    }
+
+    .input__icon {
+      color: $success-primary;
+    }
+  }
+
+  &--warning {
+
+    .input__field {
+      border-color: $warning-primary;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($warning-primary, 0.2);
+      }
+    }
+
+    .input__label {
+      color: $warning-primary;
+    }
+
+    .input__icon {
+      color: $warning-primary;
+    }
+  }
+
+  &--error {
+
+    .input__field {
+      border-color: $error-primary;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($error-primary, 0.2);
+      }
+    }
+
+    .input__label {
+      color: $error-primary;
+    }
+
+    .input__icon {
+      color: $error-primary;
+    }
+  }
+
+  // TAMAÑOS
+
+  &--small {
+
+    .input__field {
+      padding: $spacing-xs $spacing-sm;
+      font-size: $font-size-ui-sm;
+      min-height: $component-height-sm;
+    }
+
+    .input__label {
+      font-size: $font-size-xs;
+    }
+  }
+
+  &--large {
+
+    .input__field {
+      padding: $spacing-md $spacing-lg;
+      font-size: $font-size-body;
+      min-height: $component-height-lg;
+    }
+
+    .input__label {
+      font-size: $font-size-ui;
+    }
+  }
+
+  // ESTADO DISABLED
+
+  &--disabled {
+
+    .input__label {
+      color: $text-tertiary;
+    }
+
+    .input__icon {
+      color: $text-tertiary;
+    }
+  }
+
+  // ACCESIBILIDAD
+  @include focus-visible;
+}

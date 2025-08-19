@@ -65,9 +65,9 @@ import {
   ExclamationTriangleIcon,
   XMarkIcon
 } from '@heroicons/vue/24/outline'
-import BaseButton from '@/ui/BaseButton/BaseButton.vue'
-import InfoIcon from '@/components/icons/InfoIcon.vue'
-import type { ErrorToast, ErrorRecoveryAction } from '@/types/error.types'
+import BaseButton from '@/shared/ui/BaseButton/BaseButton.vue'
+import InfoIcon from '@/shared/icons/InfoIcon.vue'
+import type { ErrorToast, ErrorRecoveryAction } from '@/shared/types/error.types'
 
 interface Props {
   toast: ErrorToast
@@ -196,16 +196,16 @@ onBeforeUnmount(() => {
   }
 
   &__title {
-    @include design-token('typography', 'body-md');
-    @include design-token('color', 'text-primary');
+    // @include design-token('typography', 'body-md');
+    // @include design-token('color', 'text-primary');
 
     font-weight: 600;
     margin: 0 0 var(--spacing-xs) 0;
   }
 
   &__message {
-    @include design-token('typography', 'body-sm');
-    @include design-token('color', 'text-secondary');
+    // @include design-token('typography', 'body-sm');
+    // @include design-token('color', 'text-secondary');
 
     margin: 0;
     line-height: 1.5;

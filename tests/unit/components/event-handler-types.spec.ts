@@ -8,8 +8,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, fireEvent } from '@testing-library/vue'
 import { mount } from '@vue/test-utils'
-import BaseInputText from '@/ui/BaseInputText/BaseInputText.vue'
-import BaseButton from '@/ui/BaseButton/BaseButton.vue'
+import BaseInputText from '@/shared/ui/BaseInputText/BaseInputText.vue'
+import BaseButton from '@/shared/ui/BaseButton/BaseButton.vue'
 
 describe('Event Handler Types', () => {
   // 🖱️ Mouse Event Handler Tests

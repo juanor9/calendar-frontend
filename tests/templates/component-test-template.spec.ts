@@ -112,7 +112,7 @@ vi.mock('@heroicons/vue/24/outline', () => ({
 }))
 
 // Mock any other components if needed
-vi.mock('@/ui/BaseButton/BaseButton.vue', () => ({
+vi.mock('@/shared/ui/BaseButton/BaseButton.vue', () => ({
   default: {
     name: 'BaseButton',
     template: `

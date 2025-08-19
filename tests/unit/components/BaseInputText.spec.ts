@@ -8,7 +8,7 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import BaseInputText from '@/ui/BaseInputText/BaseInputText.vue'
+import BaseInputText from '@/shared/ui/BaseInputText/BaseInputText.vue'
 
 expect.extend({ toHaveNoViolations: () => ({ pass: true, message: () => '' }) })
 

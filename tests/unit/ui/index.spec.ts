@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 
 describe('UI Index Exports', () => {
   it('exports all base components', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
 
     // Test component exports
     expect(uiModule.BaseButton).toBeDefined()
@@ -17,7 +17,7 @@ describe('UI Index Exports', () => {
   })
 
   it('exports all form components', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
 
     expect(uiModule.BaseButton).toBeDefined()
     expect(uiModule.RegisterButton).toBeDefined()
@@ -25,33 +25,33 @@ describe('UI Index Exports', () => {
   })
 
   it('exports all layout components', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
 
     expect(uiModule.BaseCard).toBeDefined()
     expect(uiModule.BaseModal).toBeDefined()
   })
 
   it('exports feedback components', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
 
     expect(uiModule.BaseBadge).toBeDefined()
   })
 
   it('exports navigation components', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
 
     expect(uiModule.HeaderBar).toBeDefined()
     expect(uiModule.SidebarMenu).toBeDefined()
   })
 
   it('exports specialized page components', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
 
     expect(uiModule.EmailVerificationPage).toBeDefined()
   })
 
   it('task management components are planned for future implementation', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
 
     // These components are commented out and planned for future implementation
     expect(uiModule.TaskCard).toBeUndefined()
@@ -69,12 +69,12 @@ describe('UI Index Exports', () => {
     // These are types, so we can't test them directly, but we can ensure
     // the module imports without error
     expect(() => {
-      import('@/ui/index')
+      import('@/shared/ui/index')
     }).not.toThrow()
   })
 
   it('has consistent export structure', async () => {
-    const uiModule = await import('@/ui/index')
+    const uiModule = await import('@/shared/ui/index')
     const exportKeys = Object.keys(uiModule)
 
     // Should have component exports

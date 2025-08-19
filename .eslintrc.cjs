@@ -22,4 +22,12 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
   },
+  overrides: [
+    {
+      files: ['cypress/**/*.ts'],
+      rules: {
+        '@typescript-eslint/no-namespace': 'off',
+      },
+    },
+  ],
 }

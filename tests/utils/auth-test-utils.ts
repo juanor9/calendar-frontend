@@ -8,8 +8,8 @@ import { createTestingPinia } from '@pinia/testing'
 import { createRouter, createWebHistory } from 'vue-router'
 import type { Component, Plugin } from 'vue'
 import type { Router } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
-import { Auth0ClientKey } from '@/auth/auth-composable'
+import { useAuthStore } from '@/features/authentication/stores/auth'
+import { Auth0ClientKey } from '@/features/authentication/composables/useAuth'
 import {
   createMockAuth0Client,
   createMockLocalStorage,
@@ -17,7 +17,7 @@ import {
   mockEnvVars,
   authTestScenarios
 } from '../mocks/auth0'
-import type { User as AppUser } from '@/auth/types'
+import type { User as AppUser } from '@/features/authentication/types/auth.types'
 
 // Test Router Configuration
 const createTestRouter = (): Router => {

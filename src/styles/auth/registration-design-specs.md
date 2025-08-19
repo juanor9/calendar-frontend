@@ -435,7 +435,7 @@ src/ui/EmailVerificationPage/EmailVerificationPage.scss
 src/ui/OnboardingFlow/OnboardingFlow.scss
 
 // Usage pattern
-@use '../../styles/tokens' as *;  // Import all design tokens
+@use '../../../styles/tokens' as *;  // Import all design tokens
 @include auth-button-base;        // Use existing mixins
 ```
 

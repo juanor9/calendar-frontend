@@ -11,6 +11,29 @@
 @use 'globals/typography' as *;
 @use 'globals/a11y' as *;
 
+// CSS CUSTOM PROPERTIES - Variables globales para componentes
+
+:root {
+  // Colors
+  --color-surface: #{$surface-neutral};
+  --color-background: #{$background-secondary};
+  --color-border: #{$border-primary};
+  --color-text-primary: #{$text-primary-token};
+  --color-text-secondary: #{$text-secondary};
+  
+  // Primary colors
+  --color-primary: #{$brand-primary};
+  --color-primary-light: #{rgba($brand-primary, 0.1)};
+  
+  // Secondary colors  
+  --color-secondary: #{$accent-happy};
+  --color-secondary-light: #{rgba($accent-happy, 0.1)};
+  
+  // Accent colors
+  --color-accent: #{$accent-peach};
+  --color-accent-light: #{rgba($accent-peach, 0.1)};
+}
+
 // ESTILOS BASE HTML
 
 html {

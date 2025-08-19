@@ -6,7 +6,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
-import RegisterButton from '@/ui/RegisterButton/RegisterButton.vue'
+import RegisterButton from '@/shared/ui/RegisterButton/RegisterButton.vue'
 
 describe('RegisterButton', () => {
   beforeEach(() => {

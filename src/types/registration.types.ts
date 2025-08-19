@@ -8,11 +8,11 @@
 // ============================================================================
 
 // Import types for local use and re-export
-import type { User as AuthUser, AppState as AuthAppState } from '@/auth/types'
+import type { User as AuthUser, AppState as AuthAppState } from '@/features/authentication/types/auth.types'
 
 // Re-export for external use
-export type { User } from '@/auth/types'
-export type { AppState } from '@/auth/types'
+export type { User } from '@/features/authentication/types/auth.types'
+export type { AppState } from '@/features/authentication/types/auth.types'
 
 export interface LoginOptions {
   audience?: string
@@ -27,9 +27,9 @@ export interface LoginOptions {
   appState?: AuthAppState
 }
 
-export type Role = import('@/auth/types').Role
+export type Role = import('@/features/authentication/types/auth.types').Role
 
-export type Permission = import('@/auth/types').Permission
+export type Permission = import('@/features/authentication/types/auth.types').Permission
 
 export type RegistrationStatus =
   | 'idle'

@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { ref } from 'vue'
-import HeaderBar from '@/ui/HeaderBar/HeaderBar.vue'
+import HeaderBar from '@/shared/ui/HeaderBar/HeaderBar.vue'
 
 // Mock the auth composable
 const mockAuth = {
   isAuthenticated: ref(false),
-  isPremium: vi.fn(() => false),
-  isAdmin: vi.fn(() => false),
+  isPremium: ref(false),
+  isAdmin: ref(false),
   getUserDisplayName: vi.fn(() => 'Test User'),
   getUserAvatar: vi.fn(() => '/test-avatar.png'),
   hasRole: vi.fn(() => false),
@@ -16,7 +16,7 @@ const mockAuth = {
   logout: vi.fn(),
 }
 
-vi.mock('@/auth/auth-composable', () => ({
+vi.mock('@/features/authentication/composables/useAuth', () => ({
   useAuth: () => mockAuth,
 }))
 
@@ -27,14 +27,14 @@ const RouterLinkMock = {
 }
 
 // Mock the components at module level - must be before other declarations
-vi.mock('@/components/auth/UserProfile/UserProfile.vue', () => ({
+vi.mock('@/features/authentication/components/UserProfile/UserProfile.vue', () => ({
   default: {
     template: '<div class="mock-user-profile">UserProfile</div>',
     props: ['showName', 'showStatus', 'size'],
   },
 }))
 
-vi.mock('@/components/auth/LoginButton/LoginButton.vue', () => ({
+vi.mock('@/features/authentication/components/LoginButton/LoginButton.vue', () => ({
   default: {
     template: '<button class="mock-login-button">{{ text }}</button>',
     props: ['variant', 'size', 'text'],
@@ -72,8 +72,8 @@ describe('HeaderBar', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockAuth.isAuthenticated.value = false
-    mockAuth.isPremium.mockReturnValue(false)
-    mockAuth.isAdmin.mockReturnValue(false)
+    mockAuth.isPremium.value = false
+    mockAuth.isAdmin.value = false
     mockAuth.getUserDisplayName.mockReturnValue('Test User')
     mockAuth.getUserAvatar.mockReturnValue('/test-avatar.png')
   })
@@ -155,7 +155,7 @@ describe('HeaderBar', () => {
 
     it('shows premium link when user is premium', () => {
       mockAuth.isAuthenticated.value = true
-      mockAuth.isPremium.mockReturnValue(true)
+      mockAuth.isPremium.value = true
       const wrapper = createWrapper()
 
       const navLinks = wrapper.findAll('.header-bar__nav-link')
@@ -167,7 +167,7 @@ describe('HeaderBar', () => {
 
     it('does not show premium link when user is not premium', () => {
       mockAuth.isAuthenticated.value = true
-      mockAuth.isPremium.mockReturnValue(false)
+      mockAuth.isPremium.value = false
       const wrapper = createWrapper()
 
       const navLinks = wrapper.findAll('.header-bar__nav-link')
@@ -178,7 +178,7 @@ describe('HeaderBar', () => {
 
     it('shows admin link when user is admin', () => {
       mockAuth.isAuthenticated.value = true
-      mockAuth.isAdmin.mockReturnValue(true)
+      mockAuth.isAdmin.value = true
       const wrapper = createWrapper()
 
       const navLinks = wrapper.findAll('.header-bar__nav-link')
@@ -190,7 +190,7 @@ describe('HeaderBar', () => {
 
     it('does not show admin link when user is not admin', () => {
       mockAuth.isAuthenticated.value = true
-      mockAuth.isAdmin.mockReturnValue(false)
+      mockAuth.isAdmin.value = false
       const wrapper = createWrapper()
 
       const navLinks = wrapper.findAll('.header-bar__nav-link')
@@ -201,8 +201,8 @@ describe('HeaderBar', () => {
 
     it('shows both premium and admin links when user has both roles', () => {
       mockAuth.isAuthenticated.value = true
-      mockAuth.isPremium.mockReturnValue(true)
-      mockAuth.isAdmin.mockReturnValue(true)
+      mockAuth.isPremium.value = true
+      mockAuth.isAdmin.value = true
       const wrapper = createWrapper()
 
       const navLinks = wrapper.findAll('.header-bar__nav-link')
@@ -289,7 +289,7 @@ describe('HeaderBar', () => {
       expect(adminLink).toBeFalsy()
 
       // Add admin role
-      mockAuth.isAdmin.mockReturnValue(true)
+      mockAuth.isAdmin.value = true
       await wrapper.vm.$forceUpdate()
 
       adminLink = wrapper.findAll('.header-bar__nav-link').find(link => link.text() === 'Admin')
@@ -325,9 +325,9 @@ describe('HeaderBar', () => {
 
   describe('Edge Cases', () => {
     it('handles missing auth functions gracefully', () => {
-      mockAuth.isPremium.mockImplementation(() => {
-        throw new Error('isPremium failed')
-      })
+      // Test that component renders even with unexpected values
+      mockAuth.isPremium.value = null as any
+      mockAuth.isAdmin.value = undefined as any
 
       expect(() => {
         createWrapper()
@@ -336,8 +336,8 @@ describe('HeaderBar', () => {
 
     it('renders correctly with all navigation options', () => {
       mockAuth.isAuthenticated.value = true
-      mockAuth.isPremium.mockReturnValue(true)
-      mockAuth.isAdmin.mockReturnValue(true)
+      mockAuth.isPremium.value = true
+      mockAuth.isAdmin.value = true
 
       const wrapper = createWrapper()
 
@@ -352,8 +352,8 @@ describe('HeaderBar', () => {
 
     it('handles empty navigation state', () => {
       mockAuth.isAuthenticated.value = true
-      mockAuth.isPremium.mockReturnValue(false)
-      mockAuth.isAdmin.mockReturnValue(false)
+      mockAuth.isPremium.value = false
+      mockAuth.isAdmin.value = false
 
       const wrapper = createWrapper()
 

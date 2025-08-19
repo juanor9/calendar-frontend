@@ -13,7 +13,10 @@
     "skipLibCheck": true,
     "baseUrl": ".", // Asegúrate que esto esté presente para los "paths"
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/core/*": ["./src/core/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

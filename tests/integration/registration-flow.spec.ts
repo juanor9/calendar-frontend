@@ -11,25 +11,25 @@ import { nextTick } from 'vue'
 import { flushPromises } from '@vue/test-utils'
 
 // Import components
-import LandingPage from '@/pages/LandingPage.vue'
-import EmailVerificationPage from '@/pages/AuthPages/EmailVerificationPage.vue'
-import CallbackPage from '@/pages/AuthPages/CallbackPage.vue'
+import LandingPage from '@/features/landing/pages/LandingPage.vue'
+import EmailVerificationPage from '@/features/authentication/pages/EmailVerificationPage.vue'
+import CallbackPage from '@/features/authentication/pages/CallbackPage.vue'
 
 // Import services and stores
-import { useAuth } from '@/composables/useAuth'
-import { useOnboarding } from '@/composables/useOnboarding'
+import { useAuth } from '@/features/authentication/composables/useAuth'
+import { useOnboarding } from '@/features/onboarding/composables/useOnboarding'
 import { RegistrationAPI } from '@/services/api/registration'
-import { useAuthStore } from '@/store/auth'
-import { useRegistrationStore } from '@/store/registration'
-import { useOnboardingStore } from '@/store/onboarding'
+import { useAuthStore } from '@/features/authentication/stores/auth'
+import { useRegistrationStore } from '@/features/authentication/stores/registration'
+import { useOnboardingStore } from '@/features/onboarding/stores/onboarding'
 
 // Mock external dependencies
-vi.mock('@/composables/useAuth')
-vi.mock('@/composables/useOnboarding')
+vi.mock('@/features/authentication/composables/useAuth')
+vi.mock('@/features/onboarding/composables/useOnboarding')
 vi.mock('@/services/api/registration')
-vi.mock('@/store/auth')
-vi.mock('@/store/registration')
-vi.mock('@/store/onboarding')
+vi.mock('@/features/authentication/stores/auth')
+vi.mock('@/features/authentication/stores/registration')
+vi.mock('@/features/onboarding/stores/onboarding')
 
 // Mock components for integration testing
 vi.mock('@/components/landing/CalendarDemoWidget.vue', () => ({
@@ -66,7 +66,7 @@ vi.mock('@/components/landing/TestimonialGrid.vue', () => ({
   },
 }))
 
-vi.mock('@/ui/RegisterButton/RegisterButton.vue', () => ({
+vi.mock('@/shared/ui/RegisterButton/RegisterButton.vue', () => ({
   default: {
     name: 'RegisterButton',
     template: `
@@ -100,7 +100,7 @@ vi.mock('@/ui/RegisterButton/RegisterButton.vue', () => ({
   },
 }))
 
-vi.mock('@/ui/BaseButton/BaseButton.vue', () => ({
+vi.mock('@/shared/ui/BaseButton/BaseButton.vue', () => ({
   default: {
     name: 'BaseButton',
     template: `
@@ -323,11 +323,11 @@ describe('Registration Flow Integration', () => {
     }
 
     // Mock returns
-    vi.mocked(useAuth).mockReturnValue(mockAuth)
-    vi.mocked(useOnboarding).mockReturnValue(mockOnboarding)
-    vi.mocked(useAuthStore).mockReturnValue(mockAuthStore)
-    vi.mocked(useRegistrationStore).mockReturnValue(mockRegistrationStore)
-    vi.mocked(useOnboardingStore).mockReturnValue(mockOnboardingStore)
+    vi.mocked(useAuth).mockReturnValue(mockAuth as ReturnType<typeof useAuth>)
+    vi.mocked(useOnboarding).mockReturnValue(mockOnboarding as ReturnType<typeof useOnboarding>)
+    vi.mocked(useAuthStore).mockReturnValue(mockAuthStore as ReturnType<typeof useAuthStore>)
+    vi.mocked(useRegistrationStore).mockReturnValue(mockRegistrationStore as ReturnType<typeof useRegistrationStore>)
+    vi.mocked(useOnboardingStore).mockReturnValue(mockOnboardingStore as ReturnType<typeof useOnboardingStore>)
 
     // Mock console methods
     vi.spyOn(console, 'log').mockImplementation(() => {})
@@ -620,7 +620,7 @@ describe('Registration Flow Integration', () => {
         preferences: new Array(1000).fill(0).map((_, i) => ({ id: i, value: `data_${i}` })),
       }
 
-      mockAuthStore.user = largeUserData
+      mockAuthStore.user = largeUserData as MockUser
 
       const { unmount } = renderWithRouter(LandingPage, '/')
 

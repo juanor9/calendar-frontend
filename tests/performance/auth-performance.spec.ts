@@ -6,10 +6,10 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { performance } from 'perf_hooks'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-import LoginButton from '@/components/auth/LoginButton.vue'
-import LogoutButton from '@/components/auth/LogoutButton.vue'
-import { useAuth } from '@/auth/auth-composable'
-import { useAuthStore } from '@/store/auth'
+import LoginButton from '@/features/authentication/components/LoginButton/LoginButton.vue'
+import LogoutButton from '@/features/authentication/components/LogoutButton/LogoutButton.vue'
+import { useAuth } from '@/features/authentication/composables/useAuth'
+import { useAuthStore } from '@/features/authentication/stores/auth'
 import { createMockAuth0Client, mockAppUser, cleanupAuthMocks } from '../mocks/auth0'
 import { performanceHelpers } from '../utils/auth-test-utils'
 
@@ -35,7 +35,7 @@ describe('Auth Performance Tests', () => {
 
     // Mock performance APIs
     if (typeof global.performance === 'undefined') {
-      global.performance = performance as any
+      global.performance = performance as typeof window.performance
     }
   })
 
@@ -304,7 +304,7 @@ describe('Auth Performance Tests', () => {
         createElement: vi.fn().mockReturnValue(mockElement),
         addEventListener: vi.fn(),
         removeEventListener: vi.fn(),
-      } as any
+      } as Document
 
       // Mount and unmount component multiple times
       for (let i = 0; i < 10; i++) {

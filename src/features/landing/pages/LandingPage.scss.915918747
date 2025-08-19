@@ -1,0 +1,473 @@
+// ==============================
+// VANA LANDING PAGE DESIGN
+// Visual design optimizado para conversión
+// Trust building, moment "Aha!", social proof
+// ==============================
+
+@use '../../../styles/tokens' as *;
+
+.landing-page {
+  min-height: 100vh;
+  background: $landing-hero-bg;
+}
+
+// ==============================
+// HERO SECTION - MOMENT "AHA!"
+// ==============================
+
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: $landing-hero-bg;
+  overflow: hidden;
+  
+  // Subtle pattern overlay for texture
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 2px 2px, rgba($vana-registration-primary, 0.1) 1px, transparent 0);
+    background-size: 40px 40px;
+    opacity: 30%;
+  }
+}
+
+.hero-container {
+  max-width: $container-width-xl;
+  margin: 0 auto;
+  padding: $spacing-4xl $spacing-lg;
+  position: relative;
+  z-index: 1;
+  
+  @include mobile-only {
+    padding: $spacing-3xl $spacing-md;
+    text-align: center;
+  }
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4xl;
+  align-items: center;
+  margin-bottom: $spacing-4xl;
+  
+  @include tablet-down {
+    grid-template-columns: 1fr;
+    gap: $spacing-3xl;
+    text-align: center;
+  }
+}
+
+.hero-text {
+  max-width: 600px;
+}
+
+.hero-title {
+  @include apply-typography('display-xl');
+
+  color: $vana-gray-900;
+  margin-bottom: $spacing-lg;
+  line-height: 1.1;
+  
+  @include mobile-only {
+    font-size: $font-size-h1-mobile;
+  }
+  
+  &--accent {
+    color: $vana-registration-primary;
+    position: relative;
+    
+    // Subtle underline effect
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, 
+        $vana-registration-primary 0%, 
+        $vana-registration-accent 100%
+      );
+      border-radius: 2px;
+      opacity: 60%;
+    }
+  }
+}
+
+.hero-description {
+  @include apply-typography('body-large');
+
+  color: $vana-gray-600;
+  margin-bottom: $spacing-2xl;
+  line-height: 1.6;
+}
+
+.hero-stats {
+  display: flex;
+  gap: $spacing-2xl;
+  margin-bottom: $spacing-xl;
+  
+  @include mobile-only {
+    justify-content: center;
+    gap: $spacing-lg;
+  }
+}
+
+.stat-item {
+  text-align: left;
+  
+  @include mobile-only {
+    text-align: center;
+  }
+}
+
+.stat-value {
+  @include apply-typography('heading-2');
+
+  color: $vana-registration-primary;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  margin-bottom: $spacing-xs;
+}
+
+.stat-label {
+  @include apply-typography('ui-small');
+
+  color: $vana-gray-500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: $font-weight-medium;
+}
+
+// ==============================
+// HERO VISUAL - INTERACTIVE DEMO
+// ==============================
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendar-demo {
+  max-width: 100%;
+  filter: drop-shadow(0 25px 50px rgba($vana-registration-primary, 0.15));
+  
+  // Floating animation
+  animation: float 6s ease-in-out infinite;
+}
+
+// ==============================
+// HERO CTA
+// ==============================
+
+.hero-cta {
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.hero-cta-button {
+  margin-bottom: $spacing-md;
+  min-height: 56px;
+  font-size: $font-size-ui-lg;
+  font-weight: $font-weight-semibold;
+  
+  // Enhanced shadow for prominence
+  box-shadow: 
+    0 10px 25px rgba($vana-registration-primary, 0.2),
+    0 4px 10px rgba($vana-registration-primary, 0.1);
+  
+  &:hover {
+    box-shadow: 
+      0 15px 35px rgba($vana-registration-primary, 0.3),
+      0 8px 15px rgba($vana-registration-primary, 0.15);
+    transform: translateY(-3px);
+  }
+}
+
+.hero-cta-subtitle {
+  @include apply-typography('ui-small');
+
+  color: $vana-gray-500;
+  font-weight: $font-weight-regular;
+}
+
+// ==============================
+// SOCIAL PROOF SECTION
+// ==============================
+
+.social-proof-section {
+  background: $white;
+  padding: $spacing-4xl 0;
+  border-top: 1px solid $vana-gray-100;
+}
+
+.section-title {
+  @include apply-typography('heading-2');
+
+  color: $vana-gray-800;
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+}
+
+.section-subtitle {
+  @include apply-typography('body-large');
+
+  color: $vana-gray-600;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto $spacing-3xl;
+}
+
+.company-logos {
+  margin-bottom: $spacing-4xl;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-xl;
+  max-width: $container-width-lg;
+  margin: 0 auto;
+  
+  @include mobile-only {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
+
+.testimonial {
+  transform: translateY(0);
+  transition: $transition-transform;
+  
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+// ==============================
+// FEATURES SECTION
+// ==============================
+
+.features-section {
+  background: $vana-gray-50;
+  padding: $spacing-4xl 0;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: $spacing-2xl;
+  max-width: $container-width-lg;
+  margin: 0 auto;
+  
+  @include mobile-only {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
+
+.feature-card {
+  transform: translateY(0);
+  transition: $transition-transform;
+  
+  &:hover {
+    transform: translateY(-6px);
+  }
+}
+
+// ==============================
+// CTA SECTION
+// ==============================
+
+.cta-section {
+  background: $vana-registration-primary;
+  color: $white;
+  padding: $spacing-4xl 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  
+  // Gradient overlay
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, 
+      rgba($vana-registration-primary-dark, 0.1) 0%, 
+      rgba($vana-registration-primary, 0.1) 100%
+    );
+  }
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  @include apply-typography('heading-1');
+
+  color: $white;
+  margin-bottom: $spacing-lg;
+  
+  @include mobile-only {
+    font-size: $font-size-h2-mobile;
+  }
+}
+
+.cta-subtitle {
+  @include apply-typography('body-large');
+
+  color: rgba($white, 0.9);
+  margin-bottom: $spacing-2xl;
+}
+
+.cta-button {
+  background: $white;
+  color: $vana-registration-primary;
+  border: none;
+  
+  &:hover {
+    background: $vana-gray-50;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba($white, 0.2);
+  }
+}
+
+// ==============================
+// CONTAINER UTILITY
+// ==============================
+
+.container {
+  max-width: $container-width-xl;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+  
+  @include mobile-only {
+    padding: 0 $spacing-md;
+  }
+}
+
+// ==============================
+// ANIMATIONS
+// ==============================
+
+@keyframes float {
+
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+// ==============================
+// RESPONSIVE ADJUSTMENTS
+// ==============================
+
+@include tablet-down {
+
+  .hero-content {
+    text-align: center;
+  }
+  
+  .hero-stats {
+    justify-content: center;
+  }
+  
+  .stat-item {
+    text-align: center;
+  }
+}
+
+@include mobile-only {
+
+  .hero-section {
+    min-height: auto;
+    padding: $spacing-3xl 0;
+  }
+  
+  .hero-container {
+    padding: $spacing-lg;
+  }
+  
+  .hero-title {
+    font-size: $font-size-h1-mobile;
+    line-height: 1.2;
+  }
+  
+  .hero-description {
+    font-size: $font-size-body;
+  }
+  
+  .hero-stats {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: $spacing-md;
+  }
+  
+  .stat-value {
+    font-size: $font-size-h3-mobile;
+  }
+  
+  .testimonials-grid,
+  .features-grid {
+    padding: 0 $spacing-md;
+  }
+}
+
+// ==============================
+// ACCESSIBILITY
+// ==============================
+
+// Focus management for interactive elements
+
+.hero-cta-button,
+.cta-button {
+  @include focus-visible;
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+
+  .hero-title--accent::after {
+    opacity: 100%;
+    height: 4px;
+  }
+  
+  .stat-value {
+    text-decoration: underline;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+
+  .calendar-demo {
+    animation: none;
+  }
+  
+  .testimonial:hover,
+  .feature-card:hover {
+    transform: none;
+  }
+  
+  .hero-cta-button:hover,
+  .cta-button:hover {
+    transform: none;
+  }
+}

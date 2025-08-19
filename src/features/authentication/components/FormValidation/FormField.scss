@@ -1,0 +1,230 @@
+@use 'sass:color';
+@use '../../../../styles/auth/auth-tokens' as tokens;
+@use '../../../../styles/globals/color' as colors;
+@use '../../../../styles/globals/mixins' as mixins;
+
+.form-field {
+  margin-bottom: var(--spacing-md);
+
+  &--disabled {
+    opacity: 60%;
+    cursor: not-allowed;
+  }
+
+  &__label {
+    display: block;
+
+    // @include design-token('typography', 'body-md');
+    // @include design-token('color', 'text-primary');
+
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+    cursor: pointer;
+
+    &--required {
+
+      .form-field__required {
+        color: var(--color-error-500);
+        margin-left: var(--spacing-xs);
+      }
+    }
+  }
+
+  &__input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__input {
+    width: 100%;
+    min-height: 48px; // Touch target
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+
+    // @include design-token('typography', 'body-md');
+    // @include design-token('color', 'text-primary');
+
+    transition: all 0.2s ease;
+
+    // &::placeholder {
+    //   @include design-token('color', 'text-tertiary');
+    // }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary-500);
+      box-shadow: 0 0 0 3px var(--color-primary-100);
+    }
+
+    &:disabled,
+    &[readonly] {
+      background: var(--color-background-secondary);
+      cursor: not-allowed;
+    }
+  }
+
+  // Field states
+
+  &--error {
+
+    .form-field__input {
+      border-color: var(--color-error-500);
+
+      &:focus {
+        border-color: var(--color-error-500);
+        box-shadow: 0 0 0 3px var(--color-error-100);
+      }
+    }
+  }
+
+  &--warning {
+
+    .form-field__input {
+      border-color: var(--color-warning-500);
+
+      &:focus {
+        border-color: var(--color-warning-500);
+        box-shadow: 0 0 0 3px var(--color-warning-100);
+      }
+    }
+  }
+
+  &--success {
+
+    .form-field__input {
+      border-color: var(--color-success-500);
+
+      &:focus {
+        border-color: var(--color-success-500);
+        box-shadow: 0 0 0 3px var(--color-success-100);
+      }
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    right: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &--success {
+      color: var(--color-success-600);
+    }
+
+    &--error {
+      color: var(--color-error-600);
+    }
+
+    &--loading {
+      color: var(--color-primary-600);
+    }
+  }
+
+  &__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-primary-200);
+    border-top: 2px solid var(--color-primary-600);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  &__help {
+    margin-top: var(--spacing-xs);
+
+    // @include design-token('typography', 'body-sm');
+    // @include design-token('color', 'text-secondary');
+  }
+
+  &__error-messages,
+  &__warning-messages {
+    margin-top: var(--spacing-xs);
+  }
+
+  &__error-message,
+  &__warning-message {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+
+    // @include design-token('typography', 'body-sm');
+
+    margin-bottom: var(--spacing-xs);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__error-message {
+    // @include design-token('color', 'error-600');
+
+    .form-field__error-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 1px; // Align with text
+    }
+  }
+
+  &__warning-message {
+    // @include design-token('color', 'warning-600');
+
+    .form-field__warning-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 1px; // Align with text
+    }
+  }
+
+  &__character-count {
+    margin-top: var(--spacing-xs);
+    text-align: right;
+
+    // @include design-token('typography', 'body-xs');
+    // @include design-token('color', 'text-tertiary');
+
+    // &--error {
+    //   @include design-token('color', 'error-600');
+    // }
+  }
+}
+
+// Animations
+@keyframes spin {
+
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Screen reader only class
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

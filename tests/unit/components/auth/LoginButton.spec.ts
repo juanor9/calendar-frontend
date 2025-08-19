@@ -8,24 +8,22 @@ import { waitFor } from '@testing-library/vue'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { ref } from 'vue'
-import LoginButton from '@/components/auth/LoginButton/LoginButton.vue'
+import LoginButton from '@/features/authentication/components/LoginButton/LoginButton.vue'
 import { createAuthError } from '../../../mocks/auth0'
+import {
+  createCompleteAuthComposableMock,
+  type CompleteAuthComposableMock
+} from '../../../mocks/auth-store-mock'
 
-// Mock the useAuth composable
-const mockLoginWithRedirect = vi.fn()
-const mockIsLoading = ref(false)
-const mockError = ref(null)
+// Create complete auth mock
+let mockAuth: CompleteAuthComposableMock
 
-vi.mock('@/composables/useAuth', () => ({
-  useAuth: () => ({
-    loginWithRedirect: mockLoginWithRedirect,
-    isLoading: mockIsLoading,
-    error: mockError,
-  }),
+vi.mock('@/features/authentication/composables/useAuth', () => ({
+  useAuth: () => mockAuth,
 }))
 
 // Mock BaseButton
-vi.mock('@/ui/BaseButton/BaseButton.vue', () => ({
+vi.mock('@/shared/ui/BaseButton/BaseButton.vue', () => ({
   default: {
     name: 'BaseButton',
     template:
@@ -49,10 +47,12 @@ vi.mock('@heroicons/vue/24/outline', () => ({
 
 describe('LoginButton Component', () => {
   beforeEach(() => {
-    // Reset mocks
-    mockLoginWithRedirect.mockReset()
-    mockIsLoading.value = false
-    mockError.value = null
+    // Create fresh complete auth mock
+    mockAuth = createCompleteAuthComposableMock()
+    
+    // Reset to clean state
+    mockAuth.isLoading.value = false
+    mockAuth.error.value = null
   })
 
   const mountComponent = (props = {}) => {
@@ -99,7 +99,7 @@ describe('LoginButton Component', () => {
     })
 
     it('should render loading state correctly', async () => {
-      mockIsLoading.value = true
+      mockAuth.isLoading.value = true
       const wrapper = mountComponent()
 
       expect(wrapper.text()).toContain('Iniciando sesión...')
@@ -112,7 +112,7 @@ describe('LoginButton Component', () => {
     })
 
     it('should render error state correctly', async () => {
-      mockError.value = createAuthError('Login failed')
+      mockAuth.error.value = createAuthError('Login failed')
       const wrapper = mountComponent()
 
       expect(wrapper.find('.login-button--error').exists()).toBe(true)
@@ -121,7 +121,7 @@ describe('LoginButton Component', () => {
     })
 
     it('should hide error when showError is false', async () => {
-      mockError.value = createAuthError('Login failed')
+      mockAuth.error.value = createAuthError('Login failed')
       const wrapper = mountComponent({ showError: false })
 
       expect(wrapper.find('.login-button__error').exists()).toBe(false)
@@ -137,7 +137,7 @@ describe('LoginButton Component', () => {
       await user.click(button.element)
 
       await waitFor(() => {
-        expect(mockLoginWithRedirect).toHaveBeenCalled()
+        expect(mockAuth.loginWithRedirect).toHaveBeenCalled()
       })
     })
 
@@ -152,7 +152,7 @@ describe('LoginButton Component', () => {
       await user.click(button.element)
 
       await waitFor(() => {
-        expect(mockLoginWithRedirect).toHaveBeenCalledWith({
+        expect(mockAuth.loginWithRedirect).toHaveBeenCalledWith({
           redirect_uri: 'http://localhost:5173/custom-callback',
           appState: { targetUrl: '/dashboard' },
         })
@@ -161,7 +161,7 @@ describe('LoginButton Component', () => {
 
     it('should emit correct events during login flow', async () => {
       const user = userEvent.setup()
-      mockLoginWithRedirect.mockResolvedValue(undefined)
+      mockAuth.loginWithRedirect.mockResolvedValue(undefined)
       const wrapper = mountComponent()
 
       const button = wrapper.find('button')
@@ -174,9 +174,12 @@ describe('LoginButton Component', () => {
     })
 
     it('should emit error event when login fails', async () => {
+      // Suppress expected console error for this test
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+      
       const user = userEvent.setup()
       const loginError = createAuthError('Login failed')
-      mockLoginWithRedirect.mockRejectedValueOnce(loginError)
+      mockAuth.loginWithRedirect.mockRejectedValueOnce(loginError)
       const wrapper = mountComponent()
 
       const button = wrapper.find('button')
@@ -187,11 +190,13 @@ describe('LoginButton Component', () => {
         expect(wrapper.emitted('loginError')).toBeTruthy()
         expect(wrapper.emitted('loginError')?.[0]).toEqual([loginError])
       })
+      
+      consoleError.mockRestore()
     })
 
     it('should prevent multiple clicks during loading', async () => {
       // Set the component to loading state to test disabled behavior
-      mockIsLoading.value = true
+      mockAuth.isLoading.value = true
       const wrapper = mountComponent()
 
       // Verify that button is properly disabled when in loading state
@@ -203,7 +208,7 @@ describe('LoginButton Component', () => {
 
       // In a real browser, disabled buttons don't emit click events
       // This test verifies the button is properly configured to be disabled
-      expect(mockLoginWithRedirect).toHaveBeenCalledTimes(0)
+      expect(mockAuth.loginWithRedirect).toHaveBeenCalledTimes(0)
     })
   })
 
@@ -217,7 +222,7 @@ describe('LoginButton Component', () => {
     })
 
     it('should have error with correct ARIA attributes', async () => {
-      mockError.value = createAuthError('Login failed')
+      mockAuth.error.value = createAuthError('Login failed')
       const wrapper = mountComponent()
 
       const errorElement = wrapper.find('.login-button__error')
@@ -233,7 +238,7 @@ describe('LoginButton Component', () => {
       await user.type(button.element, '{Enter}')
 
       await waitFor(() => {
-        expect(mockLoginWithRedirect).toHaveBeenCalled()
+        expect(mockAuth.loginWithRedirect).toHaveBeenCalled()
       })
     })
 
@@ -244,7 +249,7 @@ describe('LoginButton Component', () => {
       expect(wrapper.text()).toContain('Iniciar Sesión')
 
       // Error message should be announced
-      mockError.value = createAuthError('Login failed')
+      mockAuth.error.value = createAuthError('Login failed')
       const errorWrapper = mountComponent()
 
       expect(errorWrapper.text()).toContain('Login failed')
@@ -262,7 +267,7 @@ describe('LoginButton Component', () => {
     })
 
     it('should show spinning icon during loading', async () => {
-      mockIsLoading.value = true
+      mockAuth.isLoading.value = true
       const wrapper = mountComponent()
 
       const icon = wrapper.find('.login-button__icon')
@@ -270,7 +275,7 @@ describe('LoginButton Component', () => {
     })
 
     it('should show error icon when there is an error', async () => {
-      mockError.value = createAuthError('Login failed')
+      mockAuth.error.value = createAuthError('Login failed')
       const wrapper = mountComponent()
 
       // Should show error icon (ExclamationTriangleIcon)
@@ -280,13 +285,13 @@ describe('LoginButton Component', () => {
 
     it('should apply correct CSS classes for different states', async () => {
       // Loading state
-      mockIsLoading.value = true
+      mockAuth.isLoading.value = true
       const loadingWrapper = mountComponent()
       expect(loadingWrapper.find('.login-button--loading').exists()).toBe(true)
 
       // Error state
-      mockIsLoading.value = false
-      mockError.value = createAuthError('Login failed')
+      mockAuth.isLoading.value = false
+      mockAuth.error.value = createAuthError('Login failed')
       const errorWrapper = mountComponent()
       expect(errorWrapper.find('.login-button--error').exists()).toBe(true)
     })
@@ -323,10 +328,13 @@ describe('LoginButton Component', () => {
 
   describe('error handling edge cases', () => {
     it('should handle network errors', async () => {
+      // Suppress expected console error for this test
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+      
       const user = userEvent.setup()
       const networkError = new Error('Network error')
       networkError.name = 'NetworkError'
-      mockLoginWithRedirect.mockRejectedValueOnce(networkError)
+      mockAuth.loginWithRedirect.mockRejectedValueOnce(networkError)
       const wrapper = mountComponent()
 
       const button = wrapper.find('button')
@@ -336,12 +344,17 @@ describe('LoginButton Component', () => {
         expect(wrapper.emitted('loginError')).toBeTruthy()
         expect(wrapper.emitted('loginError')?.[0][0]).toEqual(networkError)
       })
+      
+      consoleError.mockRestore()
     })
 
     it('should handle unexpected error types', async () => {
+      // Suppress expected console error for this test
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+      
       const user = userEvent.setup()
       // Non-Error object
-      mockLoginWithRedirect.mockRejectedValueOnce('String error')
+      mockAuth.loginWithRedirect.mockRejectedValueOnce('String error')
       const wrapper = mountComponent()
 
       const button = wrapper.find('button')
@@ -353,6 +366,8 @@ describe('LoginButton Component', () => {
         expect(emittedError).toBeInstanceOf(Error)
         expect(emittedError.message).toBe('Login failed')
       })
+      
+      consoleError.mockRestore()
     })
   })
 
@@ -374,7 +389,7 @@ describe('LoginButton Component', () => {
       expect(wrapper.text()).toContain('Iniciar Sesión')
 
       // Simulate loading state change
-      mockIsLoading.value = true
+      mockAuth.isLoading.value = true
       await wrapper.vm.$nextTick()
 
       expect(wrapper.text()).toContain('Iniciando sesión...')
@@ -384,7 +399,7 @@ describe('LoginButton Component', () => {
       const wrapper = mountComponent()
 
       // Simulate loading state change
-      mockIsLoading.value = true
+      mockAuth.isLoading.value = true
       await wrapper.vm.$nextTick()
 
       expect(wrapper.text()).toContain('Iniciando sesión...')

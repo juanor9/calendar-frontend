@@ -13,7 +13,7 @@ import {
   createMockLocalStorage,
   cleanupAuthMocks,
 } from '../../mocks/auth0'
-import type { User, Role, Permission, SecurityEvent } from '@/auth/types'
+import type { User, Role, Permission, SecurityEvent } from '@/features/authentication/types/auth.types'
 
 // Complete mock store implementation that matches the actual auth store interface
 const createMockAuthStore = (overrides = {}) => {
